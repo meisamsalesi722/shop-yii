@@ -1,0 +1,252 @@
+<?php
+
+namespace app\controllers\admin;
+
+use Yii;
+use app\models\Brand;
+use app\models\Color;
+use app\models\Product;
+use yii\web\Controller;
+use app\models\Category;
+use app\models\Guarantee;
+use yii\web\UploadedFile;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use app\models\ProductSearch;
+use yii\web\NotFoundHttpException;
+
+/**
+ * ProductController implements the CRUD actions for Product model.
+ */
+class ProductController extends Controller
+{
+        public $layout = 'admin/admin';
+
+    /**
+     * @inheritDoc
+     */
+    public function behaviors()
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'verbs' => [
+                    'class' => VerbFilter::className(),
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Lists all Product models.
+     *
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays a single Product model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Creates a new Product model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionCreate()
+    {
+        $model = new Product();
+
+
+        if ($this->request->isPost) {
+            // echo '<pre>';
+            // print_r($this->request->post());
+            // die;
+            if ($model->load($this->request->post())) {
+                $model->category_id = $model->category3_id;
+
+                $model->image = UploadedFile::getInstance($model, 'image');
+                if($model->validate()){
+                    if($model->image){
+                        $imageName = time() . '.' . $model->image->extension;
+                        if (!file_exists('uploads/images')) {
+                            mkdir('uploads/images', 0777, true);
+                        }
+                        $model->image->saveAs('uploads/images/' . $imageName);
+                        $model->image = $imageName;
+                    }
+                    
+                    if($model->save(false)){
+                        Yii::$app->session->setFlash('success', 'مقاله با موفقیت ساخته شد.');
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+        $guarantee = ArrayHelper::map(Guarantee::find()->all(), 'id', 'name');
+        $brands = ArrayHelper::map(Brand::find()->all(), 'id', 'original_name');
+        $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+
+
+        return $this->render('create', [
+            'model' => $model,
+            'guarantee' => $guarantee,
+            'brands' => $brands,
+            'colors' => $colors,
+            'categories' => $categories,
+        ]);
+    }
+public function actionCatList()
+{
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    $parents = Yii::$app->request->post('depdrop_parents');
+    
+    if (!empty($parents)) {
+
+        $parent_id = $parents[0];
+        $categories = Category::find()
+            ->where(['parent_id' => $parent_id])
+            ->orderBy('name')
+            ->all();
+            
+        $output = [];
+        foreach ($categories as $category) {
+            $output[] = [
+                'id' => $category->id,
+                'name' => $category->name
+            ];
+        }
+        
+        return ['output' => $output];
+    }
+    
+    return ['output' => []];
+}
+
+// اکشن برای سطح اول (دسته‌بندی اصلی)
+public function actionGetLevel1()
+{
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    $categories = Category::find()
+        ->where(['parent_id' => null])
+        ->orderBy('name')
+        ->all();
+        
+    $output = [];
+    foreach ($categories as $category) {
+        $output[] = [
+            'id' => $category->id,
+            'name' => $category->name
+        ];
+    }
+    
+    return ['output' => $output];
+}
+
+    /**
+     * Updates an existing Product model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+public function actionUpdate($id)
+{
+    $model = $this->findModel($id);
+    if ($this->request->isPost && $model->load($this->request->post())) {
+        $model->category_id = $model->category3_id;
+        $imageFile = UploadedFile::getInstance($model, 'image');
+
+        
+        if ($model->validate()) {
+        if ($imageFile) {
+            $model->deleteImage();
+                    if (!file_exists('uploads/images')) {
+                        mkdir('uploads/images', 0777, true);
+                    }
+                    $imageName = time() . '.' . $imageFile->extension;
+                    $imageFile->saveAs('uploads/images/' . $imageName);
+                    $model->image = $imageName;
+            }
+            if ($model->save(false)) {
+                Yii::$app->session->setFlash('success', 'محصول با موفقیت بروزرسانی شد.');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+    }
+
+    $guarantee = ArrayHelper::map(Guarantee::find()->all(), 'id', 'name');
+    $brands = ArrayHelper::map(Brand::find()->all(), 'id', 'original_name');
+    $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+    $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+
+    return $this->render('update', [
+        'model' => $model,
+        'guarantee' => $guarantee,
+        'brands' => $brands,
+        'colors' => $colors,
+        'categories' => $categories,
+    ]);
+}
+
+
+
+    /**
+     * Deletes an existing Product model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        $model->deleteImage();
+        $model->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Product model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return Product the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Product::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+}
