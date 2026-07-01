@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
-use app\models\ContactForm;
-use app\models\LoginForm;
-use yii\captcha\CaptchaAction;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
+use yii\web\Response;
+use app\models\Banner;
 use yii\base\Security;
-use yii\mail\MailerInterface;
+use app\models\Product;
 use yii\web\Controller;
 use yii\web\ErrorAction;
-use yii\web\Response;
+use app\models\LoginForm;
+use app\models\ContactForm;
+use yii\filters\VerbFilter;
+use yii\mail\MailerInterface;
+use yii\captcha\CaptchaAction;
+use yii\filters\AccessControl;
 
 class SiteController extends Controller
 {
@@ -78,7 +80,37 @@ class SiteController extends Controller
      */
     public function actionIndex(): string
     {
-        return $this->render('index');
+        $specials = Product::find()
+        ->innerJoinWith('discountAmounts')
+        ->all();
+
+        //baners
+        $banerSliders = Banner::find()->where(['position' => 1])->limit(7)->all();
+        $bottomRightBanners = Banner::find()->where(['position' => 2])->one();
+        $bottomLeftBanners = Banner::find()->where(['position' => 3])->one();
+        $leftBottomBanners = Banner::find()->where(['position' => 4])->one();
+        $leftTopBanners = Banner::find()->where(['position' => 5])->one();
+        $fourMiddleBanners = Banner::find()->where(['position' => 6])->limit(4)->all();
+        $twoMiddleBanners = Banner::find()->where(['position' => 7])->limit(2)->all();
+        $OneLastBanner = Banner::find()->where(['position' => 7])->one();
+
+        //newProducts
+        $newProducts = Product::find()->orderBy(['id' => 'SORT_DESC'])->limit(10)->all();
+
+        // dd($newProducts);
+        return $this->render('index', [
+            'specials' => $specials,
+            'banerSliders' => $banerSliders,
+            'bottomRightBanners' => $bottomRightBanners,
+            'bottomLeftBanners' => $bottomLeftBanners,
+            'leftBottomBanners' => $leftBottomBanners,
+            'leftTopBanners' => $leftTopBanners,
+            'fourMiddleBanners' => $fourMiddleBanners,
+            'twoMiddleBanners' => $twoMiddleBanners,
+            'OneLastBanner' => $OneLastBanner,
+            'newProducts' => $newProducts,
+        ]);
+
     }
 
     /**

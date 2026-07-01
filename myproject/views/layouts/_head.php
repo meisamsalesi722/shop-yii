@@ -1,44 +1,12 @@
-<?php
-
-declare(strict_types=1);
-
-/** @var yii\web\View $this */
-
-use app\assets\AppAsset;
-
-AppAsset::register($this);
-
-$this->registerCsrfMetaTags();
-$this->registerMetaTag(
-    ['charset' => Yii::$app->charset],
-    'charset',
-);
-$this->registerMetaTag(
-    [
-        'name' => 'viewport',
-        'content' => 'width=device-width, initial-scale=1',
-    ],
-);
-if (!empty($this->params['meta_description'])) {
-    $this->registerMetaTag(
-        [
-            'name' => 'description',
-            'content' => $this->params['meta_description'],
-        ],
-    );
-}
-if (!empty($this->params['meta_keywords'])) {
-    $this->registerMetaTag(
-        [
-            'name' => 'keywords',
-            'content' => $this->params['meta_keywords'],
-        ],
-    );
-}
-$this->registerLinkTag(
-    [
-        'rel' => 'icon',
-        'type' => 'image/x-icon',
-        'href' => Yii::getAlias('@web/favicon.ico'),
-    ],
-);
+<!-- <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیموناد</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="fontawesome/all.css">
+    <link rel="stylesheet" href="css/owl/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/owl/owl.theme.green.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head> -->
