@@ -31,6 +31,7 @@ use yii\behaviors\TimestampBehavior;
  * @property Color $color
  * @property DiscountAmount $discountAmounts
  * @property Guarantee $guarantee
+ * @property OrderItem[] $orderItems
  * @property ProductMeta[] $productMetas
  */
 class Product extends \yii\db\ActiveRecord
@@ -50,7 +51,7 @@ class Product extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     */
+    */
     public function rules()
     {
         return [
@@ -166,6 +167,16 @@ class Product extends \yii\db\ActiveRecord
     public function getGuarantee()
     {
         return $this->hasOne(Guarantee::class, ['id' => 'guarantee_id']);
+    }
+
+    /**
+     * Gets query for [[OrderItems]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderItems()
+    {
+        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
     }
 
     /**
