@@ -80,20 +80,17 @@ class ProductController extends Controller
 
 
         if ($this->request->isPost) {
-            // echo '<pre>';
-            // print_r($this->request->post());
-            // die;
+
             if ($model->load($this->request->post())) {
                 $model->category_id = $model->category3_id;
-
-                $model->image = UploadedFile::getInstance($model, 'image');
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
                 if($model->validate()){
-                    if($model->image){
-                        $imageName = time() . '.' . $model->image->extension;
+                    if($model->imageFile){
+                        $imageName = time() . '.' . $model->imageFile->extension;
                         if (!file_exists('uploads/images')) {
                             mkdir('uploads/images', 0777, true);
                         }
-                        $model->image->saveAs('uploads/images/' . $imageName);
+                        $model->imageFile->saveAs('uploads/images/' . $imageName);
                         $model->image = $imageName;
                     }
                     
@@ -182,17 +179,15 @@ public function actionUpdate($id)
     $model = $this->findModel($id);
     if ($this->request->isPost && $model->load($this->request->post())) {
         $model->category_id = $model->category3_id;
-        $imageFile = UploadedFile::getInstance($model, 'image');
-
-        
+        $model->imageFile = UploadedFile::getInstance($model, 'imageFile');        
         if ($model->validate()) {
-        if ($imageFile) {
+        if ($model->imageFile) {
             $model->deleteImage();
                     if (!file_exists('uploads/images')) {
                         mkdir('uploads/images', 0777, true);
                     }
-                    $imageName = time() . '.' . $imageFile->extension;
-                    $imageFile->saveAs('uploads/images/' . $imageName);
+                    $imageName = time() . '.' . $model->imageFile->extension;
+                    $model->imageFile->saveAs('uploads/images/' . $imageName);
                     $model->image = $imageName;
             }
             if ($model->save(false)) {
