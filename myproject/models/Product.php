@@ -29,7 +29,7 @@ use yii\behaviors\TimestampBehavior;
  * @property CartItem[] $cartItems
  * @property Category $category
  * @property Color $color
- * @property DiscountAmount[] $discountAmounts
+ * @property DiscountAmount $discountAmounts
  * @property Guarantee $guarantee
  * @property ProductMeta[] $productMetas
  */
@@ -155,7 +155,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getDiscountAmounts()
     {
-        return $this->hasMany(DiscountAmount::class, ['product_id' => 'id']);
+        return $this->hasOne(DiscountAmount::class, ['product_id' => 'id']);
     }
 
     /**

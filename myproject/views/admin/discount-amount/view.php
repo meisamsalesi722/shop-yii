@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'product_id',
             'percentage',
-            'statsu',
+            'status',
             'discount_ceiling',
             'start_date',
             'end_date',

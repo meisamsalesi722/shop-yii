@@ -80,7 +80,15 @@ class DiscountAmountController extends Controller
             $model->loadDefaultValues();
         }
 
-$products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
+$products = ArrayHelper::map(
+    Product::find()
+    ->joinWith('discountAmounts')
+    ->where([
+        'or',
+        ['discount_amount.id' => null],
+        ['<', 'discount_amount.end_date', time()],
+    ])
+    ->all() , 'id' , 'name');
 
         return $this->render('create', [
             'model' => $model,
@@ -103,8 +111,19 @@ $products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $products = ArrayHelper::map(
+    Product::find()
+    ->joinWith('discountAmounts')
+    ->where([
+        'or',
+        ['discount_amount.id' => null],
+        ['<', 'discount_amount.end_date', time()],
+    ])
+    ->all() , 'id' , 'name');
+
         return $this->render('update', [
             'model' => $model,
+            'products' => $products,
         ]);
     }
 
