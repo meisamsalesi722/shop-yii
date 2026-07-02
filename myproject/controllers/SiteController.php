@@ -7,6 +7,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Response;
 use app\models\Banner;
+use app\models\Category;
 use yii\base\Security;
 use app\models\Product;
 use yii\web\Controller;
@@ -85,19 +86,26 @@ class SiteController extends Controller
         ->all();
 
         //baners
-        $banerSliders = Banner::find()->where(['position' => 1])->limit(7)->all();
+        $banerSliders = Banner::find()->where(['position' => 1])->limit(10)->all();
         $bottomRightBanners = Banner::find()->where(['position' => 2])->one();
         $bottomLeftBanners = Banner::find()->where(['position' => 3])->one();
         $leftBottomBanners = Banner::find()->where(['position' => 4])->one();
         $leftTopBanners = Banner::find()->where(['position' => 5])->one();
         $fourMiddleBanners = Banner::find()->where(['position' => 6])->limit(4)->all();
         $twoMiddleBanners = Banner::find()->where(['position' => 7])->limit(2)->all();
-        $OneLastBanner = Banner::find()->where(['position' => 7])->one();
+        $OneLastBanner = Banner::find()->where(['position' => 8])->one();
 
-        //newProducts
-        $newProducts = Product::find()->orderBy(['id' => 'SORT_DESC'])->limit(10)->all();
+        //Products
+        $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
+        $bestsellers = Product::find()->orderBy(['sold_number' => SORT_DESC])->limit(10)->all();
+        $categories_notchilren = Category::find()->alias('c')->leftJoin('category child', 'child.parent_id = c.id')->where(['IS NOT', 'c.parent_id', null])->andWhere(['child.id' => null])->all();
+        $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[1]])->limit(10)->all();
+        $mostVieweds = Product::find()->orderBy(['view' => SORT_DESC])->limit(10)->all();
 
-        // dd($newProducts);
+
+        
+        // dd($categories);
+
         return $this->render('index', [
             'specials' => $specials,
             'banerSliders' => $banerSliders,
@@ -109,6 +117,11 @@ class SiteController extends Controller
             'twoMiddleBanners' => $twoMiddleBanners,
             'OneLastBanner' => $OneLastBanner,
             'newProducts' => $newProducts,
+            'bestsellers' => $bestsellers,
+            'productsCategory1' => $productsCategory1,
+            'categories_notchilren' => $categories_notchilren,
+            'mostVieweds' => $mostVieweds,
+
         ]);
 
     }

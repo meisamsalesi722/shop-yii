@@ -36,7 +36,7 @@ class Banner extends \yii\db\ActiveRecord
         return [
             [['status'], 'default', 'value' => 0],
             // [['title', 'url', 'position' , 'imageFile'], 'required'],
-            [['imageFile'], 'file', 'extensions' => 'png, jpg, jpeg'],
+            [['imageFile'], 'file', 'extensions' => 'png, jpg, jpeg ,webp'],
             [['position', 'status'], 'integer'],
             [['created_at', 'updated_at' , 'imageFile'], 'safe'],
             [['title', 'url'], 'string', 'max' => 255],

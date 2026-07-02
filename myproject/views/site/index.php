@@ -50,8 +50,8 @@
                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 text-center px-4 px-sm-0 ">
 
                     <div class="offer-section-right h-100">
-                        <img src="img/index.svg" alt="" class="img-fluid">
-                        <img src="img/special-offer-title.af8fd0e.png" class="img-fluid pt-2 pt-md-0 " alt="">
+                        <img src="<?= Yii::getAlias('@web/img/index.svg/') ?>" alt="" class="img-fluid">
+                        <img src="<?= Yii::getAlias('@web/img/special-offer-title.af8fd0e.png/') ?>" class="img-fluid pt-2 pt-md-0 " alt="">
                         
                         <span class="offer-section-right-title p-2 p-md-1 "><p>تخفیف فقط برای امروز</p></span>
                         <div class="timer py-2 ">
@@ -156,116 +156,24 @@
             <div class="container">
                 <div class="row px-3  px-sm-0">
                    <div class="small-slider-big col-lg-12 col-md-12"  >
-                    <h3 dir="rtl">پربازدیدترین</h3>
+                    <h3 dir="rtl">پرفروش ترین ها</h3>
     
                     <div class="visited-slider">
                         <div class="owl-carousel owl-theme second-slider" >
+                        <?php foreach ($bestsellers as $key => $bestseller) { ?>
                             <div class="item" >
                                 <a href="#" class="d-block text-center">
-                                    <img src="img/21.jpg" alt="">
+                                    <img src="<?= Yii::getAlias('@web/uploads/images/') . ($bestseller->image ?? '') ?>" alt="">
                                     <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
+                                        <p><?= $bestseller->name ?></p>
                                         <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
+                                            <span class="price"><?= $bestseller->price ?></span>
                                             <span class="unit">تومان</span>
                                         </div>
                                     </div>
                                 </a>
                             </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/22.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>          
-                            </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/23.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/24.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/25.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/26.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/27.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item"><a href="#" class="d-block text-center">
-                                <img src="img/28.jpg" alt="">
-                                <div class="item-caption">
-                                    <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                    <div class="item-caption-bottom">
-                                        <span class="price">6,250,000</span>
-                                        <span class="unit">تومان</span>
-                                    </div>
-                                </div>
-                            </a></div>
-                            <div class="item">
-                                <a href="#" class="d-block text-center">
-                                    <img src="img/29.jpg" alt="">
-                                    <div class="item-caption">
-                                        <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                        <div class="item-caption-bottom">
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+                        <?php } ?>
                         </div>
                     </div>
                    </div>
@@ -278,12 +186,12 @@
     <section id="pic-big" >
         <div class="container ">
             <div class="row overflow-hidden">
-                <div class="col-lg-6 col-md-6 col-sm-6 col-12 pr-sm-0">
-                    <a href="#"><img src="img/31.webp" alt="" class="img-fluid"></a>
+                <?php foreach ($twoMiddleBanners as $key => $twoMiddleBanner) { ?>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-12 <?= $key === 0 ? 'pr-sm-0' : 'pl-sm-0' ?> ">
+                    <a href="#"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($twoMiddleBanner->image ?? '') ?>" alt="" class="img-fluid <?= $key === 0 ? 'pt-sm-0' : '' ?>"></a>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-12 pl-sm-0">
-                    <a href="#"><img src="img/32.webp" alt="" class="img-fluid pt-3 pt-sm-0"></a>
-                </div>
+
+                <?php } ?>
             </div>
         </div>
     </section>
@@ -294,7 +202,7 @@
                 <div class="small-slider-product col-lg-12 text-right  ">
                     <div class="small-slider-product-top d-flex justify-content-between">
                         <div class="small-slider-product-right ">
-                            <h3 dir="rtl"> پربازدیدترین</h3>
+                            <h3 dir="rtl"><?= $categories_notchilren[0]->name ?></h3>
                         </div>
                         <div class="small-slider-product-left align-content-end mt-4">
                                 <a href="#" >مشاهده لیست کامل
@@ -305,113 +213,21 @@
 
                     <div class="small-slider-product-cntent">
 
-                                <div class="owl-carousel owl-theme second-slider" >
+                        <div class="owl-carousel owl-theme second-slider" >
+                            <?php foreach ($productsCategory1 as $key => $productCategory1) { ?>
                                     <div class="item" >
                                         <a href="#" class="d-block text-center">
-                                            <img src="img/21.jpg" alt="">
+                                            <img src="<?= Yii::getAlias('@web/uploads/images/') . ($productCategory1->image ?? '') ?>" alt="">
                                             <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
+                                                <p><?= $productCategory1->name ?></p>
                                                 <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
+                                                    <span class="price"><?= $productCategory1->price ?></span>
                                                     <span class="unit">تومان</span>
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/22.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>          
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/23.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/24.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/25.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/26.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/27.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item"><a href="#" class="d-block text-center">
-                                        <img src="img/28.jpg" alt="">
-                                        <div class="item-caption">
-                                            <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                            <div class="item-caption-bottom">
-                                                <span class="price">6,250,000</span>
-                                                <span class="unit">تومان</span>
-                                            </div>
-                                        </div>
-                                    </a></div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/29.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+                                <?php } ?>
                                 </div>
                     </div>
 
@@ -422,7 +238,7 @@
     <section id="baner" class="d-none d-md-block">
         <div class="container">
             <div class="row overflow-hidden">
-                <img src="img/baner.jpg" alt="" class="img-fluid">
+                <img src="<?= Yii::getAlias('@web/uploads/images/') . ($OneLastBanner->image ?? '') ?>" alt="" class="img-fluid">
             </div>
         </div>
     </section>
@@ -445,112 +261,22 @@
                     <div class="small-slider-product-cntent">
 
                                 <div class="owl-carousel owl-theme second-slider" >
-                                    <div class="item" >
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/21.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
+                                    <?php foreach ($mostVieweds as $key => $mostViewed) {?>
+                                    
+                                        <div class="item" >
+                                            <a href="#" class="d-block text-center">
+                                                <img src="<?= Yii::getAlias('@web/uploads/images/') . ($mostViewed->image ?? '') ?>" alt="">
+                                                <div class="item-caption">
+                                                    <p><?= $mostViewed->name ?></p>
+                                                    <div class="item-caption-bottom">
+                                                        <span class="price"><?= $mostViewed->price ?></span>
+                                                        <span class="unit">تومان</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/22.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>          
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/23.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/24.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/25.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/26.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/27.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="item"><a href="#" class="d-block text-center">
-                                        <img src="img/28.jpg" alt="">
-                                        <div class="item-caption">
-                                            <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                            <div class="item-caption-bottom">
-                                                <span class="price">6,250,000</span>
-                                                <span class="unit">تومان</span>
-                                            </div>
+                                            </a>
                                         </div>
-                                    </a></div>
-                                    <div class="item">
-                                        <a href="#" class="d-block text-center">
-                                            <img src="img/29.jpg" alt="">
-                                            <div class="item-caption">
-                                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                                <div class="item-caption-bottom">
-                                                    <span class="price">6,250,000</span>
-                                                    <span class="unit">تومان</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+
+                                    <?php } ?> 
                                 </div>
                     </div>
 
@@ -564,7 +290,7 @@
             <div class="row overflow-hidden">
                 <div class="d-none d-sm-block blog-item col-lg-2 col-md-4 col-sm-4 px-1">
                     <div class="blog-item2">
-                        <img src="img/blog1.jpg" alt="" class="small-pic img-fluid">
+                        <img src="<?= Yii::getAlias('@web/img/blog1.jpg/') ?>" alt="" class="small-pic img-fluid">
                         <div class="blog-caption col-lg-12 py-2 text-center">
                             <h5>عنوان مقاله</h5>
                             <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -576,7 +302,7 @@
                 </div>
                 <div class="d-lg-none d-none d-sm-block blog-item col-lg-2 col-md-4 col-sm-4 col-12 px-1">
                     <div class="blog-item2">
-                        <img src="img/blog1.jpg" alt="" class="small-pic img-fluid">
+                        <img src="<?= Yii::getAlias('@web/img/blog1.jpg/') ?>" alt="" class="small-pic img-fluid">
                         <div class="blog-caption col-lg-12 py-2 text-center">
                             <h5>عنوان مقاله</h5>
                             <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -588,7 +314,7 @@
                 </div>
                 <div class="d-none d-sm-block d-lg-none blog-item col-lg-2 col-md-4 col-sm-4 col-12 px-1">
                     <div class="blog-item2">
-                        <img src="img/blog1.jpg" alt="" class="small-pic img-fluid">
+                        <img src="<?= Yii::getAlias('@web/img/blog1.jpg/') ?>" alt="" class="small-pic img-fluid">
                         <div class="blog-caption col-lg-12 py-2 text-center">
                             <h5>عنوان مقاله</h5>
                             <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -602,7 +328,7 @@
                     <div class="row d-block d-sm-none d-lg-flex">
                         <div class="col-lg-12  col-12 w-100 ">
                             <div class="blog-item2 ">
-                                <img src="img/blog2.jpg" alt="" class="small-pic img-fluid w-100 ">
+                                <img src="<?= Yii::getAlias('@web/img/blog2.jpg/') ?>" alt="" class="small-pic img-fluid w-100 ">
                                 <div class="blog-caption col-lg-12 py-2 text-center">
                                     <h5>عنوان مقاله</h5>
                                     <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده 
@@ -614,7 +340,7 @@
                         </div>
                         <div class="col-lg-12 col-md-6 col-12 pt-2 ">
                             <div class="blog-item2 ">
-                                <img src="img/blog3.jpg" alt="" class="small-pic img-fluid w-100">
+                                <img src="<?= Yii::getAlias('@web/img/blog3.jpg/') ?>" alt="" class="small-pic img-fluid w-100">
                                 <div class="blog-caption  col-lg-12 py-2 text-center">
                                     <h5>عنوان مقاله</h5>
                                     <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده 
@@ -628,7 +354,7 @@
                 </div>
                 <div class="blog-item col-lg-4 col-md-12  col-12 px-2  py-sm-2 pt-2 p-lg-0">
                     <div class="blog-item2">
-                        <img src="img/blog4.jpg" alt="" class="big-pic img-fluid w-100">
+                        <img src="<?= Yii::getAlias('@web/img/blog4.jpg/') ?>" alt="" class="big-pic img-fluid w-100">
                         <div class="blog-caption col-12 py-2 text-center">
                             <h5>عنوان مقاله</h5>
                             <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -643,7 +369,7 @@
                     <div class="row d-none d-lg-flex">
                         <div class="col-lg-12 col-12 ">
                             <div class="blog-item2 ">
-                                <img src="img/blog5.jpg" alt="" class="img-fluid ">
+                                <img src="<?= Yii::getAlias('@web/img/blog5.jpg/') ?>" alt="" class="img-fluid ">
                                 <div class="blog-caption col-12 py-2 text-center">
                                     <h5>عنوان مقاله</h5>
                                     <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده 
@@ -656,7 +382,7 @@
                         </div>
                         <div class="col-lg-12 col-12 pt-2 ">
                            <div class="blog-item2 h-100">
-                                <img src="img/blog6.jpg" alt="" class="img-fluid ">
+                                <img src="<?= Yii::getAlias('@web/img/blog6.jpg/') ?>" alt="" class="img-fluid ">
                                 <div class="blog-caption col-12 py-2 text-center">
                                     <h5>عنوان مقاله</h5>
                                     <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده 
@@ -670,7 +396,7 @@
                 </div>
                 <div class="d-none d-sm-block blog-item col-lg-2 col-md-4  col-sm-4 px-1">
                    <div class="blog-item2">
-                        <img src="img/blog7.jpg" alt="" class="big-pic img-fluid">
+                        <img src="<?= Yii::getAlias('@web/img/blog7.jpg/') ?>" alt="" class="big-pic img-fluid">
                         <div class="blog-caption col-12 py-2 text-center">
                             <h5>عنوان مقاله</h5>
                             <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -682,7 +408,7 @@
                 </div>
                 <div class="d-none d-sm-block d-lg-none blog-item col-lg-2 col-md-4  col-sm-4 px-1">
                     <div class="blog-item2">
-                         <img src="img/blog7.jpg" alt="" class="big-pic img-fluid">
+                         <img src="<?= Yii::getAlias('@web/img/blog7.jpg/') ?>" alt="" class="big-pic img-fluid">
                          <div class="blog-caption col-12 py-2 text-center">
                              <h5>عنوان مقاله</h5>
                              <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها
@@ -694,7 +420,7 @@
                  </div>
                  <div class="d-none d-sm-block d-lg-none blog-item col-lg-2 col-md-4  col-sm-4 px-1">
                     <div class="blog-item2">
-                         <img src="img/blog7.jpg" alt="" class="big-pic img-fluid">
+                         <img src="<?= Yii::getAlias('@web/img/blog7.jpg/') ?>" alt="" class="big-pic img-fluid">
                          <div class="blog-caption col-12 py-2 text-center">
                              <h5>عنوان مقاله</h5>
                              <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها

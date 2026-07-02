@@ -1,3 +1,6 @@
+<?php
+use app\models\Category;
+?>
     <div class="top-menu">
         <section id="header-section" class="">
             <div class="container">
@@ -40,237 +43,34 @@
                                 <div class="in-body-menu">
                                     <div class="first-col">
                                         <nav>
+                                            <?php 
+                                                    $categories = Category::find()->with('children.children')->where(['parent_id' => null])->all();
+                                            ?>
+                                        <?php foreach ($categories as $key => $category) { ?>
+
                                             <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته اول</a>
+                                                <a href="#" class="link-in-first-col"><?= $category->name ?></a>
                                                 <div class="sub-me-menu ">
                                                     
                                                     <div class="in-sub-me-menu  ">
-                                                       
+                                                       <?php foreach ($category->children as $key => $children) { ?>
                                                         <div class="three-level ">
-                                                            <span class="three-level-span "><a href="#"><h3>1برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space "><a href="#" class=""> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
+                                                            <span class="three-level-span "><a href="#"><h3><?= $children->name ?></h3></a></span>
+                                                            <?php foreach ($children->children as $key => $subchildren) { ?>
+                                                                <span class="three-level-span three-level-span-space "><a href="#" class=""> <?= $subchildren->name ?></a></span>
+
+                                                            <?php } ?>
                                                         </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span "><a href=""><h3> 2برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">اپل <i class="fas fa-chevron-left"></i> </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">اپل </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">اپل </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 3برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند <i class="fas fa-chevron-left"></i></a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span "><a href=""><h3>4برندهای برتر</h3> </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <div class="img-menu-desktop">
-                                                                <img src="img/menu.png" alt="">
-                                                            </div>
-                                                        </div>
+                                                        <?php } ?>
                                                                                                            
                                                 </div>
                                                     
                                                 </div>
                                                 
                                             </span>
-                                            <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته دوم</a>
-                                                <div class="sub-me-menu">
-                                                    <div class="in-sub-me-menu ">
-                                                       
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href="#"><h3> 1برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل <i class="fas fa-chevron-left"></i></a></span>
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span "><a href=""><h3> 2برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-        
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href=""><h3> 3برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href=""> برند <i class="fas fa-chevron-left"></i> </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-        
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href=""><h3> 4برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <div class="img-menu-desktop">
-                                                                    <img src="img/menu2.png" alt="">
-                                                                </div>
-                                                            </div>                                                          
-                                                    </div>
-                                                </div>
-                                            
-                                            </span>
-                                            <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته سوم</a>
-                                                <div class="sub-me-menu">
-                                                    <div class="in-sub-me-menu ">
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href="#"><h3> 1برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span "><a href=""><h3>2برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند</a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-        
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href=""><h3>3برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space "><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-        
-                                                            </div>
-                                                            <div class="three-level ">
-                                                                <span class="three-level-span"><a href=""><h3>4برندهای برتر</h3></a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                                <div class="img-menu-desktop">
-                                                                    <img src="img/menu3.png" alt="">
-                                                                </div>
-                                                            </div>
-                        
-                                                    </div>
-                                                </div>
-    
-                                            </span>
-                                            <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته چهار</a>
-                                                <div class="sub-me-menu">
-                                                    <div class="in-sub-me-menu ">
-                                                    
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href="#"><h3> 1برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل <i class="fas fa-chevron-left"></i></a></span>
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span "><a href=""><h3> 2برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 3برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href=""> برند <i class="fas fa-chevron-left"></i> </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 4برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <div class="img-menu-desktop">
-                                                                <img src="img/menu4.png" alt="">
-                                                            </div>
-                                                        </div>
-                                                                                                               
-                                                    </div>
-                                                </div>
-                                            </span>
-                                            <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته پنچ</a>
-                                                <div class="sub-me-menu">
-                                                    <div class="in-sub-me-menu ">
-                                                       
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href="#"><h3> 1برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل <i class="fas fa-chevron-left"></i></a></span>
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span "><a href=""><h3> 2برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 3برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href=""> برند <i class="fas fa-chevron-left"></i> </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 4برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <div class="img-menu-desktop">
-                                                                <img src="img/menu3.png" alt="">
-                                                            </div>
-                                                        </div>
-                                                                                                               
-                                                    </div>
-                                                </div>
-                                            </span>
-                                            <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col">گروه دسته شش</a>
-                                                <div class="sub-me-menu">
-                                                    <div class="in-sub-me-menu ">
-                                                       
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href="#"><h3> 1برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="#"> اپل <i class="fas fa-chevron-left"></i></a></span>
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span "><a href=""><h3> 2برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند</a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 3برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href=""> برند <i class="fas fa-chevron-left"></i> </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-    
-                                                        </div>
-                                                        <div class="three-level ">
-                                                            <span class="three-level-span"><a href=""><h3> 4برندهای برتر</h3></a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <span class="three-level-span three-level-span-space"><a href="">برند </a></span>
-                                                            <div class="img-menu-desktop">
-                                                                <img src="img/menu2.png" alt="">
-                                                            </div>
-                                                        </div>
-                                                                                                               
-                                                    </div>
-                                                </div>
-                                            </span>
+
+                                        <?php } ?>
+
                                         </nav>
                                     </div>
                                 </div>
