@@ -71,6 +71,13 @@ $currentRoute = Yii::$app->controller->getRoute();
         </li>
         <li>
             <?= Html::a(
+                '<i class="fas fa-comments"></i> گالری محصول',
+                Url::to(['admin/gullery/index']),
+                ['class' => $currentRoute === 'admin/gullery/index' ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
                 '<i class="fas fa-comments"></i> تخفیف ها',
                 Url::to(['admin/discount-amount/index']),
                 ['class' => $currentRoute === 'admin/discount-amount/index' ? 'active' : '']
