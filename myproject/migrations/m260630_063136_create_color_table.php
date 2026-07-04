@@ -16,8 +16,8 @@ class m260630_063136_create_color_table extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string(),
             'color_code' => $this->string(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
     }
 

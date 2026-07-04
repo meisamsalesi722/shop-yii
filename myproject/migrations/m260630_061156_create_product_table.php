@@ -24,8 +24,8 @@ class m260630_061156_create_product_table extends Migration
             'sold_number' => $this->integer(),
             'frozen_number' => $this->integer(),
             'marketable_number' => $this->integer(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
         $this->addForeignKey(
             'product_category_key',   

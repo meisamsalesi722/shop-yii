@@ -17,8 +17,8 @@ class m260630_071101_create_guarantee_table extends Migration
             'name' => $this->string(),
             'price_increase' => $this->bigInteger()->notNull(),
             'status' => $this->tinyInteger()->defaultValue(0),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
     }
 

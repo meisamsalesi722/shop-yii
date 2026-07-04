@@ -19,8 +19,8 @@ class m260630_063907_create_brand_table extends Migration
             'status' => $this->integer()->defaultValue(0),
             'slug' => $this->string()->notNull(),
             'logo' => $this->text(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
     }
 

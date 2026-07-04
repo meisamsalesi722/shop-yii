@@ -18,8 +18,8 @@ class m260630_062828_create_cart_item_table extends Migration
             'product_id' => $this->integer()->notNull(),
             'number' => $this->integer(),
             'color_id' => $this->integer()->notNull(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
                 $this->addForeignKey(
             'cart_item_user_id_key',

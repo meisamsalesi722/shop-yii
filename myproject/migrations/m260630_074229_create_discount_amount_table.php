@@ -20,8 +20,8 @@ class m260630_074229_create_discount_amount_table extends Migration
             'discount_ceiling' => $this->bigInteger(),
             'start_date' => $this->dateTime(),
             'end_date' => $this->dateTime(),
-            'updated_at' => $this->integer(),
-            'deleted_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
 
         $this->addForeignKey(
