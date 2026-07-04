@@ -32,13 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'original_name',
             'persian_name',
-            'status',
             [
                 'attribute' => 'status',
                 'value'=> function($model) {
-                    return $model->status ? $model->parent->title : 'دسته اصلی';
+                    return $model->status == 0 ? 'غیر فعال' : 'فعال';
                 },
-            ]
+            ],
             'slug',
             //'logo:ntext',
             //'created_at',

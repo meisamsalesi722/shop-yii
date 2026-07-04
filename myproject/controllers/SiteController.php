@@ -99,12 +99,12 @@ class SiteController extends Controller
         $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
         $bestsellers = Product::find()->orderBy(['sold_number' => SORT_DESC])->limit(10)->all();
         $categories_notchilren = Category::find()->alias('c')->leftJoin('category child', 'child.parent_id = c.id')->where(['IS NOT', 'c.parent_id', null])->andWhere(['child.id' => null])->all();
-        $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[1]])->limit(10)->all();
+        if($categories_notchilren){
+            $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[0]])->limit(10)->all();
+        }else{
+            $productsCategory1 = [];
+        }
         $mostVieweds = Product::find()->orderBy(['view' => SORT_DESC])->limit(10)->all();
-
-
-        
-        // dd($categories);
 
         return $this->render('index', [
             'specials' => $specials,

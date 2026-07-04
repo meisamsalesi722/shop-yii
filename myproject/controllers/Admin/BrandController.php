@@ -2,11 +2,15 @@
 
 namespace app\controllers\admin;
 
+use Yii;
 use app\models\Brand;
-use app\models\BrandSearch;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
+use app\models\BrandSearch;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+
+use function PHPUnit\Framework\fileExists;
 
 /**
  * BrandController implements the CRUD actions for Brand model.
@@ -71,13 +75,32 @@ class BrandController extends Controller
         $model = new Brand();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
+                if($model->validate()){
+
+                    if($model->imageFile){
+                        $imageName = time() . '.' . $model->imageFile->extension;
+                        if (!file_exists('uploads/images')) {
+                            mkdir('uploads/images', 0777, true);
+                        }
+                        $model->imageFile->saveAs('uploads/images/' . $imageName , true);
+                        $model->logo = $imageName;
+                    }
+
+                    if( $model->save(false)){
+                        Yii::$app->session->setFlash('success' , 'برند با موفقیت ثبت شد');
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                    Yii::$app->session->setFlash('success' , 'ثبت برند با خطا مواجه شد');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
 
+        
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -94,8 +117,27 @@ class BrandController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post()) ) {
+            $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
+            if($model->validate()){
+                if($model->imageFile){
+                    $model->deleteImage();
+                    $imageName = time() . '.' . $model->imageFile->extension;
+                    if(!file_exists('uploads/images')){
+                        mkdir('uploads/images' , 0777,true);
+                    }
+                    $model->imageFile->saveAs('uploads/images/' . $imageName);
+                    $model->logo = $imageName;
+                }
+
+                
+                if($model->save(false)){
+                    Yii::$app->session->setFlash('success' , 'ویرایش با موفقیت انجام شد');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                Yii::$app->session->setFlash('success' , 'ویرایش با خطا مواجه شد');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -112,7 +154,9 @@ class BrandController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+         $model->deleteImage();
+        $model->delete();
 
         return $this->redirect(['index']);
     }

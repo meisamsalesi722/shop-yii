@@ -24,6 +24,16 @@ class m260630_065318_create_address_table extends Migration
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
 
+        $this->addForeignKey(
+            'address_user_id_key',
+            'address',
+            'user_id',
+            'user',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+
     }
 
     /**

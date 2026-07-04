@@ -16,7 +16,7 @@ class m260630_074229_create_discount_amount_table extends Migration
             'id' => $this->primaryKey(),
             'product_id' => $this->integer()->notNull(),
             'percentage' => $this->integer(3),
-            'statsu' => $this->tinyInteger()->defaultValue(0),
+            'status' => $this->tinyInteger()->defaultValue(0),
             'discount_ceiling' => $this->bigInteger(),
             'start_date' => $this->dateTime(),
             'end_date' => $this->dateTime(),

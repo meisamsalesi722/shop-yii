@@ -37,10 +37,10 @@ class DiscountAmount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['percentage', 'discount_ceiling', 'start_date', 'end_date', 'updated_at', 'deleted_at'], 'default', 'value' => null],
+            [['percentage', 'discount_ceiling', 'start_date', 'end_date'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 0],
             [['product_id'], 'required'],
-            [['product_id', 'percentage', 'status', 'discount_ceiling', 'updated_at', 'deleted_at'], 'integer'],
+            [['product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
             [['start_date', 'end_date'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];

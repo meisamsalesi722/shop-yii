@@ -21,6 +21,7 @@ use Yii;
 class Brand extends \yii\db\ActiveRecord
 {
 
+    public $imageFile;
 
     /**
      * {@inheritdoc}
@@ -36,12 +37,12 @@ class Brand extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['logo', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['created_at', 'updated_at'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 0],
             [['original_name', 'persian_name', 'slug'], 'required'],
             [['status', 'created_at', 'updated_at'], 'integer'],
-            [['logo'], 'string'],
             [['original_name', 'persian_name', 'slug'], 'string', 'max' => 255],
+            [['imageFile'], 'file','extensions' => 'png, jpg, jpeg ,webp'],
         ];
     }
 
@@ -70,6 +71,14 @@ class Brand extends \yii\db\ActiveRecord
     public function getProducts()
     {
         return $this->hasMany(Product::class, ['brand_id' => 'id']);
+    }
+
+        public function deleteImage()
+    {
+        if ($this->logo && file_exists('uploads/images' . $this->logo)) {
+            return unlink('uploads/images' . $this->logo);
+        }
+        return false;
     }
 
 }

@@ -9,11 +9,10 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="brand-form">
-
     <?php $form = ActiveForm::begin(); ?>
-
+    
     <?= $form->field($model, 'original_name')->textInput(['maxlength' => true]) ?>
-
+    
     <?= $form->field($model, 'persian_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'status')->dropDownList(
@@ -25,7 +24,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'logo')->fileInput() ?>
+    <?= $form->field($model, 'imageFile')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

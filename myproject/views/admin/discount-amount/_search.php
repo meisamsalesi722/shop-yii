@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'percentage') ?>
 
-    <?= $form->field($model, 'statsu') ?>
+    <?= $form->field($model, 'status') ?>
 
     <?= $form->field($model, 'discount_ceiling') ?>
 

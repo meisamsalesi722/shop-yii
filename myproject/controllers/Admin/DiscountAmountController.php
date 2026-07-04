@@ -106,20 +106,19 @@ $products = ArrayHelper::map(
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $product = $model->product;
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $products = ArrayHelper::map(
-    Product::find()
-    ->joinWith('discountAmounts')
-    ->where([
-        'or',
-        ['discount_amount.id' => null],
-        ['<', 'discount_amount.end_date', time()],
-    ])
-    ->all() , 'id' , 'name');
+        $products = Product::find()->joinWith('discountAmounts')->where(['or',['discount_amount.id' => null],['<', 'discount_amount.end_date', time()]])->all();
+
+        
+        
+        $products = ArrayHelper::map(($products) , 'id' , 'name');
+        
+        $products[$product->id] = $product->name;
 
         return $this->render('update', [
             'model' => $model,

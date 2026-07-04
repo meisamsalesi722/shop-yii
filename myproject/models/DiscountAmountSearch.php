@@ -17,7 +17,7 @@ class DiscountAmountSearch extends DiscountAmount
     public function rules()
     {
         return [
-            [['id', 'product_id', 'percentage', 'status', 'discount_ceiling', 'updated_at', 'deleted_at'], 'integer'],
+            [['id', 'product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
             [['start_date', 'end_date'], 'safe'],
         ];
     }
@@ -66,8 +66,7 @@ class DiscountAmountSearch extends DiscountAmount
             'discount_ceiling' => $this->discount_ceiling,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+
         ]);
 
         return $dataProvider;

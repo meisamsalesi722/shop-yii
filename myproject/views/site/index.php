@@ -7,7 +7,7 @@
                         <div class="carousel-inner">
                             <?php foreach ($banerSliders as $key => $banerSlider) { ?>
                                 <div class="carousel-item <?= $key === 0 ? 'active' : '' ?>">
-                                    <a href="<?= $banerSlider->url ?>"><img class="d-block w-100" src="<?= Yii::getAlias('@web/uploads/images/') . $banerSlider->image ?>" alt="First slide"></a>
+                                    <a href="<?= $banerSlider->url ?? '#' ?>"><img class="d-block w-100" src="<?= Yii::getAlias('@web/uploads/images/') . $banerSlider->image ?>" alt="First slide"></a>
                                 </div>
                             <?php } ?>
 
@@ -23,16 +23,16 @@
                     </div>
 
                     <div class="row mx-0">
-                        <div class="col-lg-6 d-none d-lg-block pr-0 pl-2 pt-3"><a href="<?= $bottomRightBanners->url ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomRightBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
-                        <div class="col-lg-6 d-none d-lg-block pl-0 pr-2 pt-3"><a href="<?= $bottomLeftBanners->url ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomLeftBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
+                        <div class="col-lg-6 d-none d-lg-block pr-0 pl-2 pt-3"><a href="<?= $bottomRightBanners->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomRightBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
+                        <div class="col-lg-6 d-none d-lg-block pl-0 pr-2 pt-3"><a href="<?= $bottomLeftBanners->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomLeftBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
                     </div>
                     
                 </div>
                 <div class="col-lg-4 col-12  px-0 px-sm-2">
                     <div class="row pt-md-3 pt-lg-0">
-                        <a href="<?= $leftTopBanners->url ?>" class=" col-lg-12 d-none d-lg-block"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftTopBanners->image ?? '') ?>" alt="" class="img-fluid"></a> 
-                        <a href="<?= $leftBottomBanners->url ?>" class="col-lg-12 col-6 mt-lg-3 mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid img-big" ></a> 
-                        <a href="<?= $leftBottomBanners->url ?>" class="col-6 slider-section-img d-lg-none mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid" ></a>
+                        <a href="<?= $leftTopBanners->url ?? '#' ?>" class=" col-lg-12 d-none d-lg-block"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftTopBanners->image ?? '') ?>" alt="" class="img-fluid"></a> 
+                        <a href="<?= $leftBottomBanners->url ?? '#' ?>" class="col-lg-12 col-6 mt-lg-3 mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid img-big" ></a> 
+                        <a href="<?= $leftBottomBanners->url ?? '#' ?>" class="col-6 slider-section-img d-lg-none mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid" ></a>
                     </div>
                 </div>
             </div>
@@ -143,7 +143,7 @@
         <div class="container px-sm-0">
             <div class="row overflow-hidden">
                 <?php foreach($fourMiddleBanners as $index => $fourMiddleBanner) { ?>
-                    <a href="<?= $fourMiddleBanner->url ?>" class="col-md-3 col-sm-6 col-12 mt-3 mt-md-0 <?= $index < 2 ? 'd-none d-md-block': '' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($fourMiddleBanner->image ?? '') ?>" alt="" class="img-fluid "></a>
+                    <a href="<?= $fourMiddleBanner->url ?? '#' ?>" class="col-md-3 col-sm-6 col-12 mt-3 mt-md-0 <?= $index < 2 ? 'd-none d-md-block': '' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($fourMiddleBanner->image ?? '') ?>" alt="" class="img-fluid "></a>
                 <?php }?>
 
             </div>
@@ -202,7 +202,7 @@
                 <div class="small-slider-product col-lg-12 text-right  ">
                     <div class="small-slider-product-top d-flex justify-content-between">
                         <div class="small-slider-product-right ">
-                            <h3 dir="rtl"><?= $categories_notchilren[0]->name ?></h3>
+                            <h3 dir="rtl"><?= $categories_notchilren[0]->name ?? '' ?></h3>
                         </div>
                         <div class="small-slider-product-left align-content-end mt-4">
                                 <a href="#" >مشاهده لیست کامل
@@ -214,20 +214,20 @@
                     <div class="small-slider-product-cntent">
 
                         <div class="owl-carousel owl-theme second-slider" >
-                            <?php foreach ($productsCategory1 as $key => $productCategory1) { ?>
+                            <?php if($productsCategory1 && !empty($productsCategory1)){ foreach ($productsCategory1 as $key => $productCategory1) { ?>
                                     <div class="item" >
                                         <a href="#" class="d-block text-center">
                                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($productCategory1->image ?? '') ?>" alt="">
                                             <div class="item-caption">
-                                                <p><?= $productCategory1->name ?></p>
+                                                <p><?= $productCategory1->name ?? 'یافت نشد' ?></p>
                                                 <div class="item-caption-bottom">
-                                                    <span class="price"><?= $productCategory1->price ?></span>
+                                                    <span class="price"><?= $productCategory1->price ?? 'یافت نشد' ?></span>
                                                     <span class="unit">تومان</span>
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
-                                <?php } ?>
+                                <?php }} ?>
                                 </div>
                     </div>
 
