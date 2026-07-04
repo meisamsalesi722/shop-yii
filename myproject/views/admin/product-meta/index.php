@@ -32,7 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'meta_key',
             'meta_value',
-            'product_id',
+            // 'product_id',
+            [
+                'attribute' => 'product_id',
+                'value' => 'product.name',
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, ProductMeta $model, $key, $index, $column) {

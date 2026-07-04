@@ -16,7 +16,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'meta_value')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'product_id')->textInput() ?>
+
+        <?= $form->field($model, 'product_id')->dropDownList(
+        $products, ['prompt' => 'انتخاب کنید']
+    ) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

@@ -18,6 +18,9 @@ use Yii;
 class CategoryAttribute extends \yii\db\ActiveRecord
 {
 
+    public $category1_id; 
+    public $category2_id; 
+    public $category3_id;
 
     /**
      * {@inheritdoc}
@@ -37,6 +40,7 @@ class CategoryAttribute extends \yii\db\ActiveRecord
             [['category_id'], 'required'],
             [['category_id'], 'integer'],
             [['name', 'unit', 'value'], 'string', 'max' => 255],
+            [['category1_id' , 'category2_id', 'category3_id'], 'safe'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
     }

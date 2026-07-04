@@ -11,6 +11,8 @@ use app\models\CategoryAttribute;
  */
 class CategoryAttributeSearch extends CategoryAttribute
 {
+
+
     /**
      * {@inheritdoc}
      */

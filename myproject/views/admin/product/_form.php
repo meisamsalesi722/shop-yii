@@ -44,7 +44,7 @@ use yii\widgets\ActiveForm;
                 'depends' => ['cat-level2'],
                 'placeholder' => 'دسته سطح سوم را انتخاب کنید',
                 'url' => Url::to(['/admin/product/cat-list'])
-            ]
+            ]   
         ]);
     ?>
     

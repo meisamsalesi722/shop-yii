@@ -40,6 +40,8 @@ class Product extends \yii\db\ActiveRecord
     public $category1_id; 
     public $category2_id; 
     public $category3_id;
+    public $meta_key;
+    public $meta_value;
     public $imageFile;
     /**
      * {@inheritdoc}
@@ -64,7 +66,7 @@ class Product extends \yii\db\ActiveRecord
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
             [['color_id'], 'exist', 'skipOnError' => true, 'targetClass' => Color::class, 'targetAttribute' => ['color_id' => 'id']],
             [['guarantee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Guarantee::class, 'targetAttribute' => ['guarantee_id' => 'id']],
-             [['category1_id' , 'category2_id', 'category3_id'], 'safe'],
+             [['category1_id' , 'imageFile' , 'category2_id', 'category3_id'], 'safe'],
              [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
         ];
     }

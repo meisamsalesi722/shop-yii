@@ -2,11 +2,13 @@
 
 namespace app\controllers\admin;
 
-use app\models\ProductMeta;
-use app\models\ProductMetaSearch;
+use app\models\Product;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use app\models\ProductMeta;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use app\models\ProductMetaSearch;
+use yii\web\NotFoundHttpException;
 
 /**
  * ProductMetaController implements the CRUD actions for ProductMeta model.
@@ -79,8 +81,10 @@ class ProductMetaController extends Controller
             $model->loadDefaultValues();
         }
 
+        $products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
         return $this->render('create', [
             'model' => $model,
+            'products' => $products,
         ]);
     }
 
@@ -98,9 +102,11 @@ class ProductMetaController extends Controller
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
+        $products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
 
         return $this->render('update', [
             'model' => $model,
+            'products' => $products,
         ]);
     }
 

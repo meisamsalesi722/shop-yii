@@ -27,31 +27,33 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'class' => 'yii\grid\SerialColumn',
+            ],
+            
 
             'id',
             'name',
             'image:ntext',
             'price',
             'introduction:ntext',
-            //'slug',
-            //'category_id',
-            //'status',
-            //'sold_number',
-            //'frozen_number',
-            //'marketable_number',
-            //'created_at',
-            //'updated_at',
-            //'color_id',
-            //'brand_id',
-            //'guarantee_id',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update} {delete} {attribute}',
+                 'buttons' => [
+                    'attribute' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-user-tag"></i>',
+                            ['admin/product-meta', 'id' => $model->id]
+                        );
+                    },
+                ],
                 'urlCreator' => function ($action, Product $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],
         ],
+        
     ]); ?>
 
 

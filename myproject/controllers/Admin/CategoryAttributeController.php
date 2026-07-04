@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use Yii;
 use yii\web\Controller;
 use app\models\Category;
 use yii\filters\VerbFilter;
@@ -73,18 +74,72 @@ class CategoryAttributeController extends Controller
         $model = new CategoryAttribute();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
+                 $model->category_id = $model->category3_id;
+                 if($model->save(false)){
+                        Yii::$app->session->setFlash('success', 'مقاله با موفقیت ساخته شد.');
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
             $model->loadDefaultValues();
         }
-        $categories = ArrayHelper::map(Category::find()->all() , 'id' , 'name');
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
         return $this->render('create', [
             'model' => $model,
             'categories' => $categories,
         ]);
     }
+
+    public function actionCatList()
+{
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    $parents = Yii::$app->request->post('depdrop_parents');
+    
+    if (!empty($parents)) {
+
+        $parent_id = $parents[0];
+        $categories = Category::find()
+            ->where(['parent_id' => $parent_id])
+            ->orderBy('name')
+            ->all();
+            
+        $output = [];
+        foreach ($categories as $category) {
+            $output[] = [
+                'id' => $category->id,
+                'name' => $category->name
+            ];
+        }
+        
+        return ['output' => $output];
+    }
+    
+    return ['output' => []];
+}
+
+
+public function actionGetLevel1()
+{
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    $categories = Category::find()
+        ->where(['parent_id' => null])
+        ->orderBy('name')
+        ->all();
+        
+    $output = [];
+    foreach ($categories as $category) {
+        $output[] = [
+            'id' => $category->id,
+            'name' => $category->name
+        ];
+    }
+    
+    return ['output' => $output];
+}
 
     /**
      * Updates an existing CategoryAttribute model.
@@ -100,9 +155,11 @@ class CategoryAttributeController extends Controller
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
+        $categories = Category::find()->where(['',['parent_id' , 'null']])->all();
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
         return $this->render('update', [
             'model' => $model,
+             'categories' => $categories,
         ]);
     }
 

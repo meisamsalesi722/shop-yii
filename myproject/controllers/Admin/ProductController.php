@@ -9,6 +9,7 @@ use app\models\Product;
 use yii\web\Controller;
 use app\models\Category;
 use app\models\Guarantee;
+use app\models\ProductMeta;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -80,11 +81,27 @@ class ProductController extends Controller
 
 
         if ($this->request->isPost) {
+            if (Yii::$app->request->post('step') == 2) {
+
+            $productId = Yii::$app->request->post('product_id');
+            $attributeIds = Yii::$app->request->post('Product')['meta_key'];
+            $values = Yii::$app->request->post('Product')['meta_value'];
+
+            foreach ($attributeIds as $i => $attributeId) {
+                $meta = new ProductMeta();
+                $meta->product_id = $productId;
+                $meta->meta_key = $attributeId;
+                $meta->meta_value = $values[$i];
+                $meta->save();
+            }
+
+            return $this->redirect(['view', 'id' => $productId]);
+            }else{
 
             if ($model->load($this->request->post())) {
                 $model->category_id = $model->category3_id;
                 $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                if($model->validate()){
+
                     if($model->imageFile){
                         $imageName = time() . '.' . $model->imageFile->extension;
                         if (!file_exists('uploads/images')) {
@@ -95,13 +112,15 @@ class ProductController extends Controller
                     }
                     
                     if($model->save(false)){
-                        Yii::$app->session->setFlash('success', 'مقاله با موفقیت ساخته شد.');
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        $category = Category::findOne(['id' => $model->category_id]);
+                        $attributes = $category->categoryAttributes;
+                        return $this->render('create-attribute', [ 'product_id' => $model->id ,'model' => $model , 'attributes' => $attributes]);
                     }
+
+                    Yii::$app->session->setFlash('error', 'ساخت محصول با خطا مواجه شد.');
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
-            }
-        } else {
+        }} else {
             $model->loadDefaultValues();
         }
         $guarantee = ArrayHelper::map(Guarantee::find()->all(), 'id', 'name');
@@ -146,7 +165,6 @@ public function actionCatList()
     return ['output' => []];
 }
 
-// اکشن برای سطح اول (دسته‌بندی اصلی)
 public function actionGetLevel1()
 {
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -177,7 +195,24 @@ public function actionGetLevel1()
 public function actionUpdate($id)
 {
     $model = $this->findModel($id);
-    if ($this->request->isPost && $model->load($this->request->post())) {
+    if ($this->request->isPost) {
+        if( $model->load($this->request->post())){
+                    if (Yii::$app->request->post('step') == 2) {
+
+            $productId = Yii::$app->request->post('product_id');
+            $attributeIds = Yii::$app->request->post('Product')['meta_key'];
+            $values = Yii::$app->request->post('Product')['meta_value'];
+
+            foreach ($attributeIds as $i => $attributeId) {
+                $meta = new ProductMeta();
+                $meta->product_id = $productId;
+                $meta->meta_key = $attributeId;
+                $meta->meta_value = $values[$i];
+                $meta->save();
+            }
+            Yii::$app->session->setFlash('error', 'ساخت محصول با موفقیت انجام شد.');
+            return $this->redirect(['view', 'id' => $productId]);
+            }else{
         $model->category_id = $model->category3_id;
         $model->imageFile = UploadedFile::getInstance($model, 'imageFile');        
         if ($model->validate()) {
@@ -190,10 +225,17 @@ public function actionUpdate($id)
                     $model->imageFile->saveAs('uploads/images/' . $imageName);
                     $model->image = $imageName;
             }
-            if ($model->save(false)) {
-                Yii::$app->session->setFlash('success', 'محصول با موفقیت بروزرسانی شد.');
-                return $this->redirect(['view', 'id' => $model->id]);
+            if($model->save(false)){
+                $category = Category::findOne(['id' => $model->category_id]);
+                $category_attribute = $category->categoryAttributes;
+                $attributes = $model->productMetas;
+                return $this->render('create-attribute', [ 'product_id' => $id ,'model' => $model , $category_attribute , 'attributes' => $attributes]);
             }
+            
+                    Yii::$app->session->setFlash('error', 'ویرایش محصول با خطا مواجه شد.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+        }
+        }
         }
     }
 
