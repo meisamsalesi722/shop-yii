@@ -2,11 +2,13 @@
 
 namespace app\controllers\admin;
 
+use Yii;
 use app\models\Address;
-use app\models\AddressSearch;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\AddressSearch;
+use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
 
 /**
  * AddressController implements the CRUD actions for Address model.
@@ -22,6 +24,14 @@ class AddressController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                // 'access' => [
+                //     'class' => AccessControl::class,
+                //     'rules' => [
+                //         [
+                //             // 'roles' => ['@'], // فقط کاربران لاگین شده
+                //         ],
+                //     ],
+                // ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -71,8 +81,13 @@ class AddressController extends Controller
         $model = new Address();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post()) ) {
+                // $model->user_id = Yii::$app->user->id;
+                $model->user_id = 1;
+                if($model->save()){
+                    Yii::$app->session->setFlash('success', 'ادرس با موفقیت ساخته شد.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -93,8 +108,14 @@ class AddressController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            // $model->user_id = Yii::$app->user->id;
+            $model->user_id = 1;
+            if($model->save()){
+                Yii::$app->session->setFlash('success', 'ادرس با موفقیت ساخته شد.');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            Yii::$app->session->setFlash('error', 'ویرایش ادرس با خطا مواجه شد.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

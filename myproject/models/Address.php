@@ -35,9 +35,9 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['recipient_name', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['recipient_name'], 'default', 'value' => null],
             [['user_id', 'city', 'address', 'mobile', 'prstal_code'], 'required'],
-            [['user_id', 'mobile', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'mobile'], 'integer'],
             [['address'], 'string'],
             [['city', 'recipient_name', 'prstal_code'], 'string', 'max' => 255],
         ];
@@ -59,6 +59,11 @@ class Address extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
 }

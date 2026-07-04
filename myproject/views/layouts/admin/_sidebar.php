@@ -43,16 +43,23 @@ $currentRoute = Yii::$app->controller->getRoute();
         </li>
         <li>
             <?= Html::a(
-                '<i class="fas fa-tags"></i> دسته‌بندی‌ها',
+                '<i class="fas fa-tags"></i> سبد خرید',
                 Url::to(['admin/cart-item/index']),
                 ['class' => $currentRoute === 'admin/cart-item/index' ? 'active' : '']
             ) ?>
         </li>
         <li>
             <?= Html::a(
-                '<i class="fas fa-comments"></i> درسته بندی',
+                '<i class="fas fa-comments"></i> دسته بندی',
                 Url::to(['admin/category/index']),
                 ['class' => $currentRoute === 'admin/category/index' ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> ویژگی های دسته بندی',
+                Url::to(['admin/category-attribute/index']),
+                ['class' => $currentRoute === 'admin/category-attribute/index' ? 'active' : '']
             ) ?>
         </li>
         <li>
@@ -76,9 +83,24 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => $currentRoute === 'admin/guarantee/index' ? 'active' : '']
             ) ?>
         </li>
+
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> بنر ها',
+                Url::to(['admin/banner/index']),
+                ['class' => $currentRoute === 'admin/banner/index' ? 'active' : '']
+            ) ?>
+        </li>
         <!-- -------------------- -->
 
-        <li class="menu-label">مدیریت دسترسی</li>
+        <!-- <li class="menu-label">مدیریت دسترسی</li> -->
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-user-tag"></i>  محصولات',
+                Url::to( ['/admin/product/index']),
+                ['class' =>$currentRoute === 'admin/product/index' ? 'active' : '']
+                ) ?>
+        </li>
         <li>
             <?= Html::a(
                 '<i class="fas fa-user-tag"></i> ویژگی های محصول',

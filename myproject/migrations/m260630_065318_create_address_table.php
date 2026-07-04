@@ -17,12 +17,13 @@ class m260630_065318_create_address_table extends Migration
             'user_id' => $this->integer()->notNull(),
             'city' => $this->string()->notNull(),
             'address' => $this->text()->notNull(),
-            'mobile' => $this->integer(11)->notNull(),
+            'mobile' => $this->string(15)->notNull(),
             'recipient_name' => $this->string(255),
             'prstal_code' => $this->string(255)->notNull(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
+
     }
 
     /**

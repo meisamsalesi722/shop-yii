@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace app\models;
 
 use yii\base\BaseObject;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends BaseObject implements IdentityInterface
+class User extends ActiveRecord
 {
     public int|string $id = '';
     public string $username = '';

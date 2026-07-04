@@ -89,7 +89,7 @@ class BannerController extends Controller
                         Yii::$app->session->setFlash('success', 'بنر با موفقیت ساخته شد.');
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
-                
+                    Yii::$app->session->setFlash('error', 'ساخت بنر با خطا مواجه شد.');
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
         } else {
