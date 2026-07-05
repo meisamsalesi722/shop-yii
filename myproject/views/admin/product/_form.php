@@ -19,6 +19,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'imageFile')->fileInput() ?>
 
     <?= $form->field($model, 'price')->textInput() ?>
+    <?= $form->field($model, 'persian_name')->textInput() ?>
 
     <?= $form->field($model, 'introduction')->textarea(['rows' => 6]) ?>
 

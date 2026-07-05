@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\GullerySearch $model */
+/** @var app\models\GallerySearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="gullery-search">
+<div class="gallery-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],

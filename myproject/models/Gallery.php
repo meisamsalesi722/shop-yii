@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "gullery".
+ * This is the model class for table "gallery".
  *
  * @property int $id
  * @property string $image
@@ -13,7 +13,7 @@ use Yii;
  *
  * @property Product $product
  */
-class Gullery extends \yii\db\ActiveRecord
+class Gallery extends \yii\db\ActiveRecord
 {
     public $imageFile;
 
@@ -22,7 +22,7 @@ class Gullery extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'gullery';
+        return 'gallery';
     }
 
     /**
@@ -62,8 +62,8 @@ class Gullery extends \yii\db\ActiveRecord
 
     public function deleteImage()
     {
-        if ($this->image && file_exists('uploads/images/gullery/' . $this->image)) {
-            return unlink('uploads/images/gullery/' . $this->image);
+        if ($this->image && file_exists('uploads/images/gallery/' . $this->image)) {
+            return unlink('uploads/images/gallery/' . $this->image);
         }
         return false;
     }

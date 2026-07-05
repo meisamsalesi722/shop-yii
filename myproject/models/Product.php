@@ -58,9 +58,9 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'imageFile', 'price', 'introduction', 'status', 'sold_number', 'frozen_number', 'marketable_number'], 'default', 'value' => null],
-            [['introduction'], 'string'],
+            [['introduction' , 'persian_name'], 'string'],
             [['price', 'category_id', 'status', 'sold_number', 'frozen_number', 'marketable_number',  'color_id', 'brand_id', 'guarantee_id'], 'integer'],
-            [['category3_id', 'color_id', 'brand_id', 'guarantee_id'], 'required'],
+            [['category3_id', 'color_id', 'brand_id', 'guarantee_id' , 'persian_name'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
@@ -89,12 +89,14 @@ class Product extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+ public function attributeLabels()
     {
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'persian_name' => 'Persian Name',
             'image' => 'Image',
+            'view' => 'View',
             'price' => 'Price',
             'introduction' => 'Introduction',
             'slug' => 'Slug',
@@ -105,7 +107,6 @@ class Product extends \yii\db\ActiveRecord
             'marketable_number' => 'Marketable Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
-            'color_id' => 'Color ID',
             'brand_id' => 'Brand ID',
             'guarantee_id' => 'Guarantee ID',
         ];
@@ -148,7 +149,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getColor()
     {
-        return $this->hasOne(Color::class, ['id' => 'color_id']);
+        return $this->hasMany(Color::class, ['id' => 'color_id']);
     }
 
     /**
@@ -161,14 +162,14 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasOne(DiscountAmount::class, ['product_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Guarantee]].
+  /**
+     * Gets query for [[Galleries]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getGuarantee()
+    public function getGalleries()
     {
-        return $this->hasOne(Guarantee::class, ['id' => 'guarantee_id']);
+        return $this->hasMany(Gallery::class, ['product_id' => 'id']);
     }
 
     /**

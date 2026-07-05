@@ -28,11 +28,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'product_id',
+            [
+                'attribute' => 'product_id',
+                'value' => 'product.name',
+            ],
             'percentage',
-            'statsu',
+            [
+                'attribute' => 'status',
+                'value' => function($model){
+                    return $model->status == 0 ? 'غیر فعال ' : 'فعال' ;
+                }
+            ],
             'discount_ceiling',
             //'start_date',
             //'end_date',

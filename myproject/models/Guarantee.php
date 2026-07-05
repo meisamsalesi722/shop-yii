@@ -11,9 +11,11 @@ use Yii;
  * @property string|null $name
  * @property int $price_increase
  * @property int|null $status
- * @property int|null $created_at
- * @property int|null $updated_at
+ * @property string $created_at
+ * @property string $updated_at
  *
+ * @property OrderItem[] $orderItems
+ * @property ProductGuarantee[] $productGuarantees
  * @property Product[] $products
  */
 class Guarantee extends \yii\db\ActiveRecord
@@ -34,10 +36,11 @@ class Guarantee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['name'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 0],
             [['price_increase'], 'required'],
-            [['price_increase', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['price_increase', 'status'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -58,13 +61,33 @@ class Guarantee extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[OrderItems]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderItems()
+    {
+        return $this->hasMany(OrderItem::class, ['guarantee_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[ProductGuarantees]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductGuarantees()
+    {
+        return $this->hasMany(ProductGuarantee::class, ['guarantee_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Products]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::class, ['guarantee_id' => 'id']);
+        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('product_guarantee', ['guarantee_id' => 'id']);
     }
 
 }

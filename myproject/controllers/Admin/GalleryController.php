@@ -3,19 +3,19 @@
 namespace app\controllers\admin;
 
 use Yii;
-use app\models\Gullery;
+use app\models\Gallery;
 use app\models\Product;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
-use app\models\GullerySearch;
+use app\models\GallerySearch;
 use yii\web\NotFoundHttpException;
 
 /**
- * GulleryController implements the CRUD actions for Gullery model.
+ * GalleryController implements the CRUD actions for Gallery model.
  */
-class GulleryController extends Controller
+class GalleryController extends Controller
 {
             public $layout = 'admin/admin';
 
@@ -38,13 +38,13 @@ class GulleryController extends Controller
     }
 
     /**
-     * Lists all Gullery models.
+     * Lists all Gallery models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new GullerySearch();
+        $searchModel = new GallerySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -54,7 +54,7 @@ class GulleryController extends Controller
     }
 
     /**
-     * Displays a single Gullery model.
+     * Displays a single Gallery model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -67,25 +67,25 @@ class GulleryController extends Controller
     }
 
     /**
-     * Creates a new Gullery model.
+     * Creates a new Gallery model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Gullery();
+        $model = new Gallery();
         
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                $model->imageFile = UploadedFile::getInstance($model , 'image');
+                $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
                 
                 if($model->validate()){
                     if($model->imageFile){
                         $imageName = time() . '.' . $model->imageFile->extension;
-                        if(!file_exists('uploads/images/gullery')){
-                            mkdir('uploads/images/gullery' , 0777 , true);
+                        if(!file_exists('uploads/images/gallery')){
+                            mkdir('uploads/images/gallery' , 0777 , true);
                         }
-                        $model->imageFile->saveAs('uploads/images/gullery/' . $imageName);
+                        $model->imageFile->saveAs('uploads/images/gallery/' . $imageName);
                         $model->image = $imageName;
                     }
 
@@ -111,7 +111,7 @@ class GulleryController extends Controller
     }
 
     /**
-     * Updates an existing Gullery model.
+     * Updates an existing Gallery model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -127,10 +127,10 @@ class GulleryController extends Controller
 
                         $model->deleteImage();
                         $imageName = time() . '.' . $model->imageFile->extension;
-                        if(!file_exists('uploads/images/gullery')){
-                            mkdir('uploads/images/gullery' , 0777 , true);
+                        if(!file_exists('uploads/images/gallery')){
+                            mkdir('uploads/images/gallery' , 0777 , true);
                         }
-                        $model->imageFile->saveAs('uploads/images/gullery/' . $imageName);
+                        $model->imageFile->saveAs('uploads/images/gallery/' . $imageName);
                         $model->image = $imageName;
                     }
             if( $model->save(false)){
@@ -150,7 +150,7 @@ class GulleryController extends Controller
     }
 
     /**
-     * Deletes an existing Gullery model.
+     * Deletes an existing Gallery model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -165,15 +165,15 @@ class GulleryController extends Controller
     }
 
     /**
-     * Finds the Gullery model based on its primary key value.
+     * Finds the Gallery model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Gullery the loaded model
+     * @return Gallery the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Gullery::findOne(['id' => $id])) !== null) {
+        if (($model = Gallery::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

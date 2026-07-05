@@ -60,7 +60,7 @@ class Color extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::class, ['color_id' => 'id']);
+        return $this->hasOne(Product::class, ['color_id' => 'id']);
     }
 
 }

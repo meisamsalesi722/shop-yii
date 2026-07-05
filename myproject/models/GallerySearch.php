@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Gullery;
+use app\models\Gallery;
 
 /**
- * GullerySearch represents the model behind the search form of `app\models\Gullery`.
+ * GallerySearch represents the model behind the search form of `app\models\Gallery`.
  */
-class GullerySearch extends Gullery
+class GallerySearch extends Gallery
 {
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class GullerySearch extends Gullery
      */
     public function search($params, $formName = null)
     {
-        $query = Gullery::find();
+        $query = Gallery::find();
 
         // add conditions that should always apply here
 
