@@ -7,15 +7,13 @@ namespace app\controllers;
 use Yii;
 use app\models\User;
 use yii\web\Response;
-use app\models\Banner;
 use yii\base\Security;
 use app\models\Comment;
 use app\models\Product;
 use yii\web\Controller;
-use app\models\Category;
 use yii\web\ErrorAction;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\ProductUser;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\mail\MailerInterface;
@@ -101,7 +99,7 @@ class ProductController extends Controller
         $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
 
 
-        $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id])->all();
+        $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id , 'status' => Comment::STATUS_APPROVED])->all();
 
 
         return $this->render('index', [
@@ -176,6 +174,29 @@ class ProductController extends Controller
         return $this->render('/admin/comment/create', [
             'model' => $model,
         ]);
+    }
+
+    public function actionToggleFavorite($id){
+        $user = User::findOne(1);
+        Yii::$app->user->login($user);
+
+        $isGuest = Yii::$app->user->isGuest;
+
+        if(!$isGuest){
+        $model = new ProductUser();
+        $user_id = Yii::$app->user->identity->id ;
+        $product = ProductUser::find()->where(['user_id' => $user_id , 'product_id' => $id])->one();
+        if($product){
+            $product->delete();
+            return $this->redirect(['/product' , 'id' => $id]);
+        }
+        $model->product_id = $id;
+        $model->user_id = $user_id;
+        $model->save();
+        return $this->redirect(['/product' , 'id' => $id]);
+        }else{
+            return $this->redirect(['/login']);
+        }
     }
 
         protected function findModel($id)

@@ -116,4 +116,8 @@ public static function getUsersByRole($roleName)
     return $users;
 }
 
+    public function getProductUser(){
+        return $this->hasMany(ProductUser::class , ['user_id' => 'id']);
+    }
+
 }

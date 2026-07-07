@@ -1,3 +1,6 @@
+<?php 
+use yii\helpers\Url;
+?>
     <section id="slider-section">
         <div class="container">
             <div class="row px-3 px-sm-0">
@@ -71,7 +74,7 @@
                         <?php foreach ($specials as $key => $special) { ?>
                         
                         <div class="item">
-                            <a href="#">
+                            <a href="<?=  Url::to( ['/product' , 'id' => $special->id]) ?>">
                                 <div class="offer-item text-center">
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($special->image ?? '') ?>" class="img-fluid" alt="">
                                     <div class="img-caption">
@@ -118,7 +121,7 @@
                     <div class="owl-carousel owl-theme second-slider" >
                         <?php foreach ($newProducts as $key => $newProduct) { ?>
                             <div class="item" >
-                                <a href="#" class="d-block text-center">
+                                <a href="<?=  Url::to( ['/product' , 'id' => $newProduct->id]) ?>" class="d-block text-center">
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($newProduct->image ?? '') ?>" alt="">
                                     <div class="item-caption">
                                         <p><?= $newProduct->name ?></p>
@@ -162,7 +165,7 @@
                         <div class="owl-carousel owl-theme second-slider" >
                         <?php foreach ($bestsellers as $key => $bestseller) { ?>
                             <div class="item" >
-                                <a href="#" class="d-block text-center">
+                                <a href="<?=  Url::to( ['/product' , 'id' => $bestseller->id]) ?>" class="d-block text-center">
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($bestseller->image ?? '') ?>" alt="">
                                     <div class="item-caption">
                                         <p><?= $bestseller->name ?></p>
@@ -188,7 +191,7 @@
             <div class="row overflow-hidden">
                 <?php foreach ($twoMiddleBanners as $key => $twoMiddleBanner) { ?>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-12 <?= $key === 0 ? 'pr-sm-0' : 'pl-sm-0' ?> ">
-                    <a href="#"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($twoMiddleBanner->image ?? '') ?>" alt="" class="img-fluid <?= $key === 0 ? 'pt-sm-0' : '' ?>"></a>
+                    <a href="<?= $twoMiddleBanner->url ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($twoMiddleBanner->image ?? '') ?>" alt="" class="img-fluid <?= $key === 0 ? 'pt-sm-0' : '' ?>"></a>
                 </div>
 
                 <?php } ?>
@@ -216,7 +219,7 @@
                         <div class="owl-carousel owl-theme second-slider" >
                             <?php if($productsCategory1 && !empty($productsCategory1)){ foreach ($productsCategory1 as $key => $productCategory1) { ?>
                                     <div class="item" >
-                                        <a href="#" class="d-block text-center">
+                                        <a href="<?=  Url::to( ['/product' , 'id' => $productCategory1->id]) ?>" class="d-block text-center">
                                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($productCategory1->image ?? '') ?>" alt="">
                                             <div class="item-caption">
                                                 <p><?= $productCategory1->name ?? 'یافت نشد' ?></p>
@@ -264,7 +267,7 @@
                                     <?php foreach ($mostVieweds as $key => $mostViewed) {?>
                                     
                                         <div class="item" >
-                                            <a href="#" class="d-block text-center">
+                                            <a href="<?=  Url::to( ['/product' , 'id' => $mostViewed->id]) ?>" class="d-block text-center">
                                                 <img src="<?= Yii::getAlias('@web/uploads/images/') . ($mostViewed->image ?? '') ?>" alt="">
                                                 <div class="item-caption">
                                                     <p><?= $mostViewed->name ?></p>

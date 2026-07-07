@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <th>#</th>
                                     <th>کاربر</th>
-                                    <th>مقاله</th>
+                                    <th>محصول</th>
                                     <th>متن نظر</th>
                                     <th>وضعیت</th>
                                     <th>تاریخ</th>
@@ -99,17 +99,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar-circle bg-gradient-primary text-white d-flex align-items-center justify-content-center rounded-circle me-2"
                                                          style="width: 35px; height: 35px; font-size: 14px; font-weight: bold; flex-shrink: 0;">
-                                                        <?= strtoupper(substr($comment->user->username ?? 'U', 0, 1)) ?>
+                                                        <?= strtoupper(substr($comment->user->name ?? 'U', 0, 1)) ?>
                                                     </div>
                                                     <div>
-                                                        <strong><?= Html::encode($comment->user->username ?? 'ناشناس') ?></strong>
+                                                        <strong><?= Html::encode($comment->user->name ?? 'ناشناس') ?></strong>
                                                         <br>
                                                         <!-- <small class="text-muted">ID: <?= $comment->user_id ?></small> -->
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-
+                                                <?= $comment->product->name ?>
                                             </td>
                                             <td>
                                                 <div class="comment-preview">

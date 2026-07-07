@@ -198,7 +198,10 @@ class Product extends \yii\db\ActiveRecord
 
     public function getComments(){
         return $this->hasMany(Comment::class , ['product_id' => 'id']);
-        
+    }
+
+    public function getProductUser(){
+        return $this->hasMany(ProductUser::class , ['product_id' => 'id']);
     }
 
 }

@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\assets\FrontendAsset;
+use app\models\ProductUser;
 
 $this->registerCssFile(
     '@web/css/product.css',
@@ -18,15 +19,15 @@ $this->registerCssFile(
                 <div class="row">
                     <div class="breadcrumb-top d-flex">
                         <div class="breadcrumb-top-item ml-4 mr-2 mr-sm-0">
-                            <a href="#">کالای دیجیتال</a>
+                            <a href="#"><?= $product->category->parent->parent->name ?></a>
                             <i class="fas fa-chevron-left"></i>
                         </div>
                         <div class="breadcrumb-top-item ml-4">
-                            <a href="#">موبایل </a>
+                            <a href="#"><?= $product->category->parent->name ?> </a>
                             <i class="fas fa-chevron-left"></i>
                         </div>
                         <div class="breadcrumb-top-item ml-4">
-                            <span>گوشی موبایل </span>
+                            <span><?= $product->category->name ?> </span>
                         </div>
                     </div>
                 </div>
@@ -154,8 +155,21 @@ $this->registerCssFile(
                                 
                         </div>
                         <div class="product-left-favorit">
-                            <i class="far fa-heart text-danger"></i>
+                            <!-- <a href="">
+                                <i class="far fa-heart text-danger"></i>
                             افزودن به علاقه مندی ها
+                            </a> -->
+                            <?php
+                                $user_id = Yii::$app->user->id;
+                                $product_id = $product->id;
+                               $isFavorite = ProductUser::isFavorite($user_id , $product_id);
+                                ?>
+
+                                <?= Html::a(
+                                     $isFavorite ? 'حذف از علاقه مندی ها<i class="fas fa-heart text-danger"></i>' : 'افزودن به علاقه مندی ها<i class="far fa-heart text-danger"></i>',
+                                    Url::to( ['/product/toggle-favorite' , 'id' => $product->id]),
+                                    ['class' => 'text-dark']
+                                ) ?>
                         </div>
                         
                         <button type="button" class="btn w-100">
