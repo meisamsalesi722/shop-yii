@@ -62,9 +62,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'marketable_number')->textInput() ?>
 
-    <?= $form->field($model, 'color_id')->dropDownList($colors,
-    ['prompt' => 'انتخاب کنید']) ?>
-
     <?= $form->field($model, 'brand_id')->dropDownList($brands,
     ['prompt' => 'انتخاب کنید']) ?>
 

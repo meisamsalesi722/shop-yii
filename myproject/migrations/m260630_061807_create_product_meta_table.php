@@ -17,6 +17,7 @@ class m260630_061807_create_product_meta_table extends Migration
             'meta_key' => $this->string(),
             'meta_value' => $this->string(),
             'product_id' => $this->integer()->notNull(),
+            'unit' => $this->string()->notNull(),
         ]);
 
             $this->addForeignKey(

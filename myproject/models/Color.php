@@ -35,6 +35,7 @@ class Color extends \yii\db\ActiveRecord
         return [
             [['name', 'color_code', 'created_at', 'updated_at'], 'default', 'value' => null],
             [[ 'created_at', 'updated_at'], 'integer'],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['name'], 'string', 'max' => 255],
         ];
     }

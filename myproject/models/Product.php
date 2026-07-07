@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use app\models\Color;
+use app\models\Comment;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -21,7 +23,6 @@ use yii\behaviors\TimestampBehavior;
  * @property int|null $marketable_number
  * @property int|null $created_at
  * @property int|null $updated_at
- * @property int $color_id
  * @property int $brand_id
  * @property int $guarantee_id
  *
@@ -59,12 +60,11 @@ class Product extends \yii\db\ActiveRecord
         return [
             [['name', 'imageFile', 'price', 'introduction', 'status', 'sold_number', 'frozen_number', 'marketable_number'], 'default', 'value' => null],
             [['introduction' , 'persian_name'], 'string'],
-            [['price', 'category_id', 'status', 'sold_number', 'frozen_number', 'marketable_number',  'color_id', 'brand_id', 'guarantee_id'], 'integer'],
-            [['category3_id', 'color_id', 'brand_id', 'guarantee_id' , 'persian_name'], 'required'],
+            [['price', 'category_id', 'status', 'sold_number', 'frozen_number', 'marketable_number', 'brand_id', 'guarantee_id'], 'integer'],
+            [['category3_id', 'brand_id', 'guarantee_id' , 'persian_name'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
-            [['color_id'], 'exist', 'skipOnError' => true, 'targetClass' => Color::class, 'targetAttribute' => ['color_id' => 'id']],
             [['guarantee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Guarantee::class, 'targetAttribute' => ['guarantee_id' => 'id']],
              [['category1_id' , 'imageFile' , 'category2_id', 'category3_id'], 'safe'],
              [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
@@ -131,6 +131,15 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(CartItem::class, ['product_id' => 'id']);
     }
+    /**
+     * Gets query for [[Color]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor()
+    {
+        return $this->hasMany(Color::class, ['product_id' => 'id']);
+    }
 
     /**
      * Gets query for [[Category]].
@@ -143,16 +152,6 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Color]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getColor()
-    {
-        return $this->hasMany(Color::class, ['id' => 'color_id']);
-    }
-
-    /**
      * Gets query for [[DiscountAmounts]].
      *
      * @return \yii\db\ActiveQuery
@@ -160,6 +159,11 @@ class Product extends \yii\db\ActiveRecord
     public function getDiscountAmounts()
     {
         return $this->hasOne(DiscountAmount::class, ['product_id' => 'id']);
+    }
+
+    public function getGuarantee()
+    {
+        return $this->hasOne(Guarantee::class, ['id' => 'guarantee_id']);
     }
 
   /**
@@ -190,6 +194,11 @@ class Product extends \yii\db\ActiveRecord
     public function getProductMetas()
     {
         return $this->hasMany(ProductMeta::class, ['product_id' => 'id']);
+    }
+
+    public function getComments(){
+        return $this->hasMany(Comment::class , ['product_id' => 'id']);
+        
     }
 
 }

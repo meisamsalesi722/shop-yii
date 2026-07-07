@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
+use app\models\User;
 use yii\web\Response;
 use app\models\Banner;
 use yii\base\Security;
+use app\models\Comment;
 use app\models\Product;
 use yii\web\Controller;
 use app\models\Category;
@@ -15,6 +17,7 @@ use yii\web\ErrorAction;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\mail\MailerInterface;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
@@ -82,9 +85,32 @@ class ProductController extends Controller
      */
     public function actionIndex($id): string
     {
+        $model = new Comment();
+        
         $product = $this->findModel($id);
+
+        $attributeNames = ArrayHelper::getColumn($product->category->categoryAttributes,'name');
+
+        $productMetas = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
+            return in_array($meta->meta_key, $attributeNames, true);
+        });
+
+          $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
+            return !in_array($meta->meta_key, $attributeNames, true);
+        });
+        $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
+
+
+        $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id])->all();
+
+
         return $this->render('index', [
-            'product' => $product
+            'model' => $model,
+            'product' => $product,
+            'comments' => $comments,
+            'productMetas' => $productMetas,
+            'productMetasdi' => $productMetasdi,
+            'newProducts' => $newProducts
         ]);
 
     }
@@ -122,6 +148,36 @@ class ProductController extends Controller
         return $this->goHome();
     }
 
+        /**
+     * Creates a new Comment model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionCreate($id)
+    {
+        $model = new Comment();
+        
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $user = User::findOne(['email' => $model->email]);
+                if(!$user){
+                    return $this->redirect(['product']);
+                }
+                $model->product_id = $id;
+                $model->user_id = $user->id;
+                if( $model->save()){
+                    return $this->redirect(['/product', 'id' => $model->product_id]);
+                }
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('/admin/comment/create', [
+            'model' => $model,
+        ]);
+    }
+
         protected function findModel($id)
     {
         if (($model = Product::findOne(['id' => $id])) !== null) {
@@ -130,4 +186,6 @@ class ProductController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    
 }

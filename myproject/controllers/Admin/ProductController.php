@@ -86,16 +86,31 @@ class ProductController extends Controller
             $productId = Yii::$app->request->post('product_id');
             $attributeIds = Yii::$app->request->post('Product')['meta_key'];
             $values = Yii::$app->request->post('Product')['meta_value'];
-
-            foreach ($attributeIds as $i => $attributeId) {
-                $meta = new ProductMeta();
-                $meta->product_id = $productId;
-                $meta->meta_key = $attributeId;
-                $meta->meta_value = $values[$i];
-                $meta->save();
-            }
-
-            return $this->redirect(['view', 'id' => $productId]);
+            $units = Yii::$app->request->post('Product')['unit'];
+            $transaction = Yii::$app->db->beginTransaction();
+                        try {
+                            foreach ($attributeIds as $i => $attributeId) {
+                                $meta = new ProductMeta();
+                                $meta->product_id = $productId;
+                                $meta->meta_key = $attributeId;
+                                $meta->unit = $units[$i];
+                                $meta->meta_value = $values[$i];
+                                if(!$meta->save()){
+                                    throw new \Exception('خطا در ذخیره ویژگی');
+                                }
+                            }
+                                $transaction->commit();
+                                Yii::$app->session->setFlash('success', 'ساخت محصول با موفقیت انجام شد.');
+                                return $this->redirect(['view', 'id' => $productId]);
+                        } catch (\Throwable $th) {
+                             $transaction->rollBack();
+                            $model = $this->findModel($productId);
+                            $model->deleteImage();
+                            $model->delete();
+                            // Yii::$app->session->setFlash('sucess', 'ساخت محصول با موفقیت انجام شد.');
+                            // return $this->redirect(['index']);
+                            throw $th;
+                        }
             }else{
 
             if ($model->load($this->request->post())) {
@@ -195,25 +210,45 @@ public function actionGetLevel1()
 public function actionUpdate($id)
 {
     $model = $this->findModel($id);
+    
     if ($this->request->isPost) {
+
         if( $model->load($this->request->post())){
                     if (Yii::$app->request->post('step') == 2) {
+                        $productId = Yii::$app->request->post('product_id');
+                        $attributeIds = Yii::$app->request->post('Product')['meta_key'];
+                        $values = Yii::$app->request->post('Product')['meta_value'];
+                         $units = Yii::$app->request->post('Product')['unit'];
+                        $transaction = Yii::$app->db->beginTransaction();
+                        try {
+                            foreach ($attributeIds as $i => $attributeId) {
+                                $meta = ProductMeta::findOne([
+                                    'product_id' => $productId,
+                                    'meta_key' => $attributeId,
+                                ]);
+                                if ($meta === null) {
+                                    $meta = new ProductMeta();
+                                    $meta->product_id = $productId;
+                                    $meta->unit = $units[$i];
+                                    $meta->meta_key = $attributeId;
+                                } 
+                                $meta->meta_value = $values[$i];
+                                if(!$meta->save()){
+                                    throw new \Exception('خطا در ذخیره ویژگی');
+                                }
+                            }
+                            $transaction->commit();
+                                        
+                            Yii::$app->session->setFlash('sucess', 'ویرایش محصول با موفقیت انجام شد.');
+                            return $this->redirect(['view', 'id' => $productId]);
+                        } catch (\Throwable $th) {
+                             $transaction->rollBack();
 
-            $productId = Yii::$app->request->post('product_id');
-            $attributeIds = Yii::$app->request->post('Product')['meta_key'];
-            $values = Yii::$app->request->post('Product')['meta_value'];
+                            throw $th;
+                        }
 
-            foreach ($attributeIds as $i => $attributeId) {
-                $meta = new ProductMeta();
-                $meta->product_id = $productId;
-                $meta->meta_key = $attributeId;
-                $meta->meta_value = $values[$i];
-                $meta->save();
-            }
-            Yii::$app->session->setFlash('error', 'ساخت محصول با موفقیت انجام شد.');
-            return $this->redirect(['view', 'id' => $productId]);
-            }else{
-        $model->category_id = $model->category3_id;
+            }else{                
+                $model->category_id = $model->category3_id;
         $model->imageFile = UploadedFile::getInstance($model, 'imageFile');        
         if ($model->validate()) {
         if ($model->imageFile) {
@@ -227,9 +262,8 @@ public function actionUpdate($id)
             }
             if($model->save(false)){
                 $category = Category::findOne(['id' => $model->category_id]);
-                $category_attribute = $category->categoryAttributes;
-                $attributes = $model->productMetas;
-                return $this->render('create-attribute', [ 'product_id' => $id ,'model' => $model , $category_attribute , 'attributes' => $attributes]);
+                    $attributes = $category->categoryAttributes;
+                return $this->render('create-attribute', [ 'product_id' => $id ,'model' => $model , 'attributes' => $attributes]);
             }
             
                     Yii::$app->session->setFlash('error', 'ویرایش محصول با خطا مواجه شد.');

@@ -21,8 +21,9 @@ use yii\widgets\ActiveForm;
 
 ?>
 
+    <?= $form->field($model, "unit[]")->hiddenInput(['maxlength' => true , 'class' => 'col-3 m-2' , 'value' => $attribute->unit])->label('') ?>
     <?= $form->field($model, "meta_key[]")->hiddenInput(['maxlength' => true , 'class' => 'col-3 m-2' , 'value' => $attribute->name ?? $attribute->meta_key])->label('') ?>
-    <?= $form->field($model, "meta_value[]")->textInput(['maxlength' => true , 'class' => 'col-3 m-2' , 'value' => $attribute->meta_value ,  'placeholder' => $attribute->unit ?? ''])->label($attribute->name ?? $attribute->meta_key) ?>
+    <?= $form->field($model, "meta_value[]")->textInput(['maxlength' => true , 'class' => 'col-3 m-2' , 'value' => $attribute->name ?? $attribute->meta_value ,  'placeholder' => $attribute->unit ?? ''])->label($attribute->name ?? $attribute->meta_key) ?>
 
     
  <?php }?>

@@ -1,98 +1,119 @@
 <?php
 
-declare(strict_types=1);
-
 namespace app\models;
 
-use yii\base\BaseObject;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
-    public int|string $id = '';
-    public string $username = '';
-    public string $passwordHash = '';
-    public string $authKey = '';
-    public string $accessToken = '';
-    private static array $_users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            // password: admin
-            'passwordHash' => '$2y$13$gYAywKSkhfZDq9FLNdm7buKnvlRxDexf5xipSMAxQPDUxpaptmZJu',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            // password: demo
-            'passwordHash' => '$2y$13$alRLq1PGVMlGYwS/Y3iy3ewQns1Z8ol8Iq6Zb5k7ZwEhblA1aL29y',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($id): static|null
+    public static function tableName()
     {
-        return isset(self::$_users[$id]) ? new static(self::$_users[$id]) : null;
+        return 'user';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null): static|null
+    public static function findIdentity($id)
     {
-        foreach (self::$_users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne($id);
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername(string $username): static|null
+    public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$_users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId(): int|string
+    public static function findByUsername($username)
+    {
+        return static::findOne(['username' => $username]);
+    }
+
+    public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey(): string|null
+    public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey): bool
+    public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+
+
+
+    /**
+ * دریافت نقش‌های کاربر
+ */
+public function getRoles()
+{
+    $auth = Yii::$app->authManager;
+    return $auth->getRolesByUser($this->id);
+}
+
+/**
+ * بررسی اینکه کاربر نقش خاصی دارد
+ */
+public function hasRole($roleName)
+{
+    $auth = Yii::$app->authManager;
+    $roles = $auth->getRolesByUser($this->id);
+    return isset($roles[$roleName]);
+}
+
+/**
+ * اختصاص نقش به کاربر
+ */
+public function assignRole($roleName)
+{
+    $auth = Yii::$app->authManager;
+    $role = $auth->getRole($roleName);
+    if ($role) {
+        $auth->assign($role, $this->id);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * لغو نقش از کاربر
+ */
+public function revokeRole($roleName)
+{
+    $auth = Yii::$app->authManager;
+    $role = $auth->getRole($roleName);
+    if ($role) {
+        $auth->revoke($role, $this->id);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * دریافت لیست کاربران بر اساس نقش
+ */
+public static function getUsersByRole($roleName)
+{
+    $auth = Yii::$app->authManager;
+    $users = [];
+    $assignments = $auth->getUserIdsByRole($roleName);
+    if ($assignments) {
+        $users = self::find()->where(['id' => $assignments])->all();
+    }
+    return $users;
+}
+
 }

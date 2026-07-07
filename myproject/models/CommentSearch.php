@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Product;
+use app\models\Comment;
 
 /**
- * ProductSearch represents the model behind the search form of `app\models\Product`.
+ * CommentSearch represents the model behind the search form of `app\models\Comment`.
  */
-class ProductSearch extends Product
+class CommentSearch extends Comment
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'view', 'price', 'category_id', 'status', 'sold_number', 'frozen_number', 'marketable_number'], 'integer'],
-            [['name', 'persian_name', 'image', 'introduction', 'slug', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'product_id', 'user_id', 'status', 'created_at'], 'integer'],
+            [['comment'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class ProductSearch extends Product
      */
     public function search($params, $formName = null)
     {
-        $query = Product::find();
+        $query = Comment::find();
 
         // add conditions that should always apply here
 
@@ -60,22 +60,13 @@ class ProductSearch extends Product
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'view' => $this->view,
-            'price' => $this->price,
-            'category_id' => $this->category_id,
+            'product_id' => $this->product_id,
+            'user_id' => $this->user_id,
             'status' => $this->status,
-            'sold_number' => $this->sold_number,
-            'frozen_number' => $this->frozen_number,
-            'marketable_number' => $this->marketable_number,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'persian_name', $this->persian_name])
-            ->andFilterWhere(['like', 'image', $this->image])
-            ->andFilterWhere(['like', 'introduction', $this->introduction])
-            ->andFilterWhere(['like', 'slug', $this->slug]);
+        $query->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }

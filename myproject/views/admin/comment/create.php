@@ -3,19 +3,19 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Color $model */
+/** @var app\models\Comment $model */
 
-$this->title = 'Create Color';
-$this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['index']];
+$this->title = 'Create Comment';
+$this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="color-create">
+<div class="comment-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'products' => $products,
+        'comment' => $comment,
     ]) ?>
 
 </div>

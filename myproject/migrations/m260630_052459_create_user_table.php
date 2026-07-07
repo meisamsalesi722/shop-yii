@@ -17,6 +17,7 @@ class m260630_052459_create_user_table extends Migration
             'name' => $this->string(255),
             'email' => $this->string(255)->unique(),
             'password_hash' => $this->string()->notNull(),
+            'password_hash' => $this->string()->notNull(),
             'avatar' => $this->text(),
         ]);
     }

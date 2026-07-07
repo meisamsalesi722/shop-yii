@@ -41,7 +41,6 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'updated_at') ?>
 
-    <?php // echo $form->field($model, 'color_id') ?>
 
     <?php // echo $form->field($model, 'brand_id') ?>
 

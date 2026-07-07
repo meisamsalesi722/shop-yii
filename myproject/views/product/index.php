@@ -1,6 +1,11 @@
 
 <?php
 
+use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use app\assets\FrontendAsset;
+
 $this->registerCssFile(
     '@web/css/product.css',
     ['depends' => [\app\assets\FrontendAsset::class]]
@@ -70,35 +75,36 @@ $this->registerCssFile(
                         <a href="#"><?= $product->category->name ?></a>
                         
                     </div>
-
+                            <?php if(count($product->color) > 0 ){?>
                     <div class="select-color d-flex">
                         <span class="my-auto">انتخاب رنگ: </span>
                         <?php foreach($product->color as $color){?>
-                            <div class="select-color-item active"><i class="far fa-circle color-withe"></i> <?= $color->name ?> </div>
+                            <div class="select-color-item active" ><i class="fas fa-circle color-withe" style="color: <?= $color->color_code ?>;"></i> <?= $color->name ?> </div>
                         <?php }?>
-                        <!-- <div class="select-color-item "><i class="fas fa-circle color-blue"></i> آبی </div>
-                        <div class="select-color-item "><i class="fas fa-circle color-black"></i> مشکی </div> -->
                     </div>
+                    <?php }?>
 
+                    <?php if(count($product->productMetas) > 0 ){?>
                     <div class="description-org" id="show-more">
                         <h3>مشخصات اصلی :</h3>
                         <ul>
-                            <li><span class="description-org-title">تراشه: </span> <span class="mr-2">(Apple A14 Bionic (5 nm </span></li>
-                            <li><span class="description-org-title"> حافظه داخلی:</span> <span class="mr-2"> 128  گیگابایت</span></li>
-                            <li><span class="description-org-title">مقدار رم:</span> <span class="mr-2">4 گیگابایت</span></li>
+                            <?php foreach($productMetas as $key => $meta){?>
+                                <?php if($key> 3) break ?>
+                                <li><span class="description-org-title"><?= $meta->meta_key ?>: </span> <span class="mr-2"><?= $meta->meta_value  . ' ' . $meta->unit ?></span></li>
+                            <?php }?>
+
                         </ul>
                         <button class="" id="show-more-btn">نمایش بیشتر</button>
                     </div>
+                    <?php }?>
 
 
                     <div class="description-org" id="close-more">
                     <h3>مشخصات اصلی :</h3>
                         <ul>
-                            <li><span class="description-org-title">تراشه: </span> <span class="mr-2">(Apple A14 Bionic (5 nm </span></li>
-                            <li><span class="description-org-title"> حافظه داخلی:</span> <span class="mr-2"> 128  گیگابایت</span></li>
-                            <li><span class="description-org-title">مقدار رم:</span> <span class="mr-2">4 گیگابایت</span></li>
-                            <li><span class="description-org-title"> مقاومت در برابر ضربه:</span> <span class="mr-2">4 گیگابایت</span></li>
-                            <li><span class="description-org-title">مقاومت در برابر آب :</span> <span class="mr-2">4 گیگابایت</span></li>
+                            <?php foreach($productMetas as $key => $meta){?>
+                                <li><span class="description-org-title"><?= $meta->meta_key ?>: </span> <span class="mr-2"><?= $meta->meta_value  . ' ' . $meta->unit ?></span></li>
+                            <?php }?>
                         </ul>
                         <button class="" id="close-more-btn">بستن </button>
                     </div>
@@ -106,29 +112,46 @@ $this->registerCssFile(
 
                 <div class="col-lg-3 ">
                     <div class="product-left">
-
-                        <div class="product-left-warenty">
-                            <i class="far fa-shield-check"></i>
-                            گارانتی اصالت و سلامت فیزیکی کالا
-                        </div>
-                        <div class="product-left-available">
+                        <?php if($product->guarantee){?>
+                            <div class="product-left-warenty">
+                                <i class="far fa-shield-check"></i>
+                                <?= $product->guarantee->name ?>
+                            </div>
+                        <?php } ?>
+                        <div class="product-left-available <?= $product->status == 0 ? 'text-danger' : '' ?>">
                             <i class="fal fa-truck-container"></i>
-                                آماده ارسال
+                                <?= $product->status == 1 ? 'اماده ارسال' : 'امکان ارسال وجود ندارد'?>
                         </div>
                         <div class="product-left-not-available">
-                            <i class="far fa-dolly-flatbed-empty"></i>
-                            ناموجود
+                            <i class="far fa-dolly-flatbed-<?= $product->marketable_number > 0 ? 'alt' : 'empty'?>"></i>
+                            <?= $product->marketable_number > 0 ? ($product->marketable_number < 5 ? $product->marketable_number . ' عدد باقی مانده است ' : 'موجود') : 'ناموجود' ?>
                         </div>
                         <div class="product-left-price text-left">
-                            <span class="befor">8.900.000 </span>
+                            <?php if($product->discountAmounts){?>
+                            <?php 
+                                $price = $product->price;
+                                $discount =($price / 100) * ($product->discountAmounts->percentage);
+                                $finalyPrice = $discount > $product->discountAmounts->discount_ceiling ? 
+                                $price - $product->discountAmounts->discount_ceiling
+                                : $price - $discount;
+                            ?>
+                            <span class="befor"><?= $price ?> </span>
                             <div class="d-flex justify-content-between">
-                                <div class="price-off">20%</div>
+                                <div class="price-off"><?= $product->discountAmounts->percentage ?>%</div>
                                 <div>
-                                    <span class="after"> 8.000.000 </span>
+                                    <span class="after"> <?= $finalyPrice ?> </span>
                                     <span class="price">تومان</span>
                                 </div>
-                                
                             </div>
+                            <?php }else{ ?>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="after"> <?= $product->price ?> </span>
+                                        <span class="price">تومان</span>
+                                    </div>
+                                </div>
+                            <?php }?>
+                                
                         </div>
                         <div class="product-left-favorit">
                             <i class="far fa-heart text-danger"></i>
@@ -214,29 +237,7 @@ $this->registerCssFile(
                             <div class="tab-content-description">
                                 <h3>معرفی کالا</h3>
                                 <p>
-                                فلش مموری ای دیتا مدل UV210 در تاریخ 9 آوریل سال 2017 به بازار عرضه شد و در دسترس کاربران قرار گرفت. این فلش مموری ساخت ای
-                                 دیتا یک حافظه جانبی همراه، با طراحی ساده و یکدست
-                                 می باشد که می تواند داده ها و اطلاعات مهم شما 
-                                را در خود ذخیره کند و به خوبی از آن ها محافظت کند. 
-                                کمپانی ای دیتا برای فلش مموری ای دیتا مدل UV210 وزنی معادل 6 گرم و
-                                 ابعادی برابر با 39×12×4.5 میلیمتر در نظر گرفته است که
-                                 باعث می شود شما بتوانید به راحتی آن را با خود حمل کنید.
-                                 این فلش مموری بدنه ای از جنس فلز با کیفیت دارد که
-                                 این موضوع باعث شده است
-                                به و گرد و غبار بسیار مقاوم باشد. این فلش مموری همچنین با استفاده از تراشه COB می تواند در برابر آب و شوک یا لرزش به خوبی مقاوم باشد.
-                                 علاوه بر آن، بدنه UV210 به گونه ای طراحی شده است که مانع از جذب اثر 
-                                 انگشت شما و لکه می شود، همچنین طراحی بدون درپوش آن باعث می شود شما بتوانید
-                                  با سهولت بیشتری فلش مموری خود را حمل کنید. در قسمت بالایی فلش مموری ای دیتا مدل UV210 یک
-                                   شیار طراحی شده 
-                                   است که امکان اتصال بند را برای شما فراهم می کند. 
-                                   این فلش مموری مجهز
-                                    به پورت
-                                     USB 2.0 می باشد که از این 
-                                     طریق می تواند به لپ تاپ، کامپیوتر و یا دیگر دستگاه های هوشمند متصل شود و اطلاعات شما را
-                                      با سرعتی معادل 480 مگابایت بر ثانیه منتقل کند. برای این فلش مموری از شرکت ای دیتا،
-                                      16 گیگابایت فضای ذخیره سازی در نظر گرفته شده است که به شما امکان می دهد
-                                      عکس ها و فیلم ها و یا دیگر اطلاعات مهم خود را روی آن ذخیره کنید و
-                                      با خود به همراه داشته باشید.
+                                <?= $product->introduction ?>
                                 </p>
                             </div>
                             
@@ -245,59 +246,22 @@ $this->registerCssFile(
                             
                             <div class="my-table">
                                 <div class="my-table-item">
-                                    <i class="far fa-arrow-alt-circle-left"></i><h4>مشخصات فیزیکی</h4> 
+                                    <i class="far fa-arrow-alt-circle-left"></i><h4>مشخصات </h4> 
                                     <div class="table-responsive">
                                         <table class="table">
                                             
                                             <tbody>
+                                                <?php foreach ($productMetasdi as $key => $pMeta) {?>
                                                 <tr>
-                                                    <th scope="row" >ابعاد</th>
-                                                    <td >39x12x4.5 میلی‌متر
+                                                    <th scope="row" ><?= $pMeta->meta_key ?></th>
+                                                    <td ><?= $pMeta->meta_value . ' ' . $pMeta->unit ?> 
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <th scope="row" >وزن</th>
-                                                    <td >گرم</td>
-                                                </tr>
-                                            
+                                                    <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-
-                                <div class="my-table-item">
-                                    <i class="far fa-arrow-alt-circle-left"></i><h4>مشخصات فنی</h4> 
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">رابط</th>
-                                                    <td >39x12x4.5 میلی‌متر
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">ظرفیت</th>
-                                                    <td>گرم</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">مقاومت</th>
-                                                    <td >گرم</td>
-                                                </tr>
-                                                <tr>
-                                                    <th >وزن</th>
-                                                    <td >گرم</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">وزن</th>
-                                                    <td >گرم</td>
-                                                </tr>
-                                            
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
                                
 
                             </div>
@@ -307,6 +271,7 @@ $this->registerCssFile(
                         </div>
                         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                             <!-------START NO COMMENT-------->
+                            <?php if(count($comments) <= 0){ ?>
                             <div class="no-comment-user text-center">
                                 
                                 <div class="top-no-comment">
@@ -326,6 +291,7 @@ $this->registerCssFile(
                                 </div>
 
                             </div>
+                            <?php }?>
                             <!-------END NO COMMENT-------->
 
 
@@ -335,28 +301,37 @@ $this->registerCssFile(
                                 <div class="comment-user-title">
                                     <h3>نظرات کاربران</h3>
                                 </div>
+
+                            <?php if(count($comments) > 0){  foreach($comments as $comment){ ?>
                                 <div class="comment-sender">
                                     <div class="comment-sender-details d-flex justify-content-between ">
-                                        <span> <i class="far fa-user-circle"></i> نام</span><span>13 اردیبهشت 1400</span>
+                                        <span> <i class="far fa-user-circle"></i> <?= $comment->user->name ?></span><span><?=  $comment->created_at ?></span>
                                     </div>
                                     <div class="comment-content">
-                                        <p>خرید این کالا را توصیه می کنم</p>
+                                        <p><?= $comment->comment ?></p>
                                     </div>
                                     <div class="comment-like">
 
                                     </div>
 
                                 </div>
-                                <div class="comment-admin">
-                                    <div class="comment-admin-details d-flex justify-content-between ">
-                                        <span><i class="fal fa-comment-alt-lines"></i> پاسخ کارشناس</span><span>13 اردیبهشت 1400</span>
-                                    </div>
-                                    <div class="comment-admin-content">
-                                        <p>توصیه در ارتباط با خرید این کالا  </p>
-                                    </div>
+                                <?php if($comment->children){
+                                    foreach($comment->children as $children){
+                                    ?>
                                     
+                                    <div class="comment-admin">
+                                        <div class="comment-admin-details d-flex justify-content-between ">
+                                            <span><i class="fal fa-comment-alt-lines"></i> پاسخ کارشناس</span><span><?= $children->created_at ?></span>
+                                        </div>
+                                        <div class="comment-admin-content">
+                                            <p><?= $children->comment ?></p>
+                                        </div>
+                                        
 
-                                </div>
+                                    </div>
+
+                                <?php }}?>
+                                <?php }}?>
                             </div>
 
                             <!-------END  COMMENT-------->
@@ -535,36 +510,81 @@ $this->registerCssFile(
                     <div class="form-user-comment-title pb-2 pt-3 text-right">
                         <h3 >ارسال نظر</h3>
                     </div>
+
                     
-                    <form action="post" enctype="text/plain" class="px-3">
-                        <div class="form-border">
-                            <div class="form-group required ">
+                    <!-- <form action="" enctype="text/plain" class="px-3" method="POST"> -->
+                        <!-- <div class="form-border"> -->
+                            <!-- <div class="form-group required ">
                                 <label for="name" class="py-2 mt-2">نام و نام خانوادگی</label>
                                 <span class="text-danger">*</span>
-                                <input type="text" id="name" class="form-control" placeholder="نام و نام خانوادگی">
+                                <input type="text" name="name" id="name" class="form-control" placeholder="نام و نام خانوادگی">
                             </div>
                             
                             <div class="form-group required">
                                 <label for="email-comment" class="py-2">ایمیل</label>
                                 <span class="text-danger">*</span>
-                                <input type="email" class="form-control" id="email-comment" aria-describedby="emailHelp" placeholder="ایمیل">
-                            </div>
+                                <input type="email" name="email" class="form-control" id="email-comment" aria-describedby="emailHelp" placeholder="ایمیل">
+                            </div> -->
         
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="Textarea-comment" class="py-2"> نظر کاربر درباره کالا</label>
                                 <span class="text-danger">*</span>
-                                <textarea class="form-control " id="Textarea-comment" rows="6">متن اصلی را وارد کنید</textarea>
-                            </div>
+                                <textarea class="form-control " name="comment" id="Textarea-comment" rows="6">متن اصلی را وارد کنید</textarea>
+                            </div> -->
         
-                            <div class="form-group  required  ">
+                            <!-- <div class="form-group  required  ">
                                 <label   class="py-2">کد امنیتی</label> 
                                 <input type="text" class="form-control" class="control-label">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-bottom w-100 mb-4 mt-5 mx-auto">تایید و ارسال نظر </button>
+                            </div> -->
+                            
+                            <!-- <button type="submit" class="btn btn-primary btn-bottom w-100 mb-4 mt-5 mx-auto">تایید و ارسال نظر </button>
                         </div>
                         
                     </form>
-    
+     -->
+                    <?php
+                        $form = ActiveForm::begin([
+                            'action' => ['product/create', 'id' => $product->id],
+                            'method' => 'post',
+                            'options' => [
+                                'class' => 'px-3',
+                            ],
+                        ]);
+                        ?>
+
+                        <div class="form-border">
+
+                            <div class="form-group">
+                                <label class="py-2">
+                                    نظر کاربر درباره کالا
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <?= $form->field($model, 'comment' )->textarea([
+                                    'rows' => 6,
+                                    'class' => 'form-control',
+                                    'placeholder' => 'متن اصلی را وارد کنید',
+                                ])->label('') ?>
+
+                            </div>
+
+                            <div class="form-group required">
+                                <label for="email-comment" class="py-2">ایمیل</label>
+                                <span class="text-danger">*</span>
+
+                                <?= $form->field($model, 'email')->textInput([
+                                    'class' => 'form-control',
+                                    'placeholder' => 'ایمیل را وارد کنید',
+                                ])->label('') ?>
+                            </div> 
+
+                            <button type="submit" class="btn btn-primary btn-bottom w-100 mb-4 mt-5 mx-auto">
+                                تایید و ارسال نظر
+                            </button>
+
+                        </div>
+
+                        <?php ActiveForm::end(); ?>
                 </div>
             </div>
 
@@ -594,112 +614,20 @@ $this->registerCssFile(
 
             <div class="visited-slider">
                 <div class="owl-carousel owl-theme second-slider" >
+                    <?php foreach($newProducts as $newProduct){?>
                     <div class="item" >
                         <a href="#" class="d-block text-center">
                             <img src="img/newest (1).jpg" alt="">
                             <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
+                                <p><?= $newProduct->name ?></p>
                                 <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
+                                    <span class="price"><?= $newProduct->price ?></span>
                                     <span class="unit">تومان</span>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest (2).jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>          
-                    </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest (3).jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest4.jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest5.jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest6.jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest7.jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="item"><a href="#" class="d-block text-center">
-                        <img src="img/newest8.jpg" alt="">
-                        <div class="item-caption">
-                            <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                            <div class="item-caption-bottom">
-                                <span class="price">6,250,000</span>
-                                <span class="unit">تومان</span>
-                            </div>
-                        </div>
-                    </a></div>
-                    <div class="item">
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest9.jpg" alt="">
-                            <div class="item-caption">
-                                <p>لپ تاپ 13 اینچی هوآوی مدل MateBook 13 i7</p>
-                                <div class="item-caption-bottom">
-                                    <span class="price">6,250,000</span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                        <?php }?>
                 </div>
             </div>
            </div>
