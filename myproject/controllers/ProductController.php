@@ -96,7 +96,7 @@ class ProductController extends Controller
           $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
             return !in_array($meta->meta_key, $attributeNames, true);
         });
-        $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
+        $newProducts = Product::find()->orderBy(['created_at DESC'])->limit(10)->all();
 
 
         $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id , 'status' => Comment::STATUS_APPROVED])->all();
@@ -113,38 +113,6 @@ class ProductController extends Controller
 
     }
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin(): Response|string
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm($this->security);
-
-        if ($model->load($this->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-
-        return $this->render('login', ['model' => $model]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout(): Response
-    {
-        Yii::$app->user->logout();
-        return $this->goHome();
-    }
 
         /**
      * Creates a new Comment model.
