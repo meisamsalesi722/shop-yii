@@ -23,7 +23,7 @@ class Category extends \yii\db\ActiveRecord
 
     public $category1_id; 
     public $category2_id; 
-    public $category3_id;
+    public $category_id; 
 
     /**
      * {@inheritdoc}
@@ -44,7 +44,7 @@ class Category extends \yii\db\ActiveRecord
             [['parent_id', 'status'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['parent_id' => 'id']],
-            [['category1_id', 'category2_id', 'category3_id'], 'safe'],
+            [['category1_id', 'category2_id'], 'safe'],
         ];
     }
 
