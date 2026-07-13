@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Address;
+use app\models\Copan;
 
 /**
- * AddressSearch represents the model behind the search form of `app\models\Address`.
+ * CopanSearch represents the model behind the search form of `app\models\Copan`.
  */
-class AddressSearch extends Address
+class CopanSearch extends Copan
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AddressSearch extends Address
     public function rules()
     {
         return [
-            [['id', 'user_id', 'mobile', 'created_at', 'updated_at'], 'integer'],
-            [['city', 'address', 'recipient_name', 'postal_code'], 'safe'],
+            [['id', 'amount_type', 'discount_ceiling', 'used', 'user_id'], 'integer'],
+            [['code', 'amount', 'start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class AddressSearch extends Address
      */
     public function search($params, $formName = null)
     {
-        $query = Address::find();
+        $query = Copan::find();
 
         // add conditions that should always apply here
 
@@ -60,16 +60,18 @@ class AddressSearch extends Address
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'amount_type' => $this->amount_type,
+            'discount_ceiling' => $this->discount_ceiling,
+            'used' => $this->used,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'user_id' => $this->user_id,
-            'mobile' => $this->mobile,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'city', $this->city])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'recipient_name', $this->recipient_name])
-            ->andFilterWhere(['like', 'postal_code', $this->postal_code]);
+        $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'amount', $this->amount]);
 
         return $dataProvider;
     }

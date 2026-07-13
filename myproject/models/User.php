@@ -52,69 +52,12 @@ class User extends ActiveRecord implements IdentityInterface
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
-
-
-
-    /**
- * دریافت نقش‌های کاربر
- */
-public function getRoles()
-{
-    $auth = Yii::$app->authManager;
-    return $auth->getRolesByUser($this->id);
-}
-
-/**
- * بررسی اینکه کاربر نقش خاصی دارد
- */
-public function hasRole($roleName)
-{
-    $auth = Yii::$app->authManager;
-    $roles = $auth->getRolesByUser($this->id);
-    return isset($roles[$roleName]);
-}
-
-/**
- * اختصاص نقش به کاربر
- */
-public function assignRole($roleName)
-{
-    $auth = Yii::$app->authManager;
-    $role = $auth->getRole($roleName);
-    if ($role) {
-        $auth->assign($role, $this->id);
-        return true;
+    public function getCopans(){
+        return $this->hasMany(Copan::class , ['user_id' => 'id'])
+        ->andWhere(['<=', 'start_date', date('Y-m-d H:i:s')])
+        ->andWhere(['>=', 'end_date', date('Y-m-d H:i:s')]);
     }
-    return false;
-}
 
-/**
- * لغو نقش از کاربر
- */
-public function revokeRole($roleName)
-{
-    $auth = Yii::$app->authManager;
-    $role = $auth->getRole($roleName);
-    if ($role) {
-        $auth->revoke($role, $this->id);
-        return true;
-    }
-    return false;
-}
-
-/**
- * دریافت لیست کاربران بر اساس نقش
- */
-public static function getUsersByRole($roleName)
-{
-    $auth = Yii::$app->authManager;
-    $users = [];
-    $assignments = $auth->getUserIdsByRole($roleName);
-    if ($assignments) {
-        $users = self::find()->where(['id' => $assignments])->all();
-    }
-    return $users;
-}
 
     public function getProductUser(){
         return $this->hasMany(ProductUser::class , ['user_id' => 'id']);

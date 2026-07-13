@@ -1,0 +1,186 @@
+/*teme-colors-started*/
+/*teme-colors-ended*/
+
+.buy-btn1 {
+    font-size: 1rem !important;
+  }
+  
+  .address-item-active {
+    border: 1px solid #4e67ff !important;
+    border-radius: 1rem;
+    background-color: #eeeff3;
+  }
+  
+  /*confirm-pay-page-started*/
+  /* #confirm-pay-section{
+    border-top: 1px solid #eee;
+  } */
+  #confirm-pay-section h5 {
+    font-size: 1.2rem;
+  }
+  
+  #confirm-pay-section .add-new-address-box input, #confirm-pay-section .add-new-address-box textarea {
+    background-color: transparent;
+    border: 1px solid #858997;
+    border-radius: .5rem;
+    min-height: 42px;
+  }
+  #confirm-pay-section .add-new-address-box{
+    border-radius: 10px;
+  }
+  #confirm-pay-section .add-new-address-box .new-address-btn {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    font-size: .8rem;
+  }
+  
+  #confirm-pay-section .add-new-address-box .new-address-btn:hover {
+    background-color: #4e67ff;
+  }
+  
+  #confirm-pay-section .old-address-box {
+    overflow-y: scroll;
+    border-radius: 10px;
+  }
+  
+  #confirm-pay-section .old-address-box::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item {
+    border: 1px solid #d9d9da;
+    border-radius: 1rem;
+    background-color: #f2f2f3;
+    cursor: pointer;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item .address-header h6 {
+    border-radius: 4px;
+    background-color: #4e67ff;
+    color: #fff;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item .address-header span {
+    color: #000;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item .address-header p {
+    color: gray;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item .address-body p {
+    color: gray;
+    line-height: 1.5;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item .address-body .code-box {
+    border-right: 1px solid #858997;
+    line-height: 1.5;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item:focus, #confirm-pay-section .old-address-box .address-item:active, #confirm-pay-section .old-address-box .address-item:visited {
+    border: 1px solid #858997;
+  }
+  
+  #confirm-pay-section .old-address-box .address-item:focus h5, #confirm-pay-section .old-address-box .address-item:active h5, #confirm-pay-section .old-address-box .address-item:visited h5 {
+    display: block;
+  }
+  
+  #confirm-pay-section .factor {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  #confirm-pay-section .off-code-box {
+    border-radius: .5rem;
+    background-color: #007bff;
+  }
+  
+  #confirm-pay-section .off-code-box p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  #confirm-pay-section .off-code-box form{
+      border-radius: 5px;
+      overflow: hidden;
+  }
+  
+  #confirm-pay-section .off-code-box form input:nth-child(1) {
+    border: 0;
+    height: 45px;
+    width: 65%;
+  }
+  
+  @media screen and (max-width: 575px) {
+    #confirm-pay-section .off-code-box form input:nth-child(1) {
+      max-width: 10rem;
+    }
+  }
+  
+  #confirm-pay-section .off-code-box form input[type="submit"] {
+    border: 1px solid #fff;
+    width: 35%;
+    background-color: transparent;
+    color: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  
+  #confirm-pay-section .off-code-box form input[type="submit"]:hover {
+    border-color: #000;
+    background-color: #fff;
+    color: #000;
+  }
+  
+  #confirm-pay-section .total-price, #confirm-pay-section .pay-price {
+    border-radius: .5rem;
+  }
+  
+  #confirm-pay-section .total-price p, #confirm-pay-section .pay-price p {
+    font-size: 1rem;
+  }
+  
+  #confirm-pay-section .total-price {
+    border: 1px solid #4e67ff;
+    background-color: #fff;
+    color: #000;
+  }
+  
+  #confirm-pay-section .pay-price {
+    border: 1px solid #1e6f5c;
+    background-color: #fff;
+    color: #1e6f5c;
+  }
+  
+  #confirm-pay-section .confirm-pay-btn {
+    border-radius: .5rem;
+    background-color: #007bff;
+  }
+  
+  #confirm-pay-section .confirm-pay-btn i {
+    right: 25%;
+    font-size: 1.5rem;
+    color: #FFF;
+  }
+  
+  #confirm-pay-section .confirm-pay-btn:hover {
+    background-color: #377dff;
+  }
+  
+  #confirm-pay-section .confirm-pay-btn:hover i {
+    color: #fff;
+  }
+  
+  /*confirm-pay-page-started*/
+  /*# sourceMappingURL=style.css.map */
+
+  
+  @media screen and (max-width:992px){
+    #confirm-pay-section{
+      margin-top: 110px !important;
+    }
+  }

@@ -39,6 +39,7 @@ class FrontendAsset extends AssetBundle
         '/js/owl.carousel.min.js',
         '/js/timer.js',
         '/js/main.js',
+        '/js/confirmpay.js',
     ];
     public $jsOptions = [
         'position' => View::POS_END,

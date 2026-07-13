@@ -19,7 +19,7 @@ class m260630_065318_create_address_table extends Migration
             'address' => $this->text()->notNull(),
             'mobile' => $this->string(15)->notNull(),
             'recipient_name' => $this->string(255),
-            'prstal_code' => $this->string(255)->notNull(),
+            'postal_code' => $this->string(255)->notNull(),
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);

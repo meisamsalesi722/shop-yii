@@ -105,6 +105,28 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => $currentRoute === 'admin/banner/index' ? 'active' : '']
             ) ?>
         </li>
+
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> کوپن',
+                Url::to(['admin/copan/index']),
+                ['class' => $currentRoute === 'admin/copan/index' ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> سفارشات',
+                Url::to(['admin/order/index']),
+                ['class' => $currentRoute === 'admin/order/index' ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> محصولات سفارش',
+                Url::to(['admin/order-item/index']),
+                ['class' => $currentRoute === 'admin/order-item/index' ? 'active' : '']
+            ) ?>
+        </li>
         <!-- -------------------- -->
 
         <!-- <li class="menu-label">مدیریت دسترسی</li> -->

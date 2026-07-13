@@ -13,7 +13,7 @@ use Yii;
  * @property string $address
  * @property int $mobile
  * @property string|null $recipient_name
- * @property string $prstal_code
+ * @property string $postal_code
  * @property int|null $created_at
  * @property int|null $updated_at
  */
@@ -36,10 +36,10 @@ class Address extends \yii\db\ActiveRecord
     {
         return [
             [['recipient_name'], 'default', 'value' => null],
-            [['user_id', 'city', 'address', 'mobile', 'prstal_code'], 'required'],
+            [['user_id', 'city', 'address', 'mobile', 'postal_code'], 'required'],
             [['user_id', 'mobile'], 'integer'],
             [['address'], 'string'],
-            [['city', 'recipient_name', 'prstal_code'], 'string', 'max' => 255],
+            [['city', 'recipient_name', 'postal_code'], 'string', 'max' => 255],
         ];
     }
 
@@ -55,7 +55,7 @@ class Address extends \yii\db\ActiveRecord
             'address' => 'Address',
             'mobile' => 'Mobile',
             'recipient_name' => 'Recipient Name',
-            'prstal_code' => 'Prstal Code',
+            'postal_code' => 'Postal Code',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -10,17 +10,18 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property int $address_id
- * @property int $delivery_id
- * @property int|null $delivery_status
- * @property int|null $original_price
- * @property int|null $order_final_amount
- * @property int|null $order_discount_amount
+ * @property string|null $original_price
+ * @property string|null $order_final_amount
+ * @property string|null $order_discount_amount
+ * @property int|null $copan_id
+ * @property string|null $order_copan_discount_amount
+ * @property string|null $order_total_products_discount_amount
+ * @property int|null $order_status
  * @property string $created_at
  * @property string $updated_at
  *
  * @property Address $address
- * @property User $delivery
- * @property OrderItem[] $orderItems
+ * @property Copan $copan
  * @property User $user
  */
 class Order extends \yii\db\ActiveRecord
@@ -41,13 +42,13 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['original_price', 'order_final_amount', 'order_discount_amount'], 'default', 'value' => null],
-            [['delivery_status'], 'default', 'value' => 0],
-            [['user_id', 'address_id', 'delivery_id'], 'required'],
-            [['user_id', 'address_id', 'delivery_id', 'delivery_status', 'original_price', 'order_final_amount', 'order_discount_amount'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['original_price', 'order_final_amount', 'order_discount_amount', 'copan_id', 'order_copan_discount_amount', 'order_total_products_discount_amount'], 'default', 'value' => null],
+            [['order_status'], 'default', 'value' => 0],
+            [['user_id', 'address_id'], 'required'],
+            [['user_id', 'address_id', 'copan_id', 'order_status'], 'integer'],
+            [['created_at', 'updated_at' ], 'safe'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
-            [['delivery_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['delivery_id' => 'id']],
+            [['copan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Copan::class, 'targetAttribute' => ['copan_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -61,11 +62,13 @@ class Order extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'address_id' => 'Address ID',
-            'delivery_id' => 'Delivery ID',
-            'delivery_status' => 'Delivery Status',
             'original_price' => 'Original Price',
             'order_final_amount' => 'Order Final Amount',
             'order_discount_amount' => 'Order Discount Amount',
+            'copan_id' => 'Copan ID',
+            'order_copan_discount_amount' => 'Order Copan Discount Amount',
+            'order_total_products_discount_amount' => 'Order Total Products Discount Amount',
+            'order_status' => 'Order Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -82,23 +85,13 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Delivery]].
+     * Gets query for [[Copan]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDelivery()
+    public function getCopan()
     {
-        return $this->hasOne(User::class, ['id' => 'delivery_id']);
-    }
-
-    /**
-     * Gets query for [[OrderItems]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrderItems()
-    {
-        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
+        return $this->hasOne(Copan::class, ['id' => 'copan_id']);
     }
 
     /**

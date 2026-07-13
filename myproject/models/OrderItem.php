@@ -11,17 +11,12 @@ use Yii;
  * @property int $order_id
  * @property int $product_id
  * @property int|null $number
- * @property int|null $final_product_price
- * @property int|null $final_total_price productPrice * number
- * @property int $color_id
- * @property int $guarantee_id
+ * @property string|null $final_product_price
+ * @property string|null $final_total_price
+ * @property int|null $color_id
+ * @property int|null $guarantee_id
  * @property string $created_at
  * @property string $updated_at
- *
- * @property Color $color
- * @property Guarantee $guarantee
- * @property Order $order
- * @property Product $product
  */
 class OrderItem extends \yii\db\ActiveRecord
 {
@@ -41,14 +36,11 @@ class OrderItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'final_product_price', 'final_total_price'], 'default', 'value' => null],
-            [['order_id', 'product_id', 'color_id', 'guarantee_id'], 'required'],
-            [['order_id', 'product_id', 'number', 'final_product_price', 'final_total_price', 'color_id', 'guarantee_id'], 'integer'],
+            [['final_product_price', 'final_total_price', 'color_id', 'guarantee_id'], 'default', 'value' => null],
+            [['number'], 'default', 'value' => 1],
+            [['order_id', 'product_id'], 'required'],
+            [['order_id', 'product_id', 'number', 'color_id', 'guarantee_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['color_id'], 'exist', 'skipOnError' => true, 'targetClass' => Color::class, 'targetAttribute' => ['color_id' => 'id']],
-            [['guarantee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Guarantee::class, 'targetAttribute' => ['guarantee_id' => 'id']],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -69,46 +61,6 @@ class OrderItem extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
-    }
-
-    /**
-     * Gets query for [[Color]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getColor()
-    {
-        return $this->hasOne(Color::class, ['id' => 'color_id']);
-    }
-
-    /**
-     * Gets query for [[Guarantee]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGuarantee()
-    {
-        return $this->hasOne(Guarantee::class, ['id' => 'guarantee_id']);
-    }
-
-    /**
-     * Gets query for [[Order]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrder()
-    {
-        return $this->hasOne(Order::class, ['id' => 'order_id']);
-    }
-
-    /**
-     * Gets query for [[Product]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProduct()
-    {
-        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
 }

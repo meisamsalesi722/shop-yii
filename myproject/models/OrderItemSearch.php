@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Address;
+use app\models\OrderItem;
 
 /**
- * AddressSearch represents the model behind the search form of `app\models\Address`.
+ * OrderItemSearch represents the model behind the search form of `app\models\OrderItem`.
  */
-class AddressSearch extends Address
+class OrderItemSearch extends OrderItem
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AddressSearch extends Address
     public function rules()
     {
         return [
-            [['id', 'user_id', 'mobile', 'created_at', 'updated_at'], 'integer'],
-            [['city', 'address', 'recipient_name', 'postal_code'], 'safe'],
+            [['id', 'order_id', 'product_id', 'number', 'color_id', 'guarantee_id'], 'integer'],
+            [['final_product_price', 'final_total_price', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class AddressSearch extends Address
      */
     public function search($params, $formName = null)
     {
-        $query = Address::find();
+        $query = OrderItem::find();
 
         // add conditions that should always apply here
 
@@ -60,16 +60,17 @@ class AddressSearch extends Address
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'mobile' => $this->mobile,
+            'order_id' => $this->order_id,
+            'product_id' => $this->product_id,
+            'number' => $this->number,
+            'color_id' => $this->color_id,
+            'guarantee_id' => $this->guarantee_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'city', $this->city])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'recipient_name', $this->recipient_name])
-            ->andFilterWhere(['like', 'postal_code', $this->postal_code]);
+        $query->andFilterWhere(['like', 'final_product_price', $this->final_product_price])
+            ->andFilterWhere(['like', 'final_total_price', $this->final_total_price]);
 
         return $dataProvider;
     }

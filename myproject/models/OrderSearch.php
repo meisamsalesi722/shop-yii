@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Address;
+use app\models\Order;
 
 /**
- * AddressSearch represents the model behind the search form of `app\models\Address`.
+ * OrderSearch represents the model behind the search form of `app\models\Order`.
  */
-class AddressSearch extends Address
+class OrderSearch extends Order
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AddressSearch extends Address
     public function rules()
     {
         return [
-            [['id', 'user_id', 'mobile', 'created_at', 'updated_at'], 'integer'],
-            [['city', 'address', 'recipient_name', 'postal_code'], 'safe'],
+            [['id', 'user_id', 'address_id', 'copan_id', 'order_status'], 'integer'],
+            [['original_price', 'order_final_amount', 'order_discount_amount', 'order_copan_discount_amount', 'order_total_products_discount_amount', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class AddressSearch extends Address
      */
     public function search($params, $formName = null)
     {
-        $query = Address::find();
+        $query = Order::find();
 
         // add conditions that should always apply here
 
@@ -61,15 +61,18 @@ class AddressSearch extends Address
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'mobile' => $this->mobile,
+            'address_id' => $this->address_id,
+            'copan_id' => $this->copan_id,
+            'order_status' => $this->order_status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'city', $this->city])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'recipient_name', $this->recipient_name])
-            ->andFilterWhere(['like', 'postal_code', $this->postal_code]);
+        $query->andFilterWhere(['like', 'original_price', $this->original_price])
+            ->andFilterWhere(['like', 'order_final_amount', $this->order_final_amount])
+            ->andFilterWhere(['like', 'order_discount_amount', $this->order_discount_amount])
+            ->andFilterWhere(['like', 'order_copan_discount_amount', $this->order_copan_discount_amount])
+            ->andFilterWhere(['like', 'order_total_products_discount_amount', $this->order_total_products_discount_amount]);
 
         return $dataProvider;
     }
