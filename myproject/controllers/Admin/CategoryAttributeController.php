@@ -3,10 +3,12 @@
 namespace app\controllers\admin;
 
 use Yii;
+use yii\web\Response;
 use yii\web\Controller;
 use app\models\Category;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 use app\models\CategoryAttribute;
 use yii\web\NotFoundHttpException;
 use app\models\CategoryAttributeSearch;
@@ -25,6 +27,15 @@ class CategoryAttributeController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

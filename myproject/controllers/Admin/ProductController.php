@@ -5,15 +5,17 @@ namespace app\controllers\admin;
 use Yii;
 use app\models\Brand;
 use app\models\Color;
+use yii\web\Response;
 use app\models\Product;
 use yii\web\Controller;
 use app\models\Category;
 use app\models\Guarantee;
-use app\models\ProductMeta;
 use yii\web\UploadedFile;
+use app\models\ProductMeta;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\ProductSearch;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -31,6 +33,15 @@ class ProductController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

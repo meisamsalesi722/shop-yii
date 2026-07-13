@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
       <section class="card mb-3">
         <section class="card-header text-white bg-custom-yellow">
-          <?= $comment->user->name ?> - <?= $comment->user->id ?>
+          <?= $comment->user->username ?> - <?= $comment->user->id ?>
         </section>
         <section class="card-body">
           <p class="card-text"><?= $comment->comment ?></p>

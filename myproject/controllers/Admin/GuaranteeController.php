@@ -2,11 +2,12 @@
 
 namespace app\controllers\admin;
 
-use app\models\Guarantee;
-use app\models\GuaranteeSearch;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use app\models\Guarantee;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use app\models\GuaranteeSearch;
+use yii\web\NotFoundHttpException;
 
 /**
  * GuaranteeController implements the CRUD actions for Guarantee model.
@@ -23,6 +24,15 @@ class GuaranteeController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

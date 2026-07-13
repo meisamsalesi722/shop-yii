@@ -2,13 +2,14 @@
 
 namespace app\controllers\admin;
 
-use app\models\CartItem;
-use app\models\CartItemSearch;
 use app\models\Product;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use app\models\CartItem;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use app\models\CartItemSearch;
+use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
 
 /**
  * CartItemController implements the CRUD actions for CartItem model.
@@ -24,6 +25,15 @@ class CartItemController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

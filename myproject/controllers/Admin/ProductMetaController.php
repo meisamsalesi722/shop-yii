@@ -7,6 +7,7 @@ use yii\web\Controller;
 use app\models\ProductMeta;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 use app\models\ProductMetaSearch;
 use yii\web\NotFoundHttpException;
 
@@ -25,6 +26,15 @@ class ProductMetaController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

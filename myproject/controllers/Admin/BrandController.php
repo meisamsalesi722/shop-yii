@@ -8,8 +8,9 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use app\models\BrandSearch;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 
+use yii\web\NotFoundHttpException;
 use function PHPUnit\Framework\fileExists;
 
 /**
@@ -26,6 +27,15 @@ class BrandController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

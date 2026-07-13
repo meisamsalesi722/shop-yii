@@ -24,14 +24,15 @@ class AddressController extends Controller
         return array_merge(
             parent::behaviors(),
             [
-                // 'access' => [
-                //     'class' => AccessControl::class,
-                //     'rules' => [
-                //         [
-                //             // 'roles' => ['@'], // فقط کاربران لاگین شده
-                //         ],
-                //     ],
-                // ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
