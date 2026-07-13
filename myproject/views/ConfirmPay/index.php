@@ -41,7 +41,7 @@ $this->registerCssFile(
                                     <div class="address-header d-flex">
                                         <h6 class="selected-item d-none px-3 py-1 font-weight-light">آدرس منتخب</h6>
                                         <span class="px-2 py-1 font-weight-bold">گیرنده:</span>
-                                        <p class="pt-1"><?= $address->recipient_name ?? $address->user->name ?></p>
+                                        <p class="pt-1"><?= $address->recipient_name ?? $address->user->username ?></p>
                                     </div>
                                     <div class="address-body d-flex flex-md-column flex-lg-row justify-content-between pt-3">
                                         <p><span>آدرس:</span><?= $address->address ?></p>

@@ -148,7 +148,7 @@ class ConfirmPayController extends Controller
                                 $orderModel->copan_id = $copan->id;
                                 $orderModel->order_copan_discount_amount = $copan_discount;
                                 $copan->used = 1;
-                                $finalPrice -= $copan_discount;
+                                $finalPrice -= $copan_discount >= $finalPrice ?  $finalPrice : $copan_discount;
                                 $copan->save(false);                
                             }
                             $orderModel->address_id = $address_id;
@@ -167,8 +167,8 @@ class ConfirmPayController extends Controller
                                     $singleItemDiscount = 0;
                                     $count = $cartItem->number;
                                     $price = $cartItem->product->price;
-                                    if($item->color){
-                                        $price += $item->color->price_increase;
+                                    if($cartItem->color){
+                                        $price += $cartItem->color->price_increase;
                                     }
                                     $itemTotal = $price * $count;
                                     if ($cartItem->product->discountAmounts) {
@@ -190,8 +190,8 @@ class ConfirmPayController extends Controller
                                     $orderItemModel->product_id = $cartItem->product_id;
                                     $orderItemModel->number = $cartItem->number;
                                     $final_product_price = $cartItem->product->price - $singleItemDiscount;
-                                    if($item->color){
-                                        $final_product_price += $item->color->price_increase;
+                                    if($cartItem->color){
+                                        $final_product_price += $cartItem->color->price_increase;
                                     }
                                     $orderItemModel->final_product_price = $final_product_price;
                                     $orderItemModel->final_total_price = ($final_product_price) * $cartItem->number;
@@ -236,7 +236,8 @@ class ConfirmPayController extends Controller
                                 $copan_discount = (($totalPrice * $copan->amount) / 100) > $copan->discount_ceiling ? $copan->discount_ceiling : (($totalPrice * $copan->amount) / 100);
                                 
                             }
-                            $finalPrice -= $copan_discount;
+                            
+                            $finalPrice -=  $copan_discount >= $finalPrice ?  $finalPrice : $copan_discount;
                             $copan_id = $copan->id;
                         }
                     }

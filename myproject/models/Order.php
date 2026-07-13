@@ -104,4 +104,8 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
+    public function getOrderItems(){
+        return $this->hasMany(OrderItem::class , ['order_id' => 'id']);
+    }
+
 }

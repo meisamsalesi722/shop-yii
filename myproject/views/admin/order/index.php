@@ -11,17 +11,15 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Orders';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => ' / Orders'];
 ?>
 <div class="order-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -29,9 +27,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'user_id',
-            'address_id',
+            [
+                'attribute' => 'user_id',
+                'value' => 'user.username'
+            ],
+            [
+                'attribute' => 'address_id',
+                'value' => function($model){
+                    return substr($model->address->address , 0  ,50);
+                }
+            ],
             'original_price',
             'order_final_amount',
             //'order_discount_amount',
@@ -42,7 +47,16 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at',
             //'updated_at',
             [
-                'class' => ActionColumn::className(),
+            'class' => ActionColumn::className(),
+                'template' => '{view} {orderItem}',
+                 'buttons' => [
+                    'orderItem' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-dedent"></i>',
+                            ['admin/order/order-item', 'order_id' => $model->id]
+                        );
+                    },
+                ],
                 'urlCreator' => function ($action, Order $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

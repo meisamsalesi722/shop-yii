@@ -39,9 +39,9 @@ class OrderItemSearch extends OrderItem
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params , $order_id , $formName = null)
     {
-        $query = OrderItem::find();
+        $query = OrderItem::find()->where(['order_id' => $order_id]);
 
         // add conditions that should always apply here
 

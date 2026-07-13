@@ -4,9 +4,11 @@ namespace app\controllers\admin;
 
 use app\models\Order;
 use yii\web\Controller;
+use app\models\OrderItem;
 use app\models\OrderSearch;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use app\models\OrderItemSearch;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -73,6 +75,8 @@ class OrderController extends Controller
         ]);
     }
 
+
+
     /**
      * Creates a new Order model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -129,6 +133,37 @@ class OrderController extends Controller
         return $this->redirect(['index']);
     }
 
+    // ----------  order Item  ----------- //
+
+        /**
+     * Lists all OrderItem models.
+     *
+     * @return string
+     */
+    public function actionOrderItem($order_id)
+    {
+        $searchModel = new OrderItemSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams , $order_id);
+
+        return $this->render('order-item/index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+        /**
+     * Displays a single OrderItem model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionOrderItemView($id)
+    {
+        return $this->render('order-item/view', [
+            'model' => $this->findModelOrderItem($id),
+        ]);
+    }
+
     /**
      * Finds the Order model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -139,6 +174,14 @@ class OrderController extends Controller
     protected function findModel($id)
     {
         if (($model = Order::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    protected function findModelOrderItem($id)
+    {
+        if (($model = OrderItem::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

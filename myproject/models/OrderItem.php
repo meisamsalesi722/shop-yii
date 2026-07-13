@@ -63,4 +63,18 @@ class OrderItem extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getOrder(){
+        return $this->hasOne(Order::class , ['id' => 'order_id']);
+    }
+
+    public function getProduct(){
+        return $this->hasOne(Product::class , ['id' => 'product_id']);
+    }
+    public function getColor(){
+        return $this->hasOne(Color::class , ['id' => 'color_id']);
+    }
+    public function getGuarantee(){
+        return $this->hasOne(Guarantee::class , ['id' => 'guarantee_id']);
+    }
+
 }

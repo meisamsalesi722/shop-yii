@@ -43,13 +43,6 @@ $currentRoute = Yii::$app->controller->getRoute();
         </li>
         <li>
             <?= Html::a(
-                '<i class="fas fa-tags"></i> سبد خرید',
-                Url::to(['admin/cart-item/index']),
-                ['class' => $currentRoute === 'admin/cart-item/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
                 '<i class="fas fa-comments"></i> دسته بندی',
                 Url::to(['admin/category/index']),
                 ['class' => $currentRoute === 'admin/category/index' ? 'active' : '']
@@ -118,13 +111,6 @@ $currentRoute = Yii::$app->controller->getRoute();
                 '<i class="fas fa-comments"></i> سفارشات',
                 Url::to(['admin/order/index']),
                 ['class' => $currentRoute === 'admin/order/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> محصولات سفارش',
-                Url::to(['admin/order-item/index']),
-                ['class' => $currentRoute === 'admin/order-item/index' ? 'active' : '']
             ) ?>
         </li>
         <!-- -------------------- -->

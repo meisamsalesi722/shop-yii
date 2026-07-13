@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /** @var app\models\Order $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -15,30 +15,41 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'user_id',
-            'address_id',
+            [
+                'attribute' => 'user',
+                'value' => function($model){
+                    return $model->user->username;
+                }
+            ],
+            [
+                'attribute' => 'address',
+                'value' => function($model){
+                    return $model->address->address;
+                }
+            ],
+            [
+                'attribute' => 'copan',
+                'value' => function($model){
+                    return $model->copan->code;
+                }
+            ],
             'original_price',
             'order_final_amount',
             'order_discount_amount',
-            'copan_id',
             'order_copan_discount_amount',
             'order_total_products_discount_amount',
-            'order_status',
+            // [
+            //     'attribute' => 'order_status',
+            //     'value' => function($model){
+            //         return $model->order_status ? '' :;
+            //     }
+            // ],
             'created_at',
             'updated_at',
         ],

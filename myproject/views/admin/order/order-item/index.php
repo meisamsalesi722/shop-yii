@@ -11,6 +11,7 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Order Items';
+$this->params['breadcrumbs'][] = ['label' => '/ Order', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-item-index">
@@ -31,9 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'order_id',
-            'product_id',
+            [
+                'attribute'=> 'product_id',
+                'value' => 'product.name',
+            ],
             'number',
-            'final_product_price',
+            // 'final_product_price',
             //'final_total_price',
             //'color_id',
             //'guarantee_id',
@@ -41,9 +45,15 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, OrderItem $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                'template' => '{view}',
+                 'buttons' => [
+                    'view' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-eye"></i>',
+                            ['admin/order/order-item-view', 'id' => $model->id]
+                        );
+                    },
+                ],
             ],
         ],
     ]); ?>

@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'user_id',
-                'value' => $model->user->name
+                'value' => $model->user->username
             ],
             'city',
             'address:ntext',

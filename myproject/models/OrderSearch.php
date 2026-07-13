@@ -2,9 +2,10 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\Order;
+use yii\data\ActiveDataProvider;
 
 /**
  * OrderSearch represents the model behind the search form of `app\models\Order`.

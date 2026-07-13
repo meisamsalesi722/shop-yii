@@ -26,7 +26,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'end_date')->input('date') ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id' , 'name')) ?>
+    <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id' , 'username')) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
