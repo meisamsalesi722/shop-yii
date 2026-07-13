@@ -11,6 +11,8 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Category Attributes';
+
+$this->params['breadcrumbs'][] = ['label' => ' / Category', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-attribute-index">
@@ -18,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Category Attribute', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Category Attribute', ['admin/category/attribute-create' , 'category_id' => $category_id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -37,8 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'value',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, CategoryAttribute $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                'urlCreator' => function ($action, CategoryAttribute $model, $key, $index, $column) use($category_id) {
+                    return Url::toRoute([ 'admin/category/attribute-' . $action, 'id' => $model->id , 'category_id' => $category_id]);
                  }
             ],
         ],

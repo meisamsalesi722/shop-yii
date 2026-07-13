@@ -10,7 +10,9 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\CategorySearch;
 use yii\filters\AccessControl;
+use app\models\CategoryAttribute;
 use yii\web\NotFoundHttpException;
+use app\models\CategoryAttributeSearch;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -36,7 +38,7 @@ class CategoryController extends Controller
                     ],
                 ],
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -207,4 +209,126 @@ class CategoryController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+
+
+
+
+    // -----------------------------------------------------------   category attribute  ----------------------------------------------------------- //
+
+
+
+
+
+        /**
+     * Lists all CategoryAttribute models.
+     *
+     * @return string
+     */
+    public function actionAttribute($category_id)
+    {
+        $searchModel = new CategoryAttributeSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams , $category_id);
+
+        return $this->render('category-attribute/index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'category_id' => $category_id
+        ]);
+    }
+
+    
+    /**
+     * Displays a single CategoryAttribute model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionAttributeView( $category_id ,$id)
+    {
+        return $this->render('category-attribute/view', [
+            'category_id' => $category_id,
+            'id' => $id,
+            'model' => $this->findAttributeModel($id , $category_id),
+        ]);
+    }
+
+    /**
+     * Creates a new CategoryAttribute model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionAttributeCreate($category_id)
+    {
+        $model = new CategoryAttribute();
+        
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'مقاله با موفقیت ساخته شد.');
+                return $this->redirect(['attribute-view', 'category_id' => $category_id ,  'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+        return $this->render('category-attribute/create', [
+            'model' => $model,
+            'categories' => $categories,
+            'category_id' => $category_id
+        ]);
+    }
+
+    /**
+     * Updates an existing CategoryAttribute model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionAttributeUpdate($id , $category_id)
+    {
+        $model = $this->findAttributeModel($id , $category_id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['attribute-view', 'category_id' => $category_id , 'id' => $model->id]);
+        }
+
+
+        return $this->render('category-attribute/update', [
+            'model' => $model,
+            'category_id' => $category_id
+        ]);
+    }
+
+    /**
+     * Deletes an existing CategoryAttribute model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionAttributeDelete($id , $category_id)
+    {
+        $this->findAttributeModel($id , $category_id)->delete();
+
+        return $this->redirect(['attribute' , 'id' => $id , 'category_id' => $category_id]);
+    }
+
+    /**
+     * Finds the CategoryAttribute model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return CategoryAttribute the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findAttributeModel($id , $category_id)
+    {
+        if (($model = CategoryAttribute::findOne(['id' => $id , 'category_id' => $category_id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
 }

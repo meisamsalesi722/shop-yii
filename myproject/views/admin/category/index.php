@@ -31,10 +31,33 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'parent_id',
-            'status',
+            [
+                'attribute' => 'parent_id',
+                'value' => function($model){
+                    return $model->parent == null ?  'دسته اصلی' : '>>' . $model->parent->name ;
+                } 
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function($model){
+                    return $model->status == 1 ? 'فعال' : 'غیر فعال';
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {orderItem}',
+                 'buttons' => [
+                    'orderItem' => function ($url, $model, $key) {
+                        if(!$model->children){
+                        return Html::a(
+                            '<i class="fas fa-dedent"></i>',
+                            ['admin/category/attribute', 'category_id' => $model->id]
+                        );
+                    }else{
+                        '';
+                    }
+                    }
+                ],
                 'urlCreator' => function ($action, Category $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

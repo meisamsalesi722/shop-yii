@@ -41,9 +41,9 @@ class CategoryAttributeSearch extends CategoryAttribute
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $category_id , $formName = null)
     {
-        $query = CategoryAttribute::find();
+        $query = CategoryAttribute::find()->where(['category_id' => $category_id]);
 
         // add conditions that should always apply here
 

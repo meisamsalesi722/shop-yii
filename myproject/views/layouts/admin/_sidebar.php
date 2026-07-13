@@ -50,13 +50,6 @@ $currentRoute = Yii::$app->controller->getRoute();
         </li>
         <li>
             <?= Html::a(
-                '<i class="fas fa-comments"></i> ویژگی های دسته بندی',
-                Url::to(['admin/category-attribute/index']),
-                ['class' => $currentRoute === 'admin/category-attribute/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
                 '<i class="fas fa-comments"></i> رنگ ها',
                 Url::to(['admin/color/index']),
                 ['class' => $currentRoute === 'admin/color/index' ? 'active' : '']

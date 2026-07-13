@@ -6,16 +6,16 @@ use yii\helpers\Html;
 /** @var app\models\CategoryAttribute $model */
 
 $this->title = 'Create Category Attribute';
-$this->params['breadcrumbs'][] = ['label' => 'Category Attributes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Category', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Category Attributes', 'url' => ['admin/category/attribute/' , 'category_id' => $category_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-attribute-create">
-
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'categories' => $categories,
+        'category_id' => $category_id
     ]) ?>
 
 </div>

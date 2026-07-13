@@ -7,7 +7,8 @@ use yii\widgets\DetailView;
 /** @var app\models\CategoryAttribute $model */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Category Attributes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Category', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Category Attributes', 'url' => ['admin/category/attribute/' , 'category_id' => $category_id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
