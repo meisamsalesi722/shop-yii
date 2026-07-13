@@ -19,15 +19,15 @@ $this->registerCssFile(
                 <div class="row">
                     <div class="breadcrumb-top d-flex">
                         <div class="breadcrumb-top-item ml-4 mr-2 mr-sm-0">
-                            <a href="#"><?= $product->category->parent->parent->name ?></a>
+                            <a href="<?= Url::to(['/list' , 'categoryId' => $product->category->parent->parent->id]) ?>"><?= $product->category->parent->parent->name ?></a>
                             <i class="fas fa-chevron-left"></i>
                         </div>
                         <div class="breadcrumb-top-item ml-4">
-                            <a href="#"><?= $product->category->parent->name ?> </a>
+                            <a href="<?= Url::to(['/list' , 'categoryId' => $product->category->parent->id]) ?>"><?= $product->category->parent->name ?> </a>
                             <i class="fas fa-chevron-left"></i>
                         </div>
                         <div class="breadcrumb-top-item ml-4">
-                            <span><?= $product->category->name ?> </span>
+                            <a href="<?= Url::to(['/list' , 'categoryId' => $product->category->id]) ?>"><?= $product->category->name ?> </a>
                         </div>
                     </div>
                 </div>
@@ -42,16 +42,12 @@ $this->registerCssFile(
 
                 <div class="product-item col-lg-4 col-md-8 col-12 mx-auto px-5 d-none d-md-block">
                     <div class="product-img ">
-                        <img src="<?= Yii::getAlias('@web/uploads/images/gallery/') . $product->galleries[0]->image?>" alt="" class="img-fluid" id="main-product-photo">
+                        <img src="<?= Yii::getAlias('@web/uploads/images/gallery/') . ($product->galleries[0]->image ?? '')  ?>" alt="" class="img-fluid" id="main-product-photo">
                     </div>
                     <div class="owl-carousel owl-theme three-slider">
                         <?php foreach($product->galleries as $key => $gallery){ ?>
                         <div class="item"><img src="<?= Yii::getAlias('@web/uploads/images/gallery/') . $gallery->image?>" class="mx-auto"alt="" onclick="change_photo('<?= Yii::getAlias('@web/uploads/images/gallery/') . $gallery->image?>')"></div>
                         <?php }?>
-                        <!-- <div class="item"><img src="img/mobile2.jpg" class="mx-auto" alt="" onclick="change_photo('img/mobile2.jpg')"></div>
-                        <div class="item"> <img src="img/mobile3.jpg" class="mx-auto" alt="" onclick="change_photo('img/mobile3.jpg')"></div>
-                        <div class="item"> <img src="img/mobile4.jpg" class="mx-auto" alt="" onclick="change_photo('img/mobile4.jpg')"></div>
-                        <div class="item"> <img src="img/mobile5.jpg" class="mx-auto" alt="" onclick="change_photo('img/mobile5.jpg')"></div> -->
                     </div>
                 </div>
 
@@ -71,31 +67,44 @@ $this->registerCssFile(
                     <div class="subtitle"><p><?= $product->name ?></p> </div>
                     <div class="data-product">
                         <span>برند:</span>
-                        <a href="#"><?= $product->brand->original_name ?></a>
+                        <a href="<?= Url::to(['/list' , 'brandId' => $product->brand->id]) ?>"><?= $product->brand->original_name ?></a>
                         <span class="pr-4">دسته بندی:</span>
-                        <a href="#"><?= $product->category->name ?></a>
+                        <a href="<?= Url::to(['/list' , 'categoryId' => $product->category->id]) ?>"><?= $product->category->name ?></a>
                         
                     </div>
-                            <?php if(count($product->color) > 0 ){?>
-                    <div class="select-color d-flex">
-                        <span class="my-auto">انتخاب رنگ: </span>
-                        <?php foreach($product->color as $color){?>
-                            <div class="select-color-item active" ><i class="fas fa-circle color-withe" style="color: <?= $color->color_code ?>;"></i> <?= $color->name ?> </div>
-                        <?php }?>
-                    </div>
+                    <?php 
+                         $form = ActiveForm::begin([
+                            'options' => [
+                                'id' => 'color_form',
+                            ]
+                         ]); ?>
+                    <?php if(count($product->color) > 0 ){?>
+                        <div class="select-color d-flex">
+                             <span class="my-auto">انتخاب رنگ: </span> 
+                             <input type="hidden" id="change_color" name="change_color">
+                            <?php foreach($product->color as $color){?>
+                                <label for="color_<?= $color->id ?>" class="select-color-item <?= $color_id == $color->id ? 'active' : '' ?>" ><i class="fas fa-circle color-withe" style="color: <?= $color->color_code ?>;"></i> <?= $color->name ?> </label>
+                                
+                                <input type="radio" class="d-none" onchange=" $('#change_color').val(1);$('#color_form').submit()" <?= $color_id == $color->id ? 'checked' : '' ?>   id="color_<?= $color->id ?>" value="<?= $color->id ?>" name="color_id">
+                            <?php }?>
+                        </div>
                     <?php }?>
+                        <?php ActiveForm::end(); ?>
+                    
 
                     <?php if(count($product->productMetas) > 0 ){?>
-                    <div class="description-org" id="show-more">
-                        <h3>مشخصات اصلی :</h3>
-                        <ul>
-                            <?php foreach($productMetas as $key => $meta){?>
-                                <?php if($key> 3) break ?>
-                                <li><span class="description-org-title"><?= $meta->meta_key ?>: </span> <span class="mr-2"><?= $meta->meta_value  . ' ' . $meta->unit ?></span></li>
+                        <div class="description-org" id="show-more">
+                            <h3>مشخصات اصلی :</h3>
+                            <ul>
+                                <?php foreach($productMetas as $key => $meta){?>
+                                <?php if($key > 2) break ?>
+                                <li><span class="description-org-title"><?=  $meta->meta_key ?>: </span> <span class="mr-2"><?= $meta->meta_value  . ' ' . $meta->unit ?></span></li>
                             <?php }?>
 
                         </ul>
+                        <?php if(count($productMetas) > 3){?>
                         <button class="" id="show-more-btn">نمایش بیشتر</button>
+                        <?php }?>
                     </div>
                     <?php }?>
 
@@ -155,10 +164,6 @@ $this->registerCssFile(
                                 
                         </div>
                         <div class="product-left-favorit">
-                            <!-- <a href="">
-                                <i class="far fa-heart text-danger"></i>
-                            افزودن به علاقه مندی ها
-                            </a> -->
                             <?php
                                 $user_id = Yii::$app->user->id;
                                 $product_id = $product->id;
@@ -172,10 +177,11 @@ $this->registerCssFile(
                                 ) ?>
                         </div>
                         
-                        <button type="button" class="btn w-100">
+                        <button onclick="$('#color_form').submit();" class="btn w-100" <?= $product->marketable_number > 0 ? '' : 'disabled' ?>>
                             <i class="fal fa-shopping-cart"></i>
                             افزودن به سبد خرید
                         </button>
+
 
                     </div>
                         
@@ -265,7 +271,7 @@ $this->registerCssFile(
                                         <table class="table">
                                             
                                             <tbody>
-                                                <?php foreach ($productMetasdi as $key => $pMeta) {?>
+                                                <?php foreach ($product->productMetas as $key => $pMeta) {?>
                                                 <tr>
                                                     <th scope="row" ><?= $pMeta->meta_key ?></th>
                                                     <td ><?= $pMeta->meta_value . ' ' . $pMeta->unit ?> 
@@ -317,9 +323,10 @@ $this->registerCssFile(
                                 </div>
 
                             <?php if(count($comments) > 0){  foreach($comments as $comment){ ?>
+                        
                                 <div class="comment-sender">
                                     <div class="comment-sender-details d-flex justify-content-between ">
-                                        <span> <i class="far fa-user-circle"></i> <?= $comment->user->name ?></span><span><?=  $comment->created_at ?></span>
+                                        <span> <i class="far fa-user-circle"></i> <?= $comment->user->username ?></span><span><?=  $comment->created_at ?></span>
                                     </div>
                                     <div class="comment-content">
                                         <p><?= $comment->comment ?></p>
@@ -630,8 +637,8 @@ $this->registerCssFile(
                 <div class="owl-carousel owl-theme second-slider" >
                     <?php foreach($newProducts as $newProduct){?>
                     <div class="item" >
-                        <a href="#" class="d-block text-center">
-                            <img src="img/newest (1).jpg" alt="">
+                        <a href="<?= Url::to(['product/' , 'id' => $newProduct->id]) ?>" class="d-block text-center">
+                            <img src="<?= Yii::getAlias('@web/uploads/images/') . ($newProduct->image ?? '') ?>" alt="">
                             <div class="item-caption">
                                 <p><?= $newProduct->name ?></p>
                                 <div class="item-caption-bottom">
@@ -654,8 +661,19 @@ $this->registerCssFile(
 <!-------------------------------------End slider --------------------------------->
 
 
-
-
-
 <!-------------------------------------END product page--------------------------------->
 
+<script>
+    document.querySelectorAll('input[name="color_id"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+
+        // حذف active از همه لیبل‌ها
+        document.querySelectorAll('.select-color-item').forEach(function (label) {
+            label.classList.remove('active');
+        });
+
+        // اضافه کردن active به لیبل مربوطه
+        document.querySelector('label[for="' + this.id + '"]').classList.add('active');
+    });
+});
+</script>

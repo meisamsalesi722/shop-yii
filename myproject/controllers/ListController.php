@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\Brand;
 use yii\data\Sort;
+use app\models\Brand;
 use yii\base\Security;
 use app\models\Product;
 use yii\web\Controller;
+use app\models\Category;
 use yii\data\Pagination;
 use yii\web\ErrorAction;
 use yii\filters\VerbFilter;
@@ -20,41 +21,7 @@ use yii\web\NotFoundHttpException;
 
 class ListController extends Controller
 {
-    public function __construct(
-        $id,
-        $module,
-        private readonly MailerInterface $mailer,
-        private readonly Security $security,
-        $config = [],
-    ) {
-        parent::__construct($id, $module, $config);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors(): array
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * {@inheritdoc}
@@ -86,6 +53,8 @@ class ListController extends Controller
     $exist = $request['exist'] ?? false;
     $minPrice = $request['minPrice'] ?? null;
     $maxPrice = $request['maxPrice'] ?? null;
+    $brandId = $request['brandId'] ?? null;
+    $categoryId = $request['categoryId'] ?? null;
 
     switch ($sortId) {
         case '1':
@@ -107,6 +76,11 @@ class ListController extends Controller
                 $column = 'created_at';
                 $sort = 'DESC';
                 break;
+
+            case '5':
+                $column = 'sold_number';
+                $sort = 'DESC';
+                break;
                 
                 default:
                 $column = 'created_at';
@@ -121,6 +95,26 @@ if ($search !== '') {
     $query->andWhere(['like', 'name', $search]);
 }
 
+if ($categoryId !== '') {
+    function getAllChildren($categoryId, &$result = []) {
+        $children = Category::find()
+            ->where(['parent_id' => $categoryId])
+            ->all();
+        
+        foreach ($children as $child) {
+            $result[] = $child->id;
+            getAllChildren($child->id, $result); 
+        }
+        
+        return $result;
+    }
+    
+    $allIds = [$categoryId];
+    $childrenIds = getAllChildren($categoryId);
+    $allIds = array_merge($allIds, $childrenIds);
+    $query->andWhere(['category_id' => $allIds]);
+}
+
 if ($exist) {
     $query->andWhere(['>', 'marketable_number', 0]);
 }
@@ -133,12 +127,15 @@ if ($exist) {
     if ($maxPrice !== null && $maxPrice !== '') {
         $query->andWhere(['<=', 'price', (int)$maxPrice]);
     }
+    if ($brandId !== null && $brandId !== '') {
+        $query->andWhere(['brand_id' => $brandId]);
+    }
 
 
     $dataProvider = new ActiveDataProvider([
         'query' => $query,
         'pagination' => [
-            'pageSize' => 4,
+            'pageSize' => 9,
         ],
     ]);
 
@@ -152,6 +149,8 @@ if ($exist) {
         'brands' => $brands,
         'minPrice' => $minPrice,
         'maxPrice' => $maxPrice,
+        'brandId' => $brandId,
+        'categoryId' => $categoryId,
     ]);
 
     }

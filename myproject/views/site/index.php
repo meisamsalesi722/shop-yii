@@ -159,7 +159,17 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row px-3  px-sm-0">
                    <div class="small-slider-big col-lg-12 col-md-12"  >
-                    <h3 dir="rtl">پرفروش ترین ها</h3>
+ 
+                   <div class="small-slider-product-top d-flex justify-content-between">
+                        <div class="small-slider-product-right ">
+                            <h3 dir="rtl">پر فروش ترین ها</h3>
+                        </div>
+                        <div class="small-slider-product-left align-content-end mt-4">
+                                <a href="<?= Url::to(['/list' , 'sortId' => 5 ?? '' ]) ?>" >مشاهده لیست کامل
+                                <i class="fas fa-chevron-left mr-2"></i>
+                                </a> 
+                        </div>
+                    </div>
     
                     <div class="visited-slider">
                         <div class="owl-carousel owl-theme second-slider" >
@@ -208,7 +218,7 @@ use yii\helpers\Url;
                             <h3 dir="rtl"><?= $categories_notchilren[0]->name ?? '' ?></h3>
                         </div>
                         <div class="small-slider-product-left align-content-end mt-4">
-                                <a href="#" >مشاهده لیست کامل
+                                <a href="<?= Url::to(['/list' , 'categoryId' => $categories_notchilren[0]->id ?? '' ]) ?>" >مشاهده لیست کامل
                                 <i class="fas fa-chevron-left mr-2"></i>
                                 </a> 
                         </div>
@@ -218,7 +228,7 @@ use yii\helpers\Url;
 
                         <div class="owl-carousel owl-theme second-slider" >
                             <?php if($productsCategory1 && !empty($productsCategory1)){ foreach ($productsCategory1 as $key => $productCategory1) { ?>
-                                    <div class="item" >
+                                    <div class="item">
                                         <a href="<?=  Url::to( ['/product' , 'id' => $productCategory1->id]) ?>" class="d-block text-center">
                                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($productCategory1->image ?? '') ?>" alt="">
                                             <div class="item-caption">
@@ -255,7 +265,7 @@ use yii\helpers\Url;
                             <h3 dir="rtl"> پربازدیدترین</h3>
                         </div>
                         <div class="small-slider-product-left align-content-end mt-4">
-                                <a href="#" >مشاهده لیست کامل
+                                <a href="<?= Url::to(['/list' , 'sortId' => 3]) ?>" >مشاهده لیست کامل
                                 <i class="fas fa-chevron-left mr-2"></i>
                                 </a> 
                         </div>

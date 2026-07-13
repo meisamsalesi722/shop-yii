@@ -1,6 +1,7 @@
                         <!-- <div class=" col-lg-4 col-md-6 mt-lg-3"> -->
+                           <a href="<?= \yii\helpers\Url::to(['product/' , 'id' => $model->id]) ?>">
                            <div class="item-product">
-                              <img src="img/lap3.jpg" alt="" class="img-fluid">
+                              <img src="<?= Yii::getAlias('@web/uploads/images/') . ($model->image ?? '') ?>" alt="" class="img-fluid">
                               <div class="item-product-description">
                                  <p>
                                     <?= $model->name ?>
@@ -29,4 +30,5 @@
                                  </div>
                               </div>
                            </div>
+                           </a>
                         <!-- </div> -->

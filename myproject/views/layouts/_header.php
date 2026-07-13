@@ -1,5 +1,10 @@
 <?php
+// use Yii;
+use yii\helpers\Url;
+use yii\helpers\Html;
 use app\models\Category;
+use yii\widgets\ActiveForm;
+
 ?>
     <div class="top-menu">
         <section id="header-section" class="">
@@ -10,22 +15,43 @@ use app\models\Category;
                     </div>
                     
                         <div class="col-lg-6 col-md-6 col-sm-8 col-8 search-top">
-                            <form action="" class="d-flex  justify-content-between">
-                                <input type="text" placeholder="جستجوی کالا در محصولات...">
-                                <button type="submit" name="send"><i class="fas fa-search"></i></button>
+                            <form action="<?= Url::to(['list/index']) ?>" method="get" class="d-flex  justify-content-between">
+                                <input type="text" name="send" placeholder="جستجوی کالا در محصولات...">
+                                <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
-                        <div class="header-left d-flex col-lg-5 col-md-5 col-sm-12 col-12 justify-content-center justify-content-md-end">
-                                <a href="">
+                        <div class="header-left d-flex col-lg-5 col-md-5 col-sm-12 col-12 justify-content-center align-items-center justify-content-md-end">
+                            <?php if(Yii::$app->user->isGuest){
+                                ?>
+                                <a href="<?= Url::to('/site/login') ?>">
                                     <span>ورود</span>
+                                </a> 
+                                /
+                                <a href="<?= Url::to('/site/signup') ?>">
+                                    <span>ثبت نام</span>
                                     <i class="fal fa-user"></i>
                                 </a> 
-                                <a href="">
+                                <?php }else{?>
+
+                                    <?php ActiveForm::begin([
+                                        'action' => '/site/logout'
+                                    ]) ?>
+
+                                <button type="submit">
+                                    <span>خروج</span>
+                                    <i class="fal fa-user"></i>
+                                </button> 
+                                        
+                                <?php ActiveForm::end()?>
+
+                                    <?= Html::endForm() ?>
+
+                                    <?php }?>
+                                <a href="<?= Url::to('/cart-item') ?>">
                                     <span>سبد خرید</span>
                                     <i class="fal fa-shopping-cart"></i>
                                 </a>              
                         </div>
-                    
                 </div>
             </div>
             
@@ -49,15 +75,15 @@ use app\models\Category;
                                         <?php foreach ($categories as $key => $category) { ?>
 
                                             <span class="first-col-span">
-                                                <a href="#" class="link-in-first-col"><?= $category->name ?></a>
+                                                <a href="<?= Url::to(['/list/index' , 'categoryId' => $category->id]) ?>" class="link-in-first-col"><?= $category->name ?></a>
                                                 <div class="sub-me-menu ">
                                                     
                                                     <div class="in-sub-me-menu  ">
                                                        <?php foreach ($category->children as $key => $children) { ?>
                                                         <div class="three-level ">
-                                                            <span class="three-level-span "><a href="#"><h3><?= $children->name ?></h3></a></span>
+                                                            <span class="three-level-span "><a href="<?= Url::to(['/list/index' , 'categoryId' => $children->id]) ?>"><h3><?= $children->name ?></h3></a></span>
                                                             <?php foreach ($children->children as $key => $subchildren) { ?>
-                                                                <span class="three-level-span three-level-span-space "><a href="#" class=""> <?= $subchildren->name ?></a></span>
+                                                                <span class="three-level-span three-level-span-space "><a href="<?= Url::to(['/list/index' , 'categoryId' => $subchildren->id]) ?>" class=""> <?= $subchildren->name ?></a></span>
 
                                                             <?php } ?>
                                                         </div>
@@ -80,8 +106,8 @@ use app\models\Category;
                     <li>
                         <div class="divider px-0 mx-0" ></div>
                     </li>
-                    <li class="blue-border"><a href="#">تخفیف های امروز</a></li>
-                    <li class="blue-border"><a href="#">مجله آنلاین</a></li>
+                    <!-- <li class="blue-border"><a href="#">تخفیف های امروز</a></li>
+                    <li class="blue-border"><a href="#">مجله آنلاین</a></li> -->
                     </ul>
                 </div>
                 <div class="article">

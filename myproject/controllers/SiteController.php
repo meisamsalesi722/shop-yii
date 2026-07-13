@@ -7,12 +7,13 @@ namespace app\controllers;
 use Yii;
 use yii\web\Response;
 use app\models\Banner;
-use app\models\Category;
 use yii\base\Security;
 use app\models\Product;
 use yii\web\Controller;
+use app\models\Category;
 use yii\web\ErrorAction;
 use app\models\LoginForm;
+use app\models\SignupForm;
 use app\models\ContactForm;
 use yii\filters\VerbFilter;
 use yii\mail\MailerInterface;
@@ -21,7 +22,7 @@ use yii\filters\AccessControl;
 
 class SiteController extends Controller
 {
-    public function __construct(
+        public function __construct(
         $id,
         $module,
         private readonly MailerInterface $mailer,
@@ -39,13 +40,21 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => [
+                    'logout' ,
+                    // 'signup'
+                ],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    // [
+                    //     'actions' => ['signup'],
+                    //     'allow' => true,
+                    //     'roles' => ['?']
+                    // ]
                 ],
             ],
             'verbs' => [
@@ -96,15 +105,15 @@ class SiteController extends Controller
         $OneLastBanner = Banner::find()->where(['position' => 8])->one();
 
         //Products
-        $newProducts = Product::find()->orderBy(['created_at' => 'SORT_DESC'])->limit(10)->all();
-        $bestsellers = Product::find()->orderBy(['sold_number' => SORT_DESC])->limit(10)->all();
+        $newProducts = Product::find()->orderBy('created_at DESC')->limit(10)->all();
+        $bestsellers = Product::find()->orderBy('sold_number DESC')->limit(10)->all();
         $categories_notchilren = Category::find()->alias('c')->leftJoin('category child', 'child.parent_id = c.id')->where(['IS NOT', 'c.parent_id', null])->andWhere(['child.id' => null])->all();
         if($categories_notchilren){
             $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[0]])->limit(10)->all();
         }else{
             $productsCategory1 = [];
         }
-        $mostVieweds = Product::find()->orderBy(['view' => SORT_DESC])->limit(10)->all();
+        $mostVieweds = Product::find()->orderBy('view DESC')->limit(10)->all();
 
         return $this->render('index', [
             'specials' => $specials,
@@ -155,6 +164,10 @@ class SiteController extends Controller
      */
     public function actionLogout(): Response
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         Yii::$app->user->logout();
 
         return $this->goHome();
@@ -187,6 +200,26 @@ class SiteController extends Controller
 
         return $this->render('contact', ['model' => $model]);
     }
+
+        public function actionSignup()
+            {
+                // dd('hi');
+            if (!Yii::$app->user->isGuest) {
+                return $this->goHome();
+            }
+                $model = new SignupForm();
+
+                if ($model->load(Yii::$app->request->post())) {
+                    if ($user = $model->signup()) {
+                        Yii::$app->user->login($user);
+                        return $this->goHome();
+                    }
+                }
+
+                return $this->render('signup', [
+                    'model' => $model,
+                ]);
+            }
 
     /**
      * Displays about page.

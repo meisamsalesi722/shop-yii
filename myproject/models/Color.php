@@ -33,8 +33,9 @@ class Color extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'color_code', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [[ 'created_at', 'updated_at'], 'integer'],
+            [['name', 'color_code'], 'default', 'value' => null],
+            [[ 'created_at', 'updated_at'], 'safe'],
+            [['product_id'], 'required'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['name'], 'string', 'max' => 255],
         ];

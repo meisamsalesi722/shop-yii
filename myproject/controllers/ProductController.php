@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\models\CartItem;
+use app\models\Color;
 use Yii;
 use app\models\User;
 use yii\web\Response;
@@ -23,40 +25,28 @@ use yii\web\NotFoundHttpException;
 
 class ProductController extends Controller
 {
-    public function __construct(
-        $id,
-        $module,
-        private readonly MailerInterface $mailer,
-        private readonly Security $security,
-        $config = [],
-    ) {
-        parent::__construct($id, $module, $config);
-    }
 
-    /**
-     * {@inheritdoc}
+        /**
+     * @inheritDoc
      */
-    public function behaviors(): array
+    public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
+
+        return array_merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['create'],
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
                     ],
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
+            ]
+        );
     }
 
     /**
@@ -81,22 +71,63 @@ class ProductController extends Controller
      *
      * @return string
      */
-    public function actionIndex($id): string
+    public function actionIndex($id)
     {
         $model = new Comment();
-        
         $product = $this->findModel($id);
+        $modelCartItem =  new CartItem();
+
+        $color_id = null;
+    $request = Yii::$app->request;
+    
+    if ($request->isPost) {
+        if(Yii::$app->request->post('change_color') == 1){
+            $color = Color::findOne(Yii::$app->request->post('color_id'));
+            $product->price += $color->price_increase;
+            $color_id = Yii::$app->request->post('color_id');
+        }else{
+
+        
+        
+        $colorId = $request->post('color_id');
+        
+        if(!empty($product->color)){
+            if(!$colorId){
+                Yii::$app->session->setFlash('error', 'لطفا رنگ محصول را انتخاب کنید.');
+                return $this->redirect(['/product', 'id' => $id]);
+            }
+            $modelCartItem->color_id = (int)$colorId;
+        }
+        
+        $modelCartItem->user_id = (int)(Yii::$app->user->id) ;
+        $modelCartItem->product_id = (int)$id;
+        $modelCartItem->number = 1;
+        
+    if ($modelCartItem->save()) {
+        Yii::$app->session->setFlash('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                $product->frozen_number += 1;
+                $product->marketable_number -= 1;
+                $product->save(false);
+    } else {
+        Yii::$app->session->setFlash('error', 'افزودن به سبد خرید با شکست مواجه شد.');
+    }
+
+    return $this->redirect(['/product', 'id' => $id]);
+}
+}
+        
 
         $attributeNames = ArrayHelper::getColumn($product->category->categoryAttributes,'name');
 
-        $productMetas = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
+        $productMetas = array_values(array_filter($product->productMetas, function ($meta) use ($attributeNames) {
             return in_array($meta->meta_key, $attributeNames, true);
-        });
+        }));
 
-          $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
-            return !in_array($meta->meta_key, $attributeNames, true);
-        });
-        $newProducts = Product::find()->orderBy(['created_at DESC'])->limit(10)->all();
+        //   $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
+        //     return !in_array($meta->meta_key, $attributeNames, true);
+        // });
+        $newProducts = Product::find()->where(['!=' , 'id' , $id])->orderBy('created_at DESC')->limit(10)->all();
+
 
 
         $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id , 'status' => Comment::STATUS_APPROVED])->all();
@@ -107,8 +138,9 @@ class ProductController extends Controller
             'product' => $product,
             'comments' => $comments,
             'productMetas' => $productMetas,
-            'productMetasdi' => $productMetasdi,
-            'newProducts' => $newProducts
+            // 'productMetasdi' => $productMetasdi,
+            'newProducts' => $newProducts,
+            'color_id' => $color_id
         ]);
 
     }
@@ -127,7 +159,8 @@ class ProductController extends Controller
             if ($model->load($this->request->post())) {
                 $user = User::findOne(['email' => $model->email]);
                 if(!$user){
-                    return $this->redirect(['product']);
+                    Yii::$app->session->setFlash('error' , 'کاربر مورد نظر یافت نشد');
+                    return $this->redirect(['/product' , 'id' => $id]);
                 }
                 $model->product_id = $id;
                 $model->user_id = $user->id;
@@ -145,11 +178,10 @@ class ProductController extends Controller
     }
 
     public function actionToggleFavorite($id){
-        $user = User::findOne(1);
-        Yii::$app->user->login($user);
 
+        
         $isGuest = Yii::$app->user->isGuest;
-
+        
         if(!$isGuest){
         $model = new ProductUser();
         $user_id = Yii::$app->user->identity->id ;

@@ -17,7 +17,7 @@ class m260630_062828_create_cart_item_table extends Migration
             'user_id' => $this->integer()->notNull(),
             'product_id' => $this->integer()->notNull(),
             'number' => $this->integer(),
-            'color_id' => $this->integer()->notNull(),
+            'color_id' => $this->integer(),
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);

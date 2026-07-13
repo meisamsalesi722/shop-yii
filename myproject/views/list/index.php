@@ -1,17 +1,20 @@
 <?php
 
 use yii\helpers\Url;
-use yii\helpers\Html;
+use app\models\Category;
 use yii\widgets\ListView;
 use yii\widgets\ActiveForm;
 use app\assets\FrontendAsset;
 
-                        use yii\widgets\LinkPager;
 
 $this->registerCssFile(
     '@web/css/list.css',
     ['depends' => [\app\assets\FrontendAsset::class]]
 );
+?>
+<?php 
+   $category = Category::find()->where(['id' => $categoryId])->with('parent')->one();
+   // $categories = Category::find()->where(['parent_id' => null])->with('children')->all();
 ?>
      <!-------------------------------------Start product page--------------------------------->
       <div id="content">
@@ -19,37 +22,48 @@ $this->registerCssFile(
             <div class="row">
                <div class="col-lg-3 d-none d-lg-block">
                   <div class="content-right">
+                     <?php if($categoryId != null){?>
                      <div class="category">
                         <div class="category-sm">
                            <div class="category-title">
                               <h3>دسته بندی نتایج</h3>
                            </div>
                            <div class="category-content">
-                              <div class="category-content-title">
-                                 <i class="fas fa-chevron-left"></i>
-                                 <a href="#">کالای دیجیتال</a>    
-                              </div>
+                              
+                                 
+                              <?php if($category != null){ ?>
+                                 <div class="category-content-title">
+                                    <i class="fas fa-chevron-left"></i>
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'categoryId' => $category->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?=  $category->name ?> </a>    
+                                 </div>
+                              <?php }?>
                               <div class="category-sub-content">
+                                 <?php if($category->children){
+                                    foreach($category->children as $children){
+                                    ?>
                                  <div>
                                     <i class="fas fa-chevron-down"></i>
-                                    <a href="#">لپ تاپ</a>   
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'categoryId' => $children->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $children->name ?></a>   
                                  </div>
+                                 <?php } ?>
+                                 <?php if($children->children != null){
+                                    foreach($children->children as $sub_children){
+                                    ?>
                                  <div class="mr-3">
-                                    <a href="#">لپ تاپ و الترابوک</a> 
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId  , 'categoryId' => $sub_children->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $sub_children->name ?></a> 
                                  </div>
-                                 <div class="mr-3">
-                                    <a href="#">لوازم جانبی لپ تاپ</a> 
-                                 </div>
+                                 <?php }}} ?>
                               </div>
                            </div>
                         </div>
                      </div>
+                     <?php } ?>
                      <div class="available-product d-flex justify-content-md-between">
                         <span class="my-auto"> فقط کالاهای موجود </span>
 
                         <?php 
                          $form = ActiveForm::begin([
-                           'action' => '/list/index?sortId=' . $sortId,
+                           'action' => '/list/index?sortId=' . $sortId. '&brandId=' . $brandId . '&categoryId=' . $categoryId ,
                            'method' => 'get',
                         ]); ?>
 
@@ -126,7 +140,7 @@ $this->registerCssFile(
             <div class="price-fields">
                 <div class="form-group">
                     <label for="min_price">قیمت از</label>
-                    <input type="number" name="minPrice" id="min_price" value="<?= isset($minPrice) ? htmlspecialchars($minPrice) : '' ?>" placeholder="قیمت از" class="form-control">
+                    <input type="number" min="0" name="minPrice" id="min_price" value="<?= isset($minPrice) ? htmlspecialchars($minPrice) : '' ?>" placeholder="قیمت از" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="max_price">تا</label>
@@ -163,126 +177,91 @@ $this->registerCssFile(
                               </form> -->
                               <div class="brand-item">
                                  <?php foreach($brands as $brand){?>
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> <?= $brand->persian_name ?></span>
-                                    </div>
-                                    <span> <?= $brand->original_name ?> </span>
-                                 </div>
+                                    <a class="text-dark" href="<?= Url::to(['/list', 'brandId' => $brand->id   , 'sortId' => $sortId , 'categoryId' => $categoryId , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>">
+                                       <div class="d-flex justify-content-between">
+                                          <div>
+                                             <i class="far fa-square"></i>
+                                             <span> <?= $brand->persian_name ?></span>
+                                          </div>
+                                          <span> <?= $brand->original_name ?> </span>
+                                       </div>
+                                    </a>
                                     <?php } ?>
                               </div>
                            </div>
                         </div>
                      </div>
-
-                     <div class="search-brand">
-                        <div class="search-box-information" onclick="opent_body('#angle-down-4')">
-                           <a class="search-style justify-content-between " data-toggle="collapse" href="#collapse-search-capacity" role="button" aria-expanded="false" aria-controls="collapse-search-capacity">
-                              <div class="div-start">
-                                 ظرفیت حافظه
-                              </div>
-                              <div class="div-end">
-                                 <i id="angle-down-4" class="fas fa-chevron-left down-rotate"></i>
-                              </div>
-                           </a>
-                        </div>
-                        <div class="collapse" id="collapse-search-capacity">
-                           <div class="card card-body">
-                              <!-- <form action="" class="d-flex form-search ">
-                                 <button type="submit" name="send"><i class="fas fa-search"></i></button>
-                                 <input type="text" placeholder="جستجوی نام....  " class="my-auto border-0">
-                              </form> -->
-                              <div class="brand-item">
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> ال جی</span>
-                                    </div>
-                                 </div>
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> سامسونگ</span>
-                                    </div>
-                                 </div>
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> اپل </span>
-                                    </div>
-                                 </div>
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> اپل </span>
-                                    </div>
-                                 </div>
-                                 <div class="d-flex justify-content-between">
-                                    <div>
-                                       <i class="far fa-square"></i>
-                                       <span> اپل </span>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
                      
-                     <a href="<?= Url::to('/list')  ?>" class="btn btn-warning w-100" >حذف همه فیلتر ها</a>
+                     <a href="<?= Url::to('/list')  ?>" class="btn btn-warning w-100 mt-4" >حذف همه فیلتر ها</a>
                   </div>
                </div>
                <div class="col-lg-9">
                   <!---------------------------------------START breadcrumb-top--------------------------------->
+                  <?php if($categoryId != null){?>
                   <div id="breadcrumb-top">
                      <div class="container">
                         <div class="row">
                            <div class="breadcrumb-top d-flex">
-                              <div class="breadcrumb-top-item ml-4 mr-2 mr-sm-0">
-                                 <a href="#">کالای دیجیتال</a>
-                                 <i class="fas fa-chevron-left"></i>
-                              </div>
-                              <div class="breadcrumb-top-item ml-4">
-                                 <a href="#">موبایل </a>
-                                 <i class="fas fa-chevron-left"></i>
-                              </div>
-                              <div class="breadcrumb-top-item ml-4">
-                                 <span>گوشی موبایل </span>
-                              </div>
+
+                              <?php if($category->parent){ if($category->parent->parent){?>
+                                 <div class="breadcrumb-top-item ml-4 mr-2 mr-sm-0">
+                                    <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId  , 'categoryId' => $category->parent->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->parent->name ?></a>
+                                    <i class="fas fa-chevron-left"></i>
+                                 </div>
+                                 <?php } }?>
+
+                                 <?php if($category->parent){?>
+                                    <div class="breadcrumb-top-item ml-4">
+                                       <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId   , 'categoryId' => $category->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->name ?> </a>
+                                       <i class="fas fa-chevron-left"></i>
+                                    </div>
+                                 <?php }?>
+                              <?php if($category != null){?>
+                                 <div class="breadcrumb-top-item ml-4">
+                                    <span><?= $category->name ?> </span>
+                                 </div>
+                              <?php }?>
                            </div>
                         </div>
                      </div>
                   </div>
+                  <?php }?>
                   <!--------------------------------------- END breadcrumb-top--------------------------------->
                   <div class="sort-content d-none d-lg-block">
                      <i class="fas fa-sort-amount-up"></i>    
                      <span class="sort-title">مرتب سازی</span>
-                        <a href="<?= Url::to(['/list', 'sortId' => 1 , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 1 ? 'class="active"' : ''  ?>>گران ترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 2 , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 2 ? 'class="active"' : ''  ?>>ارزان ترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 3 , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 3 ? 'class="active"' : ''  ?>>پربازدیدترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 4 , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 4 ? 'class="active"' : ''  ?>>جدیدترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 1 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 1 ? 'class="active"' : ''  ?>>گران ترین</a>
+                     <a href="<?= Url::to(['/list', 'sortId' => 2 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 2 ? 'class="active"' : ''  ?>>ارزان ترین</a>
+                     <a href="<?= Url::to(['/list', 'sortId' => 3 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 3 ? 'class="active"' : ''  ?>>پربازدیدترین</a>
+                     <a href="<?= Url::to(['/list', 'sortId' => 4 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 4 ? 'class="active"' : ''  ?>>جدیدترین</a>
+                     <a href="<?= Url::to(['/list', 'sortId' => 5 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 5 ? 'class="active"' : ''  ?>>پرفروش ترین</a>
                   </div>
                   <div class="mobile-item d-block d-lg-none">
                      <span class="icon-mob-drow" onclick="open_sort()">
                      مرتب سازی براساس
-                     <a href="<?= Url::to(['/list', 'sortId' => 1 , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 1   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 1 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         گران ترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 2 , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 2   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 2 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         ارزان ترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 3 , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 3   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 3 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         پربازدیدترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 4 , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 4  , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 4 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                            جدیدترین 
+                        </span>
+                     </a>
+                     <a href="<?= Url::to(['/list', 'sortId' => 5  , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                        <span class="<?=  $sortId == 5 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
+                           پرفروش ترین 
                         </span>
                      </a>
                      

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Color;
 
 /**
  * This is the model class for table "cart_item".
@@ -36,9 +37,9 @@ class CartItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['user_id', 'product_id', 'color_id'], 'required'],
-            [['user_id', 'product_id', 'number', 'color_id', 'created_at', 'updated_at'], 'integer'],
+            [['number' , 'color_id'], 'default', 'value' => null],
+            [['user_id', 'product_id'], 'required'],
+            [['user_id', 'product_id', 'number', 'color_id'], 'integer'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -68,6 +69,10 @@ class CartItem extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
+    }
+    public function getColor()
+    {
+        return $this->hasOne(Color::class, ['id' => 'color_id']);
     }
 
     /**

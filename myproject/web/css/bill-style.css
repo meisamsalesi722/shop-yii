@@ -1,0 +1,247 @@
+/*bills-section-started*/
+
+
+#bills-section .my-center {
+    text-align: center;
+  }
+  
+  #bills-section .all-item-card {
+    margin-top: 20px;
+    margin-right: 0px;
+    margin-left: 0px;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  #bills-section .all-item-card .tatal-price-row {
+    color: #007bff;
+    font-size: 23px;
+  }
+  
+  #bills-section .card-item {
+    min-height: 50px;
+    background: #fff;
+    border-bottom: 1px solid #eaeaea;
+    padding: 30px 15px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  
+  #bills-section .card-item:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    clear: both;
+    overflow: hidden;
+  }
+  
+  #bills-section .p-in-card {
+    font-weight: 500;
+    line-height: 1.85;
+  }
+  
+  #bills-section .p-in-card .delete-btn {
+    color: #EF2840;
+    font-size: .8rem;
+  }
+  
+  #bills-section .p-in-card .delete-btn i {
+    font-size: 1rem;
+  }
+  
+  #bills-section .status-product {
+    font-weight: 400;
+  }
+  
+  #bills-section .counter-item {
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    font-weight: 500;
+  }
+  
+  #bills-section .col-card {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  #bills-section .col-card select:focus{
+    outline: unset;
+  }
+  #bills-section .count-drop {
+    width: 60%;
+    margin-right: 20%;
+    border-radius: 4px;
+  }
+  
+  #bills-section .delete-product:before {
+    margin-left: 10px;
+  }
+  
+  #bills-section .bg-waith {
+    background: #fff;
+  }
+  
+  #bills-section .first-sum:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    clear: both;
+    overflow: hidden;
+  }
+  
+  #bills-section .first-sum {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  #bills-section .span-one-sum {
+    display: block;
+    width: 50%;
+    float: right;
+  }
+  
+  #bills-section .span-two-sum {
+    display: block;
+    width: 50%;
+    float: left;
+    text-align: left;
+  }
+  
+  #bills-section .first-sum-blue {
+    color: #36cddf;
+  }
+  
+  #bills-section .sum-all-item {
+    display: block;
+    text-align: center;
+    padding: 20px 20px 0;
+    border-top: 1px solid #eaeaea;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+  }
+  
+  #bills-section .sum-all-item span:nth-child(1) {
+    color: #000;
+  }
+  
+  #bills-section .sum-all-item span:nth-child(2) {
+    color: gray;
+  }
+  
+  #bills-section .sum-all-item span {
+    display: block;
+    line-height: 50px;
+  }
+  
+  #bills-section .sum-all-item .all-price {
+    color: #007bff !important;
+  }
+  
+  #bills-section .my-next {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    height: 50px;
+    line-height: 41px;
+    font-size: 24px;
+    position: relative;
+  }
+  
+  #bills-section .p-in-card-2 {
+    display: none;
+    margin-top: 15px;
+    text-align: center;
+  }
+
+  #bills-section .div-cardam {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #eaeaea;
+    margin-top: 20px;
+    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  #bills-section .status-product-2 {
+    color: #ef5661;
+  }
+  #bills-section .img-item-box{
+      vertical-align: middle;
+      border-radius: 5px;
+      overflow: hidden;
+  }
+  #bills-section .img-item-box img{
+    border-radius: 3px;
+  }
+  #bills-section .img-item-box span {
+    top: 45%;
+    right: -1.5rem;
+    color: gray;
+    font-weight: bold;
+  }
+  
+  #bills-section .item-comment {
+    color: #000;
+  }
+  
+  #bills-section .item-comment span {
+    color: gray;
+    display: inline-block;
+  }
+  
+  #bills-section .item-price {
+    font-size: 1.5rem;
+    color: gray;
+  }
+  
+  #bills-section .side-box p {
+    color: gray;
+  }
+  
+  #bills-section .side-box p:nth-child(2) {
+    margin-top: 1rem;
+  }
+  
+  #bills-section a:hover {
+    background-color: #007bff;
+  }
+  .left-buttom{
+      background-color: #007bff;
+      border-radius: 5px;
+  }
+  
+  /*bills-section-started*/
+  
+  @media screen and (max-width:1200px){
+    #bills-section .all-item-card .tatal-price-row{
+      margin-top: 16px;
+    }
+  }
+  
+
+  @media screen and (max-width:768px){
+      #bills-section .all-item-card .tatal-price-row {
+        margin-top: 17px;
+    }
+    #bills-section .count-drop {
+        max-width: 4rem;
+    }
+  }
+    

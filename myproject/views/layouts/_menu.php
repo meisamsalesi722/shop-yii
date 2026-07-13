@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 use app\models\Category;
 ?>
 <!------------------------------------- START MENU --------------------------------->
@@ -17,7 +18,7 @@ use app\models\Category;
                 <?php foreach ($categories as $key => $category) { ?>
                     <div class="item-level-one">
                         <i class="far fa-circle"></i>
-                        <a> <?= $category->name  ?> </a>
+                        <a href="<?= Url::to(['/list/index' , 'categoryId' => $category->id]) ?>"> <?= $category->name  ?> </a>
                         <span onclick="open_level_two('#body-level-two-<?= $key ?>')"><i class="fas fa-chevron-left"></i></span>
                     </div>
                 <?php } ?>
@@ -35,12 +36,12 @@ use app\models\Category;
                 <?php foreach ($categories as $key => $category) { ?>
                     <div class="body-level-two" id="body-level-two-<?= $key ?>">
                         <div class="go-back-menu" onclick="back_level_one()">
-                            <a href="#">زیر گروه های <strong class="red-menu"> <?= $category->name ?> </strong></a>
+                            <a href="<?= Url::to(['/list/index' , 'categoryId' => $category->id]) ?>">زیر گروه های <strong class="red-menu"> <?= $category->name ?> </strong></a>
                             <span><i class="fas fa-arrow-right"></i></span>
                         </div>
                     <?php foreach ($category->children as $index => $children) { ?>
                         <div class="item-level-one">
-                            <a href="/categories/category-mobile-accessories"> <?= $children->name ?></a>
+                            <a href="<?= Url::to(['/list/index' , 'children' => $category->id]) ?>"> <?= $children->name ?></a>
                             <span onclick="open_level_three('#body-level-three-<?= $index ?>')"><i
                                     class="fas fa-chevron-left"></i></span>
                         </div>
@@ -63,14 +64,14 @@ use app\models\Category;
 
             
             <div class="go-back-menu" onclick="back_level_two()">
-                <a href="#">زیر گروه های <strong class="red-menu"> <?= $children->name ?></strong></a>
+                <a href="<?= Url::to(['/list/index' , 'categoryId' => $children->id]) ?>">زیر گروه های <strong class="red-menu"> <?= $children->name ?></strong></a>
                 <span><i class="fas fa-arrow-right"></i></span>
             </div>
 
             <?php foreach ($children->children as $key => $subChildren) { ?>
 
                         <div class="item-level-one">
-                            <a href="/category/category-cell-phone-pouch-cover"><?= $subChildren->name ?></a>
+                            <a href="<?= Url::to(['/list/index' , 'categoryId' => $subChildren->id]) ?>"><?= $subChildren->name ?></a>
                             <span onclick="open_level_four('#body-level-four-1')"><i
                                     class="fas fa-chevron-left"></i></span>
                         </div>
