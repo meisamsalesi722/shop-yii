@@ -7,7 +7,8 @@ use yii\widgets\DetailView;
 /** @var app\models\ProductMeta $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Product Metas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '/ Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Product Metas', 'url' => ['meta-index'  , 'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Update', ['meta-update', 'product_id' => $product_id , 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['meta-delete', 'product_id' => $product_id ,'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -32,7 +33,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'meta_key',
             'meta_value',
-            'product_id',
+            [
+                'attribute' => 'product',
+                'value' => function($model){
+                    return $model->product->name;
+                }
+            ]
         ],
     ]) ?>
 

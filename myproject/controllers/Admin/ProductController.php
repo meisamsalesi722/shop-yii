@@ -16,6 +16,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\ProductSearch;
 use yii\filters\AccessControl;
+use app\models\ProductMetaSearch;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -326,6 +327,122 @@ public function actionUpdate($id)
     protected function findModel($id)
     {
         if (($model = Product::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+
+
+
+    // ------------------------------------------------    product meta    ------------------------------------------------------------------//
+
+
+
+
+    
+    /**
+     * Lists all ProductMeta models.
+     *
+     * @return string
+     */
+    public function actionMetaIndex($product_id)
+    {
+
+        $searchModel = new ProductMetaSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams , $product_id);
+
+        return $this->render('product-meta/index', [
+            'product_id' => $product_id,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays a single ProductMeta model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionMetaView($id , $product_id)
+    {
+        return $this->render('product-meta/view', [
+            'product_id' => $product_id,
+            'model' => $this->findMetaModel($id , $product_id),
+        ]);
+    }
+
+    /**
+     * Creates a new ProductMeta model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionMetaCreate($product_id)
+    {
+        $model = new ProductMeta();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['meta-view', 'product_id' => $product_id,'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('product-meta/create', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Updates an existing ProductMeta model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionMetaUpdate($id , $product_id)
+    {
+        $model = $this->findMetaModel($id , $product_id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['meta-view', 'product_id' => $product_id,'id' => $model->id]);
+        }
+
+        return $this->render('product-meta/update', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Deletes an existing ProductMeta model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionMetaDelete($id , $product_id)
+    {
+        $this->findMetaModel($id , $product_id)->delete();
+
+        return $this->redirect(['meta-index' , 'product_id' => $product_id]);
+    }
+
+    /**
+     * Finds the ProductMeta model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return ProductMeta the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findMetaModel($id , $product_id)
+    {
+        if (($model = ProductMeta::findOne(['id' => $id , 'product_id' => $product_id])) !== null) {
             return $model;
         }
 

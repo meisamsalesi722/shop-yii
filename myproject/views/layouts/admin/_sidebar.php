@@ -33,6 +33,24 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => $currentRoute === 'admin/address/index' ? 'active' : '']
             ) ?>
         </li>
+        <li class="menu-label">تخفیف ها</li>
+
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> تخفیف ها',
+                Url::to(['admin/discount-amount/index']),
+                ['class' => $currentRoute === 'admin/discount-amount/index' ? 'active' : '']
+            ) ?>
+        </li>
+
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> کوپن',
+                Url::to(['admin/copan/index']),
+                ['class' => $currentRoute === 'admin/copan/index' ? 'active' : '']
+            ) ?>
+        </li>
+
         <li class="menu-label">برند ها</li>
         <li>
             <?= Html::a(
@@ -62,13 +80,7 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => $currentRoute === 'admin/gallery/index' ? 'active' : '']
             ) ?>
         </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> تخفیف ها',
-                Url::to(['admin/discount-amount/index']),
-                ['class' => $currentRoute === 'admin/discount-amount/index' ? 'active' : '']
-            ) ?>
-        </li>
+
         <li>
             <?= Html::a(
                 '<i class="fas fa-comments"></i> کامنت ها',
@@ -92,13 +104,7 @@ $currentRoute = Yii::$app->controller->getRoute();
             ) ?>
         </li>
 
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> کوپن',
-                Url::to(['admin/copan/index']),
-                ['class' => $currentRoute === 'admin/copan/index' ? 'active' : '']
-            ) ?>
-        </li>
+
         <li>
             <?= Html::a(
                 '<i class="fas fa-comments"></i> سفارشات',

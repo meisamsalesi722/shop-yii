@@ -6,8 +6,10 @@ use yii\helpers\Html;
 /** @var app\models\ProductMeta $model */
 
 $this->title = 'Create Product Meta';
-$this->params['breadcrumbs'][] = ['label' => 'Product Metas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' Product Metas', 'url' => ['meta-index' ,  'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="product-meta-create">
 
@@ -15,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'products' => $products,
+        'product_id' => $product_id,
     ]) ?>
 
 </div>

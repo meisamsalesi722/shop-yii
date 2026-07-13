@@ -14,7 +14,6 @@ $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
@@ -35,21 +34,27 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'image:ntext',
+            [
+                'attribute' => 'image',
+                'format' => 'raw',
+                'value' => function($model){
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->image ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
             'price',
-            'introduction:ntext',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {update} {delete} {attribute}',
+                'template' => '{view} {update} {delete} {meta}',
                  'buttons' => [
-                    'attribute' => function ($url, $model, $key) {
+                    'meta' => function ($url, $model, $key) {
                         return Html::a(
                             '<i class="fas fa-user-tag"></i>',
-                            ['admin/product-meta', 'id' => $model->id]
+                            ['admin/product/meta-index', 'product_id' => $model->id]
                         );
                     },
                 ],
                 'urlCreator' => function ($action, Product $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                    return Url::toRoute([ $action, 'id' => $model->id]);
                  }
             ],
         ],
