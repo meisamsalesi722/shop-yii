@@ -2,6 +2,9 @@
 
 namespace app\controllers\admin;
 
+use Yii;
+use TCPDF;
+use kartik\mpdf\Pdf;
 use app\models\Order;
 use yii\web\Controller;
 use app\models\OrderItem;
@@ -187,4 +190,30 @@ class OrderController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    
+public function actionPrintTcpdf($id)
+{
+  $model = $this->findModel($id);
+    
+    $content = $this->renderPartial('_print', ['model' => $model]);
+    
+    $pdf = new Pdf([
+        'mode' => Pdf::MODE_UTF8,
+        'format' => Pdf::FORMAT_A4,
+        'orientation' => Pdf::ORIENT_PORTRAIT,
+        'destination' => Pdf::DEST_BROWSER,
+        'content' => $content,
+        'options' => [
+            'title' => 'گزارش',
+            'subject' => 'پرینت گزارش',
+        ],
+        'methods' => [
+            'SetHeader' => ['<h3>' . Yii::$app->name . '</h3>'],
+            'SetFooter' => ['صفحه {PAGENO}'],
+        ],
+    ]);
+    
+    return $pdf->render();
+}
 }

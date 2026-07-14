@@ -26,6 +26,36 @@ $currentRoute = Yii::$app->controller->getRoute();
         </li>
 
         <li class="menu-label">مدیریت محتوا</li>
+               <li>
+            <?= Html::a(
+                '<i class="fas fa-newspaper"></i> برند ها',
+                Url::to(['admin/brand/index']),
+                ['class' => $currentRoute === 'admin/brand/index' ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> دسته بندی',
+                Url::to(['admin/category/index']),
+                ['class' => $currentRoute === 'admin/category/index' ? 'active' : '']
+            ) ?>
+        </li>
+
+
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> گارانتی ها',
+                Url::to(['admin/guarantee/index']),
+                ['class' => $currentRoute === 'admin/guarantee/index' ? 'active' : '']
+            ) ?>
+        </li>
+            <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> بنر ها',
+                Url::to(['admin/banner/index']),
+                ['class' => $currentRoute === 'admin/banner/index' ? 'active' : '']
+            ) ?>
+        </li>
         <li>
             <?= Html::a(
                 '<i class="fas fa-newspaper"></i> ادرس ها',
@@ -33,8 +63,36 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => $currentRoute === 'admin/address/index' ? 'active' : '']
             ) ?>
         </li>
-        <li class="menu-label">تخفیف ها</li>
 
+                <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> کامنت ها',
+                Url::to(['admin/comment/index']),
+                ['class' => $currentRoute === 'admin/comment/index' ? 'active' : '']
+            ) ?>
+        </li>
+
+        
+        <li class="menu-label">فروشگاه</li>
+        
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-comments"></i> سفارشات',
+                Url::to(['admin/order/index']),
+                ['class' => $currentRoute === 'admin/order/index' ? 'active' : '']
+                ) ?>
+        </li>
+        <!-- -------------------- -->
+        
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-user-tag"></i>  محصولات',
+                Url::to( ['/admin/product/index']),
+                ['class' =>$currentRoute === 'admin/product/index' ? 'active' : '']
+                ) ?>
+        </li>
+        
+        <li class="menu-label">تخفیف ها</li>
         <li>
             <?= Html::a(
                 '<i class="fas fa-comments"></i> تخفیف ها',
@@ -51,84 +109,11 @@ $currentRoute = Yii::$app->controller->getRoute();
             ) ?>
         </li>
 
-        <li class="menu-label">برند ها</li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-newspaper"></i> برند ها',
-                Url::to(['admin/brand/index']),
-                ['class' => $currentRoute === 'admin/brand/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> دسته بندی',
-                Url::to(['admin/category/index']),
-                ['class' => $currentRoute === 'admin/category/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> رنگ ها',
-                Url::to(['admin/color/index']),
-                ['class' => $currentRoute === 'admin/color/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> گالری محصول',
-                Url::to(['admin/gallery/index']),
-                ['class' => $currentRoute === 'admin/gallery/index' ? 'active' : '']
-            ) ?>
-        </li>
-
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> کامنت ها',
-                Url::to(['admin/comment/index']),
-                ['class' => $currentRoute === 'admin/comment/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> گارانتی ها',
-                Url::to(['admin/guarantee/index']),
-                ['class' => $currentRoute === 'admin/guarantee/index' ? 'active' : '']
-            ) ?>
-        </li>
-
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> بنر ها',
-                Url::to(['admin/banner/index']),
-                ['class' => $currentRoute === 'admin/banner/index' ? 'active' : '']
-            ) ?>
-        </li>
 
 
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-comments"></i> سفارشات',
-                Url::to(['admin/order/index']),
-                ['class' => $currentRoute === 'admin/order/index' ? 'active' : '']
-            ) ?>
-        </li>
-        <!-- -------------------- -->
 
-        <!-- <li class="menu-label">مدیریت دسترسی</li> -->
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-user-tag"></i>  محصولات',
-                Url::to( ['/admin/product/index']),
-                ['class' =>$currentRoute === 'admin/product/index' ? 'active' : '']
-                ) ?>
-        </li>
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-user-tag"></i> ویژگی های محصول',
-                Url::to( ['/admin/product-meta/index']),
-                ['class' =>$currentRoute === 'admin/product-meta/index' ? 'active' : '']
-                ) ?>
-        </li>
+
+
 
         <!-- -------------------- -->
 

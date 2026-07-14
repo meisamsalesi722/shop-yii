@@ -6,14 +6,17 @@ use Yii;
 use app\models\Brand;
 use app\models\Color;
 use yii\web\Response;
+use app\models\Gallery;
 use app\models\Product;
 use yii\web\Controller;
 use app\models\Category;
 use app\models\Guarantee;
 use yii\web\UploadedFile;
+use app\models\ColorSearch;
 use app\models\ProductMeta;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use app\models\GallerySearch;
 use app\models\ProductSearch;
 use yii\filters\AccessControl;
 use app\models\ProductMetaSearch;
@@ -443,6 +446,274 @@ public function actionUpdate($id)
     protected function findMetaModel($id , $product_id)
     {
         if (($model = ProductMeta::findOne(['id' => $id , 'product_id' => $product_id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+
+
+    // -----------------------------------------    product color    ---------------------------------------------//
+
+    
+    /**
+     * Lists all Color models.
+     *
+     * @return string
+     */
+    public function actionColorIndex($product_id)
+    {
+        $searchModel = new ColorSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams , $product_id);
+
+        return $this->render('color/index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'product_id' => $product_id
+        ]);
+    }
+
+    /**
+     * Displays a single Color model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionColorView($id , $product_id)
+    {
+        return $this->render('color/view', [
+            'model' => $this->findColorModel($id , $product_id),
+            'product_id' => $product_id
+        ]);
+    }
+
+    /**
+     * Creates a new Color model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionColorCreate($product_id)
+    {
+        $model = new Color();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['color-view', 'product_id' => $product_id , 'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+        $products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
+
+        return $this->render('color/create', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Updates an existing Color model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionColorUpdate($id , $product_id)
+    {
+        $model = $this->findColorModel($id , $product_id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['color-view', 'product_id' => $product_id ,'id' => $model->id]);
+        }
+
+        return $this->render('color/update', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Deletes an existing Color model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionColorDelete($id , $product_id)
+    {
+        $this->findColorModel($id , $product_id)->delete();
+
+        return $this->redirect(['color-index' , 'product_id' => $product_id]);
+    }
+
+    /**
+     * Finds the Color model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return Color the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findColorModel($id , $product_id)
+    {
+        if (($model = Color::findOne(['id' => $id , 'product_id' => $product_id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+
+
+
+
+    // ----------------------------------    gallery    -------------------------------------//
+
+    
+
+
+
+
+
+    /**
+     * Lists all Gallery models.
+     *
+     * @return string
+     */
+    public function actionGalleryIndex($product_id)
+    {
+        $searchModel = new GallerySearch();
+        $dataProvider = $searchModel->search($this->request->queryParams , $product_id);
+
+        return $this->render('gallery/index', [
+            'product_id' => $product_id,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays a single Gallery model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionGalleryView($id , $product_id)
+    {
+        return $this->render('gallery/view', [
+            'product_id' => $product_id,
+            'model' => $this->findGalleryModel($id , $product_id),
+        ]);
+    }
+
+    /**
+     * Creates a new Gallery model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionGalleryCreate($product_id)
+    {
+        $model = new Gallery();
+        
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
+                
+                if($model->validate()){
+                    if($model->imageFile){
+                        $imageName = time() . '.' . $model->imageFile->extension;
+                        if(!file_exists('uploads/images/gallery')){
+                            mkdir('uploads/images/gallery' , 0777 , true);
+                        }
+                        $model->imageFile->saveAs('uploads/images/gallery/' . $imageName);
+                        $model->image = $imageName;
+                    }
+
+                if($model->save(false)){
+                    Yii::$app->session->setFlash('success' , 'تصویر با موفقیت اضافه شد');
+                    return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
+                }
+                    Yii::$app->session->setFlash('success' , 'اضافه کردن تصویر با خطا مواجه شد');
+                    return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
+                }
+
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+
+        return $this->render('gallery/create', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Updates an existing Gallery model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionGalleryUpdate($id , $product_id)
+    {
+        $model = $this->findGalleryModel($id , $product_id);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
+            if($model->validate()){
+                if($model->imageFile){
+
+                        $model->deleteImage();
+                        $imageName = time() . '.' . $model->imageFile->extension;
+                        if(!file_exists('uploads/images/gallery')){
+                            mkdir('uploads/images/gallery' , 0777 , true);
+                        }
+                        $model->imageFile->saveAs('uploads/images/gallery/' . $imageName);
+                        $model->image = $imageName;
+                    }
+            if( $model->save(false)){
+                Yii::$app->session->setFlash('success' , 'تصویر با موفقیت ویرایش شد');
+                return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
+            }
+                Yii::$app->session->setFlash('success' , 'ویرایش تصویر با خطا مواجه شد');
+                return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
+        }
+    }
+
+        return $this->render('gallery/update', [
+            'model' => $model,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    /**
+     * Deletes an existing Gallery model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionGalleryDelete($id , $product_id)
+    {
+        $model = $this->findGalleryModel($id , $product_id);
+        $model->deleteImage();
+        $model->delete();
+        return $this->redirect(['gallery-index' , 'product_id' => $product_id]);
+    }
+
+    /**
+     * Finds the Gallery model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return Gallery the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findGalleryModel($id , $product_id)
+    {
+        if (($model = Gallery::findOne(['id' => $id , 'product_id' => $product_id])) !== null) {
             return $model;
         }
 

@@ -11,14 +11,16 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Colors';
+$this->params['breadcrumbs'][] = ['label' => ' / product', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="color-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Color', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Color', ['color-create' , 'product_id' => $product_id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -36,8 +38,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Color $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                'urlCreator' => function ($action, Color $model, $key, $index, $column) use($product_id) {
+                    return Url::toRoute([ 'color-' .$action, 'product_id' => $product_id , 'id' => $model->id]);
                  }
             ],
         ],

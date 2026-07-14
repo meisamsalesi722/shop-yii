@@ -39,9 +39,9 @@ class GallerySearch extends Gallery
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $product_id , $formName = null)
     {
-        $query = Gallery::find();
+        $query = Gallery::find()->where(['product_id' => $product_id]);
 
         // add conditions that should always apply here
 

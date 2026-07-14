@@ -67,17 +67,11 @@ class Product extends \yii\db\ActiveRecord
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
             [['guarantee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Guarantee::class, 'targetAttribute' => ['guarantee_id' => 'id']],
-             [['category1_id' , 'imageFile' , 'category2_id', 'category3_id'], 'safe'],
+             [['category1_id' , 'created_at' , 'updated_at' , 'imageFile' , 'category2_id', 'category3_id'], 'safe'],
              [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
         ];
     }
 
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::class,
-        ];
-    }
 
     public function deleteImage()
     {
@@ -203,6 +197,11 @@ class Product extends \yii\db\ActiveRecord
 
     public function getProductUser(){
         return $this->hasMany(ProductUser::class , ['product_id' => 'id']);
+    }
+
+    public function getComment_count()
+    {
+        return $this->getComments()->count();
     }
 
 }

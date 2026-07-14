@@ -33,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'image:ntext',
             [
                 'attribute' => 'image',
                 'format' => 'raw',
@@ -44,12 +43,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'price',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {update} {delete} {meta}',
+                'template' => '{view} {update} {delete} {meta} {color} {gallery}',
                  'buttons' => [
                     'meta' => function ($url, $model, $key) {
                         return Html::a(
                             '<i class="fas fa-user-tag"></i>',
                             ['admin/product/meta-index', 'product_id' => $model->id]
+                        );
+                    },
+                    'color' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-palette"></i>',
+                            ['admin/product/color-index', 'product_id' => $model->id]
+                        );
+                    },
+                    'gallery' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-images"></i>',
+                            ['admin/product/gallery-index', 'product_id' => $model->id]
                         );
                     },
                 ],

@@ -30,6 +30,8 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/color-mode.js',
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js', 
+
     ];
     public $jsOptions = [
         'position' => View::POS_HEAD,

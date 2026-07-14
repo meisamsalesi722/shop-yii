@@ -16,9 +16,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'color_code')->input('color') ?>
 
-        <?= $form->field($model, 'product_id')->dropDownList(
-        $products, ['prompt' => 'انتخاب کنید'],
-    ) ?>
+        <?= $form->field($model, 'product_id')->hiddenInput([
+            'value' => $product_id
+        ])->label('') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

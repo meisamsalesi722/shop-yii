@@ -39,9 +39,9 @@ class ColorSearch extends Color
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $product_id , $formName = null)
     {
-        $query = Color::find();
+        $query = Color::find()->where(['product_id' => $product_id]);
 
         // add conditions that should always apply here
 

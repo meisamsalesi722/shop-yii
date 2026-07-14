@@ -7,7 +7,8 @@ use yii\widgets\DetailView;
 /** @var app\models\Color $model */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['color-index' , 'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Update', ['color-update', 'product_id' => $product_id , 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['color-delete', 'product_id' => $product_id , 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',

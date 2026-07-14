@@ -7,12 +7,12 @@ use yii\widgets\DetailView;
 /** @var app\models\Gallery $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Gulleries', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '/ Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Product Gallery', 'url' => ['gallery-index'  , 'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="gallery-view">
-
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
@@ -30,8 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'image:ntext',
-            'product_id',
+            [
+                'attribute' => 'image',
+                'format' => 'raw',
+                'value' => function($model){
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/gallery/') . ($model->image ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
+            [
+                'attribute'=> 'product',
+                'value' => function($model){
+                    return $model->product->name;
+                }
+            ],
         ],
     ]) ?>
 

@@ -6,7 +6,8 @@ use yii\helpers\Html;
 /** @var app\models\Color $model */
 
 $this->title = 'Create Color';
-$this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['color-index' , 'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="color-create">
@@ -15,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'products' => $products,
+        'product_id' => $product_id,
     ]) ?>
 
 </div>

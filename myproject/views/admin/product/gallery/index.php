@@ -11,14 +11,15 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Gulleries';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => ' / Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title ;
 ?>
 <div class="gallery-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Gallery', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Gallery', ['gallery-create' , 'product_id' => $product_id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -28,17 +29,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'image:ntext',
+            [
+                'attribute' => 'image',
+                'format' => 'raw',
+                'value' => function($model){
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/gallery/') . ($model->image ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
             [
                 'attribute' => 'product_id',
                 'value' => 'product.name'
             ],
             [
                 'class' => ActionColumn::class,
-                'urlCreator' => function ($action, Gallery $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                'urlCreator' => function ($action, Gallery $model, $key, $index, $column) use($product_id) {
+                    return Url::toRoute([ 'gallery-' .$action, 'product_id' => $product_id ,  'id' => $model->id]);
                  }
             ],
         ],

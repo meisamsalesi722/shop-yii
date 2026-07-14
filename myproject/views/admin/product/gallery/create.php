@@ -6,7 +6,8 @@ use yii\helpers\Html;
 /** @var app\models\Gallery $model */
 
 $this->title = 'Create Gallery';
-$this->params['breadcrumbs'][] = ['label' => 'Gulleries', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' / Product', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => ' Product Gallery', 'url' => ['gallery-index' ,  'product_id' => $product_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="gallery-create">
@@ -15,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'products' => $products,
+        'product_id' => $product_id,
     ]) ?>
 
 </div>
