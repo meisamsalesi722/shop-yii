@@ -126,7 +126,7 @@ class ProductController extends Controller
         //   $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
         //     return !in_array($meta->meta_key, $attributeNames, true);
         // });
-        $newProducts = Product::find()->where(['!=' , 'id' , $id])->orderBy('created_at DESC')->limit(10)->all();
+        $newProducts = Product::find()->where(['!=' , 'id' , $id])->andWhere(['status' => 1])->orderBy('created_at DESC')->limit(10)->all();
 
 
 
@@ -157,9 +157,9 @@ class ProductController extends Controller
         
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                $user = User::findOne(['email' => $model->email]);
+                $user = User::findOne(['email' => $model->email , 'id' => Yii::$app->user->id]);
                 if(!$user){
-                    Yii::$app->session->setFlash('error' , 'کاربر مورد نظر یافت نشد');
+                    Yii::$app->session->setFlash('error' , 'کاربر مورد نظر یافت نشد یا ایمیل متعلق به شما نیست');
                     return $this->redirect(['/product' , 'id' => $id]);
                 }
                 $model->product_id = $id;

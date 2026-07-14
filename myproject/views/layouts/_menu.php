@@ -13,7 +13,7 @@ use app\models\Category;
             <!------------------------------------ START LEVEL ONE ------------------------------------>
             <div class="level-one">
                 <?php 
-                    $categories = Category::find()->with('children.children')->where(['parent_id' => null])->all();
+                    $categories = Category::find()->with('children.children')->where(['parent_id' => null ,'status' => 1])->all();
                 ?>
                 <?php foreach ($categories as $key => $category) { ?>
                     <div class="item-level-one">

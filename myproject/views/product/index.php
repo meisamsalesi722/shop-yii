@@ -233,11 +233,11 @@ $this->registerCssFile(
         <div class="row">
 
             <div class="col-lg-8 col-12 px-0 pl-lg-2">
-                <div class="video-style ">
+                <!-- <div class="video-style ">
                     <video controls class="w-100">
                         <source src="video/video1.mp4" type="video/mp4">
                     </video>
-                </div>
+                </div> -->
 
                 <div class="description-tab d-none d-sm-block">
 

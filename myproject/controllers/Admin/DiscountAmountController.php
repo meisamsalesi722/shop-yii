@@ -97,7 +97,7 @@ $products = ArrayHelper::map(
         'or',
         ['discount_amount.id' => null],
         ['<', 'discount_amount.end_date', time()],
-    ])
+    ])->andWhere(['status' => 1])
     ->all() , 'id' , 'name');
 
         return $this->render('create', [
@@ -122,7 +122,7 @@ $products = ArrayHelper::map(
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $products = Product::find()->joinWith('discountAmounts')->where(['or',['discount_amount.id' => null],['<', 'discount_amount.end_date', time()]])->all();
+        $products = Product::find()->joinWith('discountAmounts')->where(['or',['discount_amount.id' => null],['<', 'discount_amount.end_date', time()]])->andWhere(['status' => 1])->all();
 
         
         

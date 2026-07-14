@@ -90,30 +90,30 @@ class SiteController extends Controller
      */
     public function actionIndex(): string
     {
-        $specials = Product::find()
+        $specials = Product::find()->where(['status' => 1])
         ->innerJoinWith('discountAmounts')
         ->all();
 
         //baners
-        $banerSliders = Banner::find()->where(['position' => 1])->limit(10)->all();
-        $bottomRightBanners = Banner::find()->where(['position' => 2])->one();
-        $bottomLeftBanners = Banner::find()->where(['position' => 3])->one();
-        $leftBottomBanners = Banner::find()->where(['position' => 4])->one();
-        $leftTopBanners = Banner::find()->where(['position' => 5])->one();
-        $fourMiddleBanners = Banner::find()->where(['position' => 6])->limit(4)->all();
-        $twoMiddleBanners = Banner::find()->where(['position' => 7])->limit(2)->all();
-        $OneLastBanner = Banner::find()->where(['position' => 8])->one();
+        $banerSliders = Banner::find()->where(['position' => 1 , 'status' => 1])->limit(10)->all();
+        $bottomRightBanners = Banner::find()->where(['position' => 2 , 'status' => 1])->one();
+        $bottomLeftBanners = Banner::find()->where(['position' => 3 , 'status' => 1])->one();
+        $leftBottomBanners = Banner::find()->where(['position' => 4 , 'status' => 1])->one();
+        $leftTopBanners = Banner::find()->where(['position' => 5 , 'status' => 1])->one();
+        $fourMiddleBanners = Banner::find()->where(['position' => 6 , 'status' => 1])->limit(4)->all();
+        $twoMiddleBanners = Banner::find()->where(['position' => 7 , 'status' => 1])->limit(2)->all();
+        $OneLastBanner = Banner::find()->where(['position' => 8 , 'status' => 1])->one();
 
         //Products
-        $newProducts = Product::find()->orderBy('created_at DESC')->limit(10)->all();
-        $bestsellers = Product::find()->orderBy('sold_number DESC')->limit(10)->all();
-        $categories_notchilren = Category::find()->alias('c')->leftJoin('category child', 'child.parent_id = c.id')->where(['IS NOT', 'c.parent_id', null])->andWhere(['child.id' => null])->all();
+        $newProducts = Product::find()->where(['status' => 1])->orderBy('created_at DESC')->limit(10)->all();
+        $bestsellers = Product::find()->where(['status' => 1])->orderBy('sold_number DESC')->limit(10)->all();
+        $categories_notchilren = Category::find()->alias('c')->leftJoin('category child', 'child.parent_id = c.id')->where(['IS NOT', 'c.parent_id', null])->andWhere(['c.status' => 1])->andWhere(['child.id' => null])->all();
         if($categories_notchilren){
-            $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[0]])->limit(10)->all();
+            $productsCategory1 = Product::find()->where(['category_id' => $categories_notchilren[0] , 'status' => 1])->limit(10)->all();
         }else{
             $productsCategory1 = [];
         }
-        $mostVieweds = Product::find()->orderBy('view DESC')->limit(10)->all();
+        $mostVieweds = Product::find()->where(['status' => 1])->orderBy('view DESC')->limit(10)->all();
 
         return $this->render('index', [
             'specials' => $specials,

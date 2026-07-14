@@ -70,15 +70,15 @@ class Guarantee extends \yii\db\ActiveRecord
         return $this->hasMany(OrderItem::class, ['guarantee_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[ProductGuarantees]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductGuarantees()
-    {
-        return $this->hasMany(ProductGuarantee::class, ['guarantee_id' => 'id']);
-    }
+    // /**
+    //  * Gets query for [[ProductGuarantees]].
+    //  *
+    //  * @return \yii\db\ActiveQuery
+    //  */
+    // public function getProductGuarantees()
+    // {
+    //     return $this->hasMany(ProductGuarantee::class, ['guarantee_id' => 'id']);
+    // }
 
     /**
      * Gets query for [[Products]].

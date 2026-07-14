@@ -13,7 +13,7 @@ $this->registerCssFile(
 );
 ?>
 <?php 
-   $category = Category::find()->where(['id' => $categoryId])->with('parent')->one();
+   $category = Category::find()->where(['id' => $categoryId ,'status' => 1])->with('parent')->one();
    // $categories = Category::find()->where(['parent_id' => null])->with('children')->all();
 ?>
      <!-------------------------------------Start product page--------------------------------->
@@ -34,7 +34,7 @@ $this->registerCssFile(
                               <?php if($category != null){ ?>
                                  <div class="category-content-title">
                                     <i class="fas fa-chevron-left"></i>
-                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'categoryId' => $category->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?=  $category->name ?> </a>    
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'special' => $special , 'categoryId' => $category->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?=  $category->name ?> </a>    
                                  </div>
                               <?php }?>
                               <div class="category-sub-content">
@@ -43,14 +43,14 @@ $this->registerCssFile(
                                     ?>
                                  <div>
                                     <i class="fas fa-chevron-down"></i>
-                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'categoryId' => $children->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $children->name ?></a>   
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId , 'special' => $special , 'categoryId' => $children->id  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $children->name ?></a>   
                                  </div>
                                  <?php } ?>
                                  <?php if($children->children != null){
                                     foreach($children->children as $sub_children){
                                     ?>
                                  <div class="mr-3">
-                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId  , 'categoryId' => $sub_children->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $sub_children->name ?></a> 
+                                    <a href="<?= Url::to(['/list', 'sortId' => $sortId  , 'special' => $special , 'categoryId' => $sub_children->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $sub_children->name ?></a> 
                                  </div>
                                  <?php }}} ?>
                               </div>
@@ -65,12 +65,25 @@ $this->registerCssFile(
                          $form = ActiveForm::begin([
                            'action' => '/list/index?sortId=' . $sortId. '&brandId=' . $brandId . '&categoryId=' . $categoryId ,
                            'method' => 'get',
+                           'id' => 'existForm'
                         ]); ?>
 
                         
-                        <label class="switch" onchange="$('#w0').submit();">
+                        <label class="switch" onchange="$('#existForm').submit();">
                         <input type="checkbox"  name="exist" value="1" <?= $exist ? 'checked' : '' ?>>
                         <span class="slider-available round"></span>
+                        </label>
+
+
+                     </div>
+
+                     <div class="available-product d-flex justify-content-md-between">
+                        <span class="my-auto"> پیشنهاد ویژه </span>
+
+                        
+                        <label class="switch" onchange="$('#existForm').submit();">
+                           <input type="checkbox"  name="special" value="1" <?= $special ? 'checked' : '' ?>>
+                           <span class="slider-available round"></span>
                         </label>
 
 
@@ -177,7 +190,7 @@ $this->registerCssFile(
                               </form> -->
                               <div class="brand-item">
                                  <?php foreach($brands as $brand){?>
-                                    <a class="text-dark" href="<?= Url::to(['/list', 'brandId' => $brand->id   , 'sortId' => $sortId , 'categoryId' => $categoryId , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>">
+                                    <a class="text-dark" href="<?= Url::to(['/list', 'brandId' => $brand->id  , 'special' => $special , 'sortId' => $sortId , 'categoryId' => $categoryId , 'send' => $search , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>">
                                        <div class="d-flex justify-content-between">
                                           <div>
                                              <i class="far fa-square"></i>
@@ -205,14 +218,14 @@ $this->registerCssFile(
 
                               <?php if($category->parent){ if($category->parent->parent){?>
                                  <div class="breadcrumb-top-item ml-4 mr-2 mr-sm-0">
-                                    <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId  , 'categoryId' => $category->parent->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->parent->name ?></a>
+                                    <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId  , 'special' => $special , 'categoryId' => $category->parent->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->parent->name ?></a>
                                     <i class="fas fa-chevron-left"></i>
                                  </div>
                                  <?php } }?>
 
                                  <?php if($category->parent){?>
                                     <div class="breadcrumb-top-item ml-4">
-                                       <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId   , 'categoryId' => $category->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->name ?> </a>
+                                       <a href="<?= Url::to(['/list/index' , 'sortId' => $sortId  , 'special' => $special , 'categoryId' => $category->parent->id, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>"><?= $category->parent->name ?> </a>
                                        <i class="fas fa-chevron-left"></i>
                                     </div>
                                  <?php }?>
@@ -230,36 +243,36 @@ $this->registerCssFile(
                   <div class="sort-content d-none d-lg-block">
                      <i class="fas fa-sort-amount-up"></i>    
                      <span class="sort-title">مرتب سازی</span>
-                        <a href="<?= Url::to(['/list', 'sortId' => 1 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 1 ? 'class="active"' : ''  ?>>گران ترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 2 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 2 ? 'class="active"' : ''  ?>>ارزان ترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 3 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 3 ? 'class="active"' : ''  ?>>پربازدیدترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 4 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 4 ? 'class="active"' : ''  ?>>جدیدترین</a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 5 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'exist' => $exist]) ?>" <?=  $sortId == 5 ? 'class="active"' : ''  ?>>پرفروش ترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 1 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'special' => $special , 'exist' => $exist]) ?>" <?=  $sortId == 1 ? 'class="active"' : ''  ?>>گران ترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 2 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'special' => $special , 'exist' => $exist]) ?>" <?=  $sortId == 2 ? 'class="active"' : ''  ?>>ارزان ترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 3 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'special' => $special , 'exist' => $exist]) ?>" <?=  $sortId == 3 ? 'class="active"' : ''  ?>>پربازدیدترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 4 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'special' => $special , 'exist' => $exist]) ?>" <?=  $sortId == 4 ? 'class="active"' : ''  ?>>جدیدترین</a>
+                        <a href="<?= Url::to(['/list', 'sortId' => 5 , 'send' => $search , 'categoryId' => $categoryId  , 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'special' => $special , 'exist' => $exist]) ?>" <?=  $sortId == 5 ? 'class="active"' : ''  ?>>پرفروش ترین</a>
                   </div>
                   <div class="mobile-item d-block d-lg-none">
                      <span class="icon-mob-drow" onclick="open_sort()">
                      مرتب سازی براساس
-                     <a href="<?= Url::to(['/list', 'sortId' => 1   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 1  , 'special' => $special , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 1 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         گران ترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 2   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 2  , 'special' => $special , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 2 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         ارزان ترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 3   , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 3  , 'special' => $special , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 3 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                         پربازدیدترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 4  , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 4 , 'special' => $special , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 4 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                            جدیدترین 
                         </span>
                      </a>
-                     <a href="<?= Url::to(['/list', 'sortId' => 5  , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
+                     <a href="<?= Url::to(['/list', 'sortId' => 5 , 'special' => $special , 'categoryId' => $categoryId, 'brandId' => $brandId , 'minPrice' => $minPrice , 'maxPrice' => $maxPrice , 'send' => $search , 'exist' => $exist]) ?>">
                         <span class="<?=  $sortId == 5 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'  ?>"> 
                            پرفروش ترین 
                         </span>

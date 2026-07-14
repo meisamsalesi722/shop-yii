@@ -87,20 +87,19 @@ class CategoryController extends Controller
         
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-
+                
 
                 
                  if(!empty(Yii::$app->request->post('Category')['category2_id'])){
                     $category_id = Yii::$app->request->post('Category')['category2_id'];
                 }elseif(!empty(Yii::$app->request->post('Category')['category1_id'])){
+
                     $category_id = Yii::$app->request->post('Category')['category1_id'];
                 }else{
                     $category_id = null;
                 }
 
-                $model->parent_id = (int)$category_id;
-
-
+                $model->parent_id = $category_id;
 
             if($model->save()){
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -110,7 +109,7 @@ class CategoryController extends Controller
             $model->loadDefaultValues();
         }
         
-        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null , 'status' => 1])->all(), 'id', 'name');
 
         return $this->render('create', [
             'model' => $model,
@@ -127,7 +126,7 @@ class CategoryController extends Controller
 
         $parent_id = $parents[0];
         $categories = Category::find()
-            ->where(['parent_id' => $parent_id])
+            ->where(['parent_id' => $parent_id, 'status' => 1])
             ->orderBy('name')
             ->all();
             
@@ -172,7 +171,7 @@ class CategoryController extends Controller
                 }
         }
 
- $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+ $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null ,'status' => 1])->all(), 'id', 'name');
 
         return $this->render('update', [
             'model' => $model,
@@ -270,7 +269,7 @@ class CategoryController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null ,'status' => 1 ])->all(), 'id', 'name');
         return $this->render('category-attribute/create', [
             'model' => $model,
             'categories' => $categories,

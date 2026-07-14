@@ -55,6 +55,7 @@ class ListController extends Controller
     $maxPrice = $request['maxPrice'] ?? null;
     $brandId = $request['brandId'] ?? null;
     $categoryId = $request['categoryId'] ?? null;
+    $special = $request['special'] ?? false;
 
     switch ($sortId) {
         case '1':
@@ -88,7 +89,7 @@ class ListController extends Controller
                 break;
             }
 
-            $query = Product::find()->orderBy($column . ' ' .  $sort);
+            $query = Product::find()->where(['status' => 1])->orderBy($column . ' ' .  $sort);
             
 
 if ($search !== '') {
@@ -119,6 +120,9 @@ if ($exist) {
     $query->andWhere(['>', 'marketable_number', 0]);
 }
     
+   if ($special) {
+        $query->innerJoinWith('discountAmounts');
+    }
     
     if ($minPrice !== null && $minPrice !== '') {
         $query->andWhere(['>=', 'price', (int)$minPrice]);
@@ -139,7 +143,7 @@ if ($exist) {
         ],
     ]);
 
-                     $brands = Brand::find()->all();
+                     $brands = Brand::find()->where(['status' => 1])->all();
 
     return $this->render('/list/index', [
         'dataProvider' => $dataProvider,
@@ -151,6 +155,7 @@ if ($exist) {
         'maxPrice' => $maxPrice,
         'brandId' => $brandId,
         'categoryId' => $categoryId,
+        'special' => $special,
     ]);
 
     }

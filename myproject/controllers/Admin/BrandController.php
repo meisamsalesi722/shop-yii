@@ -129,6 +129,7 @@ class BrandController extends Controller
 
         if ($this->request->isPost && $model->load($this->request->post()) ) {
             $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
+            
             if($model->validate()){
                 if($model->imageFile){
                     $model->deleteImage();

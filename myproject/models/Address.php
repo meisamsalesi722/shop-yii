@@ -37,8 +37,11 @@ class Address extends \yii\db\ActiveRecord
         return [
             [['recipient_name'], 'default', 'value' => null],
             [['user_id', 'city', 'address', 'mobile', 'postal_code'], 'required'],
-            [['user_id', 'mobile'], 'integer'],
+            [['user_id'], 'integer'],
             [['address'], 'string'],
+            [['mobile'], 'string', 'max' => 13],
+            [['mobile'], 'match', 'pattern' => '/^((98|\+98|0098|0)*(9)[0-9]{9})+$/'],
+            [['postal_code'], 'match', 'pattern' => '/^[0-9]{10}$/'],
             [['city', 'recipient_name', 'postal_code'], 'string', 'max' => 255],
         ];
     }

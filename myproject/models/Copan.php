@@ -42,7 +42,7 @@ class Copan extends \yii\db\ActiveRecord
         return [
             [['discount_ceiling'], 'default', 'value' => null],
             [['amount_type'], 'default', 'value' => 1],
-            [['used'], 'default', 'value' => 1],
+            [['used'], 'default', 'value' => 0],
             [['code', 'amount', 'user_id'], 'required'],
             [['amount_type', 'discount_ceiling', 'used', 'user_id'], 'integer'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],

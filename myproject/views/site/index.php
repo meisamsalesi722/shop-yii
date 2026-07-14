@@ -56,14 +56,14 @@ use yii\helpers\Url;
                         <img src="<?= Yii::getAlias('@web/img/index.svg/') ?>" alt="" class="img-fluid">
                         <img src="<?= Yii::getAlias('@web/img/special-offer-title.af8fd0e.png/') ?>" class="img-fluid pt-2 pt-md-0 " alt="">
                         
-                        <span class="offer-section-right-title p-2 p-md-1 "><p>تخفیف فقط برای امروز</p></span>
-                        <div class="timer py-2 ">
+                        <span class="offer-section-right-title p-2 p-md-1 "><p>بهترین تخفیف ها</p></span>
+                        <!-- <div class="timer py-2 ">
                             <span id="Timer"></span>
-                            <span><i class="far fa-clock"></i></span>
+                            <span><i class="far fa-clock"></i>سس</span>
                             
-                        </div>
+                        </div> -->
                         
-                        <button type="button" class="btn btn-outline-light mb-lg-2 mb-md-1 offer-button"> مشاهده همه <i class="fas fa-arrow-left"></i></button>
+                        <a href="<?= Url::to(['/list' , 'special' => 1]) ?>" class="btn btn-outline-light mb-lg-2 mb-md-1 offer-button"> مشاهده همه <i class="fas fa-arrow-left"></i></a>
                     </div>
                     
                 </div>
@@ -120,15 +120,35 @@ use yii\helpers\Url;
                 <div class="visited-slider">
                     <div class="owl-carousel owl-theme second-slider" >
                         <?php foreach ($newProducts as $key => $newProduct) { ?>
-                            <div class="item" >
+                            <div class="item offer-item" >
                                 <a href="<?=  Url::to( ['/product' , 'id' => $newProduct->id]) ?>" class="d-block text-center">
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($newProduct->image ?? '') ?>" alt="">
                                     <div class="item-caption">
+
                                         <p><?= $newProduct->name ?></p>
                                         <div class="item-caption-bottom">
+                                            <?php if($newProduct->discountAmounts){?>
+                                            <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                            <?php 
+                                                $price = $newProduct->price;
+                                                $discount =($price / 100) * ($newProduct->discountAmounts->percentage);
+                                                $finalyPrice = $discount > $newProduct->discountAmounts->discount_ceiling ? 
+                                                $price - $newProduct->discountAmounts->discount_ceiling
+                                                : $price - $discount;
+
+                                            ?>
+                                            <span class="price-befor">
+                                                <?= $price ?>
+                                            </span>
+                                            <span class="price-after"> تومان 
+                                                <?= $finalyPrice ?>
+                                            </span>
                                             
-                                            <span class="price">6,250,000</span>
-                                            <span class="unit">تومان</span>
+                                            <?php }else{?>
+                                                
+                                                <span class="price"><?= $newProduct->price ?></span>
+                                                <span class="unit">تومان</span>
+                                            <?php }?>
                                         </div>
                                     </div>
                                 </a>
@@ -174,14 +194,35 @@ use yii\helpers\Url;
                     <div class="visited-slider">
                         <div class="owl-carousel owl-theme second-slider" >
                         <?php foreach ($bestsellers as $key => $bestseller) { ?>
-                            <div class="item" >
+                            <div class="item offer-item" >
                                 <a href="<?=  Url::to( ['/product' , 'id' => $bestseller->id]) ?>" class="d-block text-center">
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($bestseller->image ?? '') ?>" alt="">
                                     <div class="item-caption">
                                         <p><?= $bestseller->name ?></p>
                                         <div class="item-caption-bottom">
-                                            <span class="price"><?= $bestseller->price ?></span>
-                                            <span class="unit">تومان</span>
+                                            <?php if($bestseller->discountAmounts){?>
+                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                                <?php 
+                                                    $price = $bestseller->price;
+                                                    $discount =($price / 100) * ($bestseller->discountAmounts->percentage);
+                                                    $finalyPrice = $discount > $bestseller->discountAmounts->discount_ceiling ? 
+                                                    $price - $bestseller->discountAmounts->discount_ceiling
+                                                    : $price - $discount;
+
+                                                ?>
+                                                <span class="price-befor">
+                                                    <?= $price ?>
+                                                </span>
+                                                <span class="price-after"> تومان 
+                                                    <?= $finalyPrice ?>
+                                                </span>
+                                                
+                                            <?php }else{?>
+                                                    
+                                                    <span class="price"><?= $bestseller->price ?></span>
+                                                    <span class="unit">تومان</span>
+                                            <?php }?>
+
                                         </div>
                                     </div>
                                 </a>
@@ -228,14 +269,35 @@ use yii\helpers\Url;
 
                         <div class="owl-carousel owl-theme second-slider" >
                             <?php if($productsCategory1 && !empty($productsCategory1)){ foreach ($productsCategory1 as $key => $productCategory1) { ?>
-                                    <div class="item">
+                                    <div class="item offer-item">
                                         <a href="<?=  Url::to( ['/product' , 'id' => $productCategory1->id]) ?>" class="d-block text-center">
                                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($productCategory1->image ?? '') ?>" alt="">
                                             <div class="item-caption">
                                                 <p><?= $productCategory1->name ?? 'یافت نشد' ?></p>
                                                 <div class="item-caption-bottom">
-                                                    <span class="price"><?= $productCategory1->price ?? 'یافت نشد' ?></span>
-                                                    <span class="unit">تومان</span>
+                                                            <?php if($productCategory1->discountAmounts){?>
+                                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                                                <?php 
+                                                                    $price = $productCategory1->price;
+                                                                    $discount =($price / 100) * ($productCategory1->discountAmounts->percentage);
+                                                                    $finalyPrice = $discount > $productCategory1->discountAmounts->discount_ceiling ? 
+                                                                    $price - $productCategory1->discountAmounts->discount_ceiling
+                                                                    : $price - $discount;
+
+                                                                ?>
+                                                                <span class="price-befor">
+                                                                    <?= $price ?>
+                                                                </span>
+                                                                <span class="price-after"> تومان 
+                                                                    <?= $finalyPrice ?>
+                                                                </span>
+                                                                
+                                                            <?php }else{?>
+                                                                    
+                                                                    <span class="price"><?= $productCategory1->price ?></span>
+                                                                    <span class="unit">تومان</span>
+                                                            <?php }?>
+
                                                 </div>
                                             </div>
                                         </a>
@@ -276,14 +338,34 @@ use yii\helpers\Url;
                                 <div class="owl-carousel owl-theme second-slider" >
                                     <?php foreach ($mostVieweds as $key => $mostViewed) {?>
                                     
-                                        <div class="item" >
+                                        <div class="item offer-item" >
                                             <a href="<?=  Url::to( ['/product' , 'id' => $mostViewed->id]) ?>" class="d-block text-center">
                                                 <img src="<?= Yii::getAlias('@web/uploads/images/') . ($mostViewed->image ?? '') ?>" alt="">
                                                 <div class="item-caption">
                                                     <p><?= $mostViewed->name ?></p>
                                                     <div class="item-caption-bottom">
-                                                        <span class="price"><?= $mostViewed->price ?></span>
-                                                        <span class="unit">تومان</span>
+                                                                                                                  <?php if($mostViewed->discountAmounts){?>
+                                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                                                <?php 
+                                                                    $price = $mostViewed->price;
+                                                                    $discount =($price / 100) * ($mostViewed->discountAmounts->percentage);
+                                                                    $finalyPrice = $discount > $mostViewed->discountAmounts->discount_ceiling ? 
+                                                                    $price - $mostViewed->discountAmounts->discount_ceiling
+                                                                    : $price - $discount;
+
+                                                                ?>
+                                                                <span class="price-befor">
+                                                                    <?= $price ?>
+                                                                </span>
+                                                                <span class="price-after"> تومان 
+                                                                    <?= $finalyPrice ?>
+                                                                </span>
+                                                                
+                                                            <?php }else{?>
+                                                                    
+                                                                    <span class="price"><?= $mostViewed->price ?></span>
+                                                                    <span class="unit">تومان</span>
+                                                            <?php }?>
                                                     </div>
                                                 </div>
                                             </a>

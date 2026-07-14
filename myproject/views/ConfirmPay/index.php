@@ -18,10 +18,10 @@ $this->registerCssFile(
                         <h5 class="mb-3 text-dark">افزودن آدرس پستی جدید</h5>
                         <?php $form = ActiveForm::begin() ?>
 
-                            <?= $form->field($addressModel, 'recipient_name')->textInput([ 'placeholder' => 'نام و نام خانوادگی گیرنده' ,'maxlength' => true, 'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
-                            <?= $form->field($addressModel, 'mobile')->textInput([ 'placeholder' => 'تلفن همراه' ,'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
+                            <?= $form->field($addressModel, 'recipient_name')->textInput(['placeholder' => 'نام و نام خانوادگی گیرنده' ,'maxlength' => true, 'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
+                            <?= $form->field($addressModel, 'mobile')->textInput([ 'type' => 'tel' , 'maxlength' => '13' , 'placeholder' => 'تلفن همراه' ,'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
                             <?= $form->field($addressModel, 'city')->textInput([ 'placeholder' => 'شهر' ,'maxlength' => true , 'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
-                            <?= $form->field($addressModel, 'postal_code')->textInput([ 'placeholder' => 'کد پستی' ,'maxlength' => true, 'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
+                            <?= $form->field($addressModel, 'postal_code')->textInput(['maxlength' => '10' , 'placeholder' => 'کد پستی' ,'maxlength' => true, 'class' => 'w-100 mb-3 px-3 py-1'])->label('') ?>
                             <?= $form->field($addressModel, 'address')->textarea(['rows' => 6 , 'class' => 'w-100 mb-3 px-3 py-2'])->label('') ?>
                             <?= Html::submitButton('ثبت آدرس جدید', [ 'value' => '1' ,'name' => 'save_address','class' => 'new-address-btn d-block buy-btn1 mr-auto px-3 py-2  btn btn-primary w-100']) ?>
                         <?php ActiveForm::end() ?>

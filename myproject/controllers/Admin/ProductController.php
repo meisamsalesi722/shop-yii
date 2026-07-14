@@ -153,10 +153,10 @@ class ProductController extends Controller
         }} else {
             $model->loadDefaultValues();
         }
-        $guarantee = ArrayHelper::map(Guarantee::find()->all(), 'id', 'name');
-        $brands = ArrayHelper::map(Brand::find()->all(), 'id', 'original_name');
+        $guarantee = ArrayHelper::map(Guarantee::find()->where(['status' => 1])->all(), 'id', 'name');
+        $brands = ArrayHelper::map(Brand::find()->where(['status' => 1])->all(), 'id', 'original_name');
         $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
-        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+        $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null,'status' => 1])->all(), 'id', 'name');
 
 
         return $this->render('create', [
@@ -177,7 +177,7 @@ public function actionCatList()
 
         $parent_id = $parents[0];
         $categories = Category::find()
-            ->where(['parent_id' => $parent_id])
+            ->where(['parent_id' => $parent_id,'status' => 1])
             ->orderBy('name')
             ->all();
             
@@ -200,7 +200,7 @@ public function actionGetLevel1()
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     
     $categories = Category::find()
-        ->where(['parent_id' => null])
+        ->where(['parent_id' => null,'status' => 1])
         ->orderBy('name')
         ->all();
         
@@ -288,10 +288,10 @@ public function actionUpdate($id)
         }
     }
 
-    $guarantee = ArrayHelper::map(Guarantee::find()->all(), 'id', 'name');
-    $brands = ArrayHelper::map(Brand::find()->all(), 'id', 'original_name');
+    $guarantee = ArrayHelper::map(Guarantee::find()->where(['status' => 1])->all(), 'id', 'name');
+    $brands = ArrayHelper::map(Brand::find()->where(['status' => 1])->all(), 'id', 'original_name');
     $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
-    $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null])->all(), 'id', 'name');
+    $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null , 'status' => 1])->all(), 'id', 'name');
 
     return $this->render('update', [
         'model' => $model,
@@ -505,7 +505,7 @@ public function actionUpdate($id)
         } else {
             $model->loadDefaultValues();
         }
-        $products = ArrayHelper::map(Product::find()->all() , 'id' , 'name');
+        $products = ArrayHelper::map(Product::find()->where(['status' => 1])->all() , 'id' , 'name');
 
         return $this->render('color/create', [
             'model' => $model,

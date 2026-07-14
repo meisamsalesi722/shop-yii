@@ -40,7 +40,8 @@ class Brand extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 0],
             [['original_name', 'persian_name', 'slug'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status'], 'integer'],
+            [['created_at', 'updated_at'] , 'safe'],
             [['original_name', 'persian_name', 'slug'], 'string', 'max' => 255],
             [['imageFile'], 'file','extensions' => 'png, jpg, jpeg ,webp'],
         ];

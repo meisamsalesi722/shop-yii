@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
             <div class="container">
                 <div class="row d-flex">
                     <div class="logo col-lg-1 col-md-1 col-sm-2 col-2 text-right ">
-                        <a href="#"><img src="img/webeto_logo.png" alt="" class="img-fluid"></a>
+                        <a href="<?= Url::to('/') ?>"><img src="<?= Yii::getAlias('@web/') ?>img/webeto_logo.png" alt="" class="img-fluid"></a>
                     </div>
                     
                         <div class="col-lg-6 col-md-6 col-sm-8 col-8 search-top">
@@ -70,7 +70,7 @@ use yii\widgets\ActiveForm;
                                     <div class="first-col">
                                         <nav>
                                             <?php 
-                                                    $categories = Category::find()->with('children.children')->where(['parent_id' => null])->all();
+                                                    $categories = Category::find()->with('children.children')->where(['parent_id' => null ,'status' => 1])->all();
                                             ?>
                                         <?php foreach ($categories as $key => $category) { ?>
 

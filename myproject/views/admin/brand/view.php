@@ -32,9 +32,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'original_name',
             'persian_name',
-            'status',
+            [
+                'attribute' => 'status',
+                'value' => function($model){
+                    return $model->status == 1 ? 'فعال' : 'غیر فعال';
+                }
+            ],
             'slug',
-            'logo:ntext',
+            [
+                'attribute' => 'logo',
+                'format' => 'raw',
+                'value' => function($model){
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->logo ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
+           
             'created_at',
             'updated_at',
         ],

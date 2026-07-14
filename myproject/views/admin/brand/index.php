@@ -39,7 +39,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'slug',
-            //'logo:ntext',
+            [
+                'attribute' => 'logo',
+                'format' => 'raw',
+                'value' => function($model){
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->logo ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
             //'created_at',
             //'updated_at',
             [
