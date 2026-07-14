@@ -87,7 +87,9 @@ class ProductController extends Controller
             $color_id = Yii::$app->request->post('color_id');
         }else{
 
-        
+        if(Yii::$app->user->isGuest){
+            return $this->redirect('site/login');
+        }
         
         $colorId = $request->post('color_id');
         
