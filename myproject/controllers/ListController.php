@@ -89,7 +89,7 @@ class ListController extends Controller
                 break;
             }
 
-            $query = Product::find()->where(['status' => 1])->orderBy($column . ' ' .  $sort);
+            $query = Product::find()->where(['product.status' => 1])->orderBy($column . ' ' .  $sort);
             
 
 if ($search !== '') {

@@ -55,7 +55,7 @@ $count = 0;
                             </div>
                             <div class="col-xl-3 col-lg-12 col-md-3 col-sm-12 col-12 my-center col-card">
                                     <p class="tatal-price-row item-price">
-                                        <?= $item->product->price + $item->color->price_increase ?> تومان
+                                        <?= $item->product->price + ($item->color->price_increase ?? 0) ?> تومان
                                     </p>
                             </div>
                         </div>

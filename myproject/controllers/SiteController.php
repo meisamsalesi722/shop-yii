@@ -90,7 +90,7 @@ class SiteController extends Controller
      */
     public function actionIndex(): string
     {
-        $specials = Product::find()->where(['status' => 1])
+        $specials = Product::find()->where(['product.status' => 1])
         ->innerJoinWith('discountAmounts')
         ->all();
 

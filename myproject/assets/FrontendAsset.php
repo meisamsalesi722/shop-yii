@@ -34,6 +34,8 @@ class FrontendAsset extends AssetBundle
         '/css/style.css',
     ];
     public $js = [
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js', 
+
         '/js/jquery.min.js',
         '/js/bootstrap.bundle.min.js',
         '/js/owl.carousel.min.js',
