@@ -52,29 +52,17 @@ class ConfirmPayController extends Controller
 
 
     /**
-     * {@inheritdoc}
-     */
-    public function actions(): array
-    {
-        return [
-            'error' => [
-                'class' => ErrorAction::class,
-            ],
-            'captcha' => [
-                'class' => CaptchaAction::class,
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-                'transparent' => true,
-            ],
-        ];
-    }
-
-    /**
      * Displays homepage.
      *
      * @return string
      */
     public function actionIndex()
     {
+        $user = Yii::$app->user->identity;
+        if(!$user->username){
+            $this->redirect(['/userpanel/user-info/update']);
+        }
+
         $addressModel = new Address();
         $user_id = Yii::$app->user->id; 
         $cartItems = CartItem::find()->with(['product' , 'color'])->where(['user_id' => $user_id])->all();

@@ -1,0 +1,322 @@
+body {
+  background-color: #f6f6f6 !important;
+}
+
+footer {
+  background-color: #f9f9f9;
+}
+
+/* start new-form */
+.new-form {
+  position: relative;
+}
+@media screen and (max-width: 500px) {
+  .new-form {
+    position: static;
+  }
+}
+
+.header-search-form {
+  opacity: 0;
+  visibility: hidden;
+  vertical-align: middle;
+  position: absolute;
+  top: 2px;
+  right: 0;
+  transition: all 0.5s;
+  transform: translateY(20px);
+}
+@media screen and (max-width: 500px) {
+  .header-search-form {
+    top: 16px;
+    right: 80px;
+    left: 10px;
+  }
+}
+.header-search-form form {
+  width: 300px !important;
+}
+@media screen and (max-width: 500px) {
+  .header-search-form form {
+    width: 100% !important;
+  }
+}
+.header-search-form form button {
+  border-right: 1px solid #eee;
+  border-left: 0 !important;
+  color: #818181;
+}
+.header-search-form form button i {
+  font-weight: 400;
+}
+.header-search-form form button:focus {
+  box-shadow: unset;
+}
+
+#search-icon a {
+  display: inline-block;
+  padding: 15px;
+}
+#search-icon a i {
+  font-size: 20px;
+  font-weight: 400;
+  color: #818181;
+}
+
+.myblock {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.notblock {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* end form-new */
+/* start profile-page */
+#profile-page {
+  margin-top: 80px;
+  /* start page-content */
+  /* end page-content */
+}
+@media screen and (max-width: 992px) {
+  #profile-page {
+    margin-top: 80px;
+  }
+}
+#profile-page .page-aside {
+  /* start profile-menu */
+  /* end profile-menu */
+  /* start profile-box-mobile */
+  /* end profile-box-mobile */
+  /* start profile-menu-responsive */
+  /* end profile-menu-responsive */
+}
+#profile-page .page-aside .top-aside {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 38px 15px;
+}
+#profile-page .page-aside .top-aside .user-details {
+  font-size: 14px;
+  display: inline-block;
+}
+#profile-page .page-aside .top-aside .user-details span {
+  display: block;
+}
+#profile-page .page-aside .top-aside .user-details .name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #333;
+  line-height: 26px;
+}
+#profile-page .page-aside .top-aside .user-details .tel {
+  color: #606060;
+  font-size: 14px;
+}
+#profile-page .page-aside .top-aside button {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 50%;
+  border: 0;
+  color: #0071DC;
+  margin-left: 16px;
+}
+#profile-page .page-aside .top-aside button i {
+  font-size: 24px;
+}
+#profile-page .page-aside .profile-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 25px;
+}
+#profile-page .page-aside .profile-menu .profile-title {
+  padding: 15px 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 14px;
+}
+#profile-page .page-aside .profile-menu .profile-title i {
+  font-size: 18px;
+  font-weight: 400;
+  padding: 6px 12px;
+}
+#profile-page .page-aside .profile-menu ul li {
+  margin-bottom: 10px;
+  border-radius: 15px;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+#profile-page .page-aside .profile-menu ul li a {
+  padding: 15px 10px;
+  display: block;
+  font-size: 14px;
+  border-radius: 15px;
+}
+#profile-page .page-aside .profile-menu ul li .icon {
+  padding: 6px 12px;
+  border-radius: 14px;
+  margin-left: 4px;
+}
+#profile-page .page-aside .profile-menu ul li .icon i {
+  font-size: 16px;
+  font-weight: 400;
+}
+#profile-page .page-aside .profile-menu ul li .title {
+  font-size: 13px;
+  font-weight: 500;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(1) .icon {
+  color: #0071DC;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(1).active {
+  background-color: #d7e5ff;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(1).active:hover {
+  background-color: #d7e5ff !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(2) .icon {
+  color: #66bb6a;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(2).active {
+  background-color: #e0f1e1;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(2).active:hover {
+  background-color: #e0f1e1 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(3) .icon {
+  color: #ff6a6a;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(3).active {
+  background-color: #ffe1e1;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(3).active:hover {
+  background-color: #ffe1e1 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(4) .icon {
+  color: #bc5bcc;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(4).active {
+  background-color: #f2def5;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(4).active:hover {
+  background-color: #f2def5 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(5) .icon {
+  color: #ff7043;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(5).active {
+  background-color: #ffedd4;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(5).active:hover {
+  background-color: #ffedd4 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(6) .icon {
+  color: #2f3bbd;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(6).active {
+  background-color: #d5d8f2;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(6).active:hover {
+  background-color: #d5d8f2 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(7) .icon {
+  color: #63e46a;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(7).active {
+  background-color: #f2d5d5;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(7).active:hover {
+  background-color: #f2d5d5 !important;
+}
+#profile-page .page-aside .profile-menu ul li:nth-child(8) .icon {
+  color: #ff6a6a;
+}
+#profile-page .page-aside .profile-menu ul li:hover {
+  background-color: rgb(248, 248, 248);
+}
+#profile-page .page-aside .profile-box-mobile {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 25px;
+  display: none;
+}
+#profile-page .page-aside .profile-menu-responsive ul li {
+  border-bottom: 1px solid #eee;
+  border-radius: 0 !important;
+  padding: 7px 0;
+  margin-bottom: 0 !important;
+}
+#profile-page .page-aside .profile-menu-responsive ul li:last-child {
+  border-bottom: 0;
+}
+#profile-page .page-aside .profile-menu-responsive ul li:hover {
+  background-color: rgb(248, 248, 248);
+}
+#profile-page .page-aside .profile-menu-responsive ul li a {
+  border-radius: 0 !important;
+}
+#profile-page .page-aside .profile-menu-responsive ul li a .fa-chevron-left {
+  font-size: 14px;
+  font-weight: 400;
+  float: left;
+  color: #818181;
+}
+#profile-page .page-aside .profile-menu-responsive ul li a:hover {
+  background-color: transparent;
+}
+#profile-page .page-aside .profile-btn {
+  background-color: #fff;
+  padding: 30px 30px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+#profile-page .page-aside .profile-btn .btn-menu i {
+  font-size: 17px;
+  font-weight: 400;
+  color: #818181;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+#profile-page .page-aside .profile-btn .btn-menu span {
+  font-size: 14px;
+}
+#profile-page .page-content {
+  /* start breadcrumb-page */
+  /* end breadcrumb-page */
+}
+#profile-page .page-content .breadcrumb-page {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 23px 30px;
+}
+#profile-page .page-content .breadcrumb-page .breadcrumb {
+  justify-content: center;
+}
+#profile-page .page-content .breadcrumb-page .breadcrumb .breadcrumb-item {
+  color: #333;
+  font-size: 13px;
+  z-index: 2;
+}
+#profile-page .page-content .breadcrumb-page .breadcrumb .breadcrumb-item::before {
+  float: none;
+  padding-left: 0.5rem;
+  color: #ccc;
+}
+#profile-page .page-content .breadcrumb-page .breadcrumb .breadcrumb-item a {
+  color: #818181;
+}
+#profile-page .page-content .breadcrumb-page .breadcrumb .breadcrumb-item a:hover {
+  color: #333;
+}
+#profile-page .page-content .content-in {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 30px;
+}
+
+/* end profile-page *//*# sourceMappingURL=panel-webeto-style.css.map */

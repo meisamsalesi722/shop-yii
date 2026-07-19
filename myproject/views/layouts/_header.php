@@ -16,35 +16,32 @@ use yii\widgets\ActiveForm;
                     
                         <div class="col-lg-6 col-md-6 col-sm-8 col-8 search-top">
                             <form action="<?= Url::to(['list/index']) ?>" method="get" class="d-flex  justify-content-between">
-                                <input type="text" name="send" placeholder="جستجوی کالا در محصولات...">
+                                <input type="text" name="send"  value="<?= Yii::$app->request->get('send') ?>" placeholder="جستجوی کالا در محصولات...">
                                 <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
                         <div class="header-left d-flex col-lg-5 col-md-5 col-sm-12 col-12 justify-content-center align-items-center justify-content-md-end">
                             <?php if(Yii::$app->user->isGuest){
-                                ?>
-                                <a href="<?= Url::to('/site/login') ?>">
+                                ?>  
+                                <a href="<?= Url::to('/login-register') ?>">
                                     <span>ورود</span>
-                                </a> 
-                                /
-                                <a href="<?= Url::to('/site/signup') ?>">
-                                    <span>ثبت نام</span>
                                     <i class="fal fa-user"></i>
                                 </a> 
                                 <?php }else{?>
 
                                     <?php ActiveForm::begin([
-                                        'action' => '/site/logout'
+                                        'action' => '/login-register/logout',
+                                        'options' => ['style' => ' background-color: white; border: 0px solid white; !important']
                                     ]) ?>
 
                                 <button type="submit">
                                     <span>خروج</span>
-                                    <i class="fal fa-user"></i>
+                                    <i class="fal fa-sign-out"></i>
                                 </button> 
                                         
                                 <?php ActiveForm::end()?>
 
-                                    <?= Html::endForm() ?>
+                                    
 
                                     <?php }?>
                                 <a href="<?= Url::to('/cart-item') ?>">
@@ -115,7 +112,12 @@ use yii\widgets\ActiveForm;
                         <i class="far fa-file-alt"></i>
                         <p>مجله لیموناد</p>
                     </a>
+                    <a href="<?= Url::to('/userpanel/user-info') ?>">
+                        <i class="far fa-user" style="font-size: 25px;"></i>
+                        <p>پروفایل</p>
+                    </a>
                 </div>
+
             </div>
         </section>
     </div>
@@ -133,18 +135,32 @@ use yii\widgets\ActiveForm;
                         <a href="#" class=""><img src="img/2بج سه.png" alt="" class="img-fluid "></a>
                     </div>
                     <div class="header-left-responsive d-flex">
-                            <a href="#">
-                                <i class="fal fa-user"></i>
-                            </a> 
-                            <a href="#">
+                            <?php if(Yii::$app->user->isGuest){?>  
+                                <a href="<?= Url::to('/login-register') ?>">
+                                    <i class="fal fa-user"></i>
+                                </a> 
+                                <?php }else{?>
+
+                                    <?php ActiveForm::begin([
+                                        'action' => '/login-register/logout',
+                                        'options' => ['style' => ' background-color: white; border: 0px solid white; !important']
+                                    ]) ?>
+
+                                <button type="submit">
+                                    <i class="fal fa-sign-out"></i>
+                                </button> 
+                                        
+                                <?php ActiveForm::end() ; }?>
+
+                            <a href="<?= Url::to('/cart-item') ?>">
                                 <i class="fal fa-shopping-cart pl-0"></i>
                             </a>              
                     </div>
                 </div>
                 <div class="header-responsive-bottom text-center">
-                    <form action="" method="get"  class="" >
-                        <input type="email" class="my-auto" placeholder="جستجو در مطالب سایت">
-                        <button type="submit" name="send" class="my-auto">
+                    <form action="<?= Url::to(['list/index']) ?>" method="get"  class="" >
+                        <input type="text" name="send" value="<?= Yii::$app->request->get('send') ?>" class="my-auto" placeholder="جستجو در مطالب سایت">
+                        <button type="submit" class="my-auto">
                             <i class="fal fa-search my-auto"></i>
                         </button>
                     </form>

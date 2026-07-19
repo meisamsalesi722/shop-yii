@@ -230,6 +230,7 @@ table {
     margin: 0 auto;
     height: 38px;
     border-radius: 15px;
+    background-color: white;
   }
   
   .header-section-responsive .header-responsive-bottom form input[type=email] {
@@ -237,7 +238,15 @@ table {
     border: 0;
     font-size: 13px;
   }
+  .header-section-responsive .header-responsive-bottom form input[type=text] {
+    width: 81%;
+    border: 0;
+    font-size: 13px;
+  }
   
+  .header-section-responsive .header-responsive-bottom form input[type=text]:focus {
+    outline: 0;
+  }
   .header-section-responsive .header-responsive-bottom form input[type=email]:focus {
     outline: 0;
   }

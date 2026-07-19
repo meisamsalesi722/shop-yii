@@ -101,7 +101,7 @@ class Comment extends \yii\db\ActiveRecord
         ];
         return $statuses[$this->status] ?? 'نامشخص';
     }
-
+    
     /**
      * دریافت کلاس بوت‌استرپ برای وضعیت
      */

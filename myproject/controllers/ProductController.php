@@ -88,7 +88,7 @@ class ProductController extends Controller
         }else{
 
         if(Yii::$app->user->isGuest){
-            return $this->redirect('site/login');
+            return $this->redirect('/login-register');
         }
         
         $colorId = $request->post('color_id');

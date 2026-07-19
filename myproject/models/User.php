@@ -63,4 +63,63 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ProductUser::class , ['user_id' => 'id']);
     }
 
+    // -----------------------------------------------//
+
+        /**
+     * Gets query for [[Addresses]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddresses()
+    {
+        return $this->hasMany(Address::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[CartItems]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCartItems()
+    {
+        return $this->hasMany(CartItem::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Comments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Orders]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Tickets]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTickets()
+    {
+        return $this->hasMany(Ticket::class, ['user_id' => 'id']);
+    }
+
+    public function getOtps()
+    {
+        return $this->hasMany(Otp::class, ['user_id' => 'id']);
+    }
+
+
+
 }
