@@ -76,7 +76,7 @@ class ConfirmPayController extends Controller
 
             if (empty($cartItems)) {
                 Yii::$app->session->setFlash('warning', 'سبد خرید شما خالی است');
-                return $this->redirect(['/cart']);
+                return $this->redirect(['/cart-item']);
             }
 
             foreach ($cartItems as $item) {
@@ -199,7 +199,7 @@ class ConfirmPayController extends Controller
                                     
                                 }
                                 $transaction->commit();
-                                return $this->goHome();
+                                return $this->redirect(['/payment/payment-submit' , 'order_id' => $orderModel->id]);
                             }else{
                                 return $this->redirect('/confirm-pay');
                             }

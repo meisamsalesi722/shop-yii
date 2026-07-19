@@ -89,7 +89,7 @@ $count = 0;
                             <div class="clear"></div>
                         </div>
         
-                        <a href="<?= Url::to(['/confirm-pay' , 'amount' => $finalPrice]) ?>" class="left-buttom d-block buy-btn1 d-block w-100 mt-2 py-3 text-center text-white font-weight-bold"
+                        <a href="<?= Url::to(['/confirm-pay']) ?>" class="left-buttom d-block buy-btn1 d-block w-100 mt-2 py-3 text-center text-white font-weight-bold"
                             data-aos="fade-up" data-aos-duration="2000" data-aos-delay="600"
                         >ادامه ثبت سفارش
                         <i class="fal fa-arrow-left mr-3 font-weight-bold"></i></a>

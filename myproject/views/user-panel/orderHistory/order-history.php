@@ -36,6 +36,12 @@ use yii\grid\ActionColumn;
                         }
                     ],
                     [
+                        'attribute' => 'وضعیت پرداخت',
+                        'value' => function($model){
+                            return $model->payment_status == 0 ? 'پرداخت نشده' : 'پرداخت شده';
+                        }
+                    ],
+                    [
                         'attribute' => 'قیمت محصول',
                         'value' => function($model){
                             return $model->original_price . ' تومان';
@@ -58,13 +64,21 @@ use yii\grid\ActionColumn;
 
                     [
                     'class' => ActionColumn::class,
-                        'template' => '{view} {orderItem}',
+                        'template' => '{view} {orderItem} {payment}',
                         'buttons' => [
                             'orderItem' => function ($url, $model, $key) {
                                 return Html::a(
                                     '<i class="fas fa-clipboard-list"></i>',
                                     ['userpanel/order-history/order-item', 'order_id' => $model->id]
                                 );
+                            },
+                            'payment' => function ($url, $model, $key) {
+                                if($model->payment_status == 0){
+                                return Html::a(
+                                    '<i class="fas fa-credit-card"></i>',
+                                    ['/payment/payment-submit', 'order_id' => $model->id]
+                                );
+                                }
                             },
                         ],
                         'urlCreator' => function ($action, Order $model, $key, $index, $column) {

@@ -23,6 +23,7 @@ class m260710_092834_create_order_table extends Migration
             'order_copan_discount_amount' => $this->string(),
             'order_total_products_discount_amount' => $this->string(),
             'order_status' => $this->tinyInteger()->defaultValue(0),
+            'payment_status' => $this->tinyInteger()->defaultValue(0),
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
