@@ -112,10 +112,12 @@ use yii\widgets\ActiveForm;
                         <i class="far fa-file-alt"></i>
                         <p>مجله لیموناد</p>
                     </a>
+                    <?php if(!Yii::$app->user->isGuest){?>
                     <a href="<?= Url::to('/userpanel/user-info') ?>">
                         <i class="far fa-user" style="font-size: 25px;"></i>
                         <p>پروفایل</p>
                     </a>
+                    <?php }?>
                 </div>
 
             </div>

@@ -23,32 +23,49 @@ FrontendAsset::register($this);
 <?php //$this->render('_alerts');?>
 
 
+<?= $this->render('_header') ?>
+
+
         <!-- فلش‌ها -->
         <?php if (Yii::$app->session->hasFlash('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> <?= Yii::$app->session->getFlash('success') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="w-75 m-3 mx-auto">
+            <div class="alert alert-success alert-dismissible d-flex justify-content-around align-items-center fade show" role="alert">
+                <div>
+                    <i class="fas fa-check-circle"></i> <?= Yii::$app->session->getFlash('success') ?>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"><i class="fa fa-times"></i></button>
             </div>
-        <?php endif; ?>
+            </div>
+
+            <?php endif; ?>
+
 
         <?php if (Yii::$app->session->hasFlash('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> <?= Yii::$app->session->getFlash('error') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="w-75 m-3 mx-auto">
+            <div class="alert alert-danger alert-dismissible d-flex justify-content-around align-items-center fade show" role="alert">
+                <div>
+                    <i class="fas fa-exclamation-circle"></i> <?= Yii::$app->session->getFlash('error') ?>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"><i class="fa fa-times"></i></button>
+            </div>
             </div>
         <?php endif; ?>
 
         <?php if (Yii::$app->session->hasFlash('warning')): ?>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle"></i> <?= Yii::$app->session->getFlash('warning') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="w-75 m-3 mx-auto">
+            <div class="alert alert-warning alert-dismissible d-flex justify-content-around align-items-center fade show" role="alert">
+                <div>
+                    <i class="fas fa-exclamation-triangle"></i> <?= Yii::$app->session->getFlash('warning') ?>
+                </div>
+                <button type="button" class="btn" data-bs-dismiss="alert"><i class="fa fa-times"></i></button>
+            </div>
             </div>
         <?php endif; ?>
 
-<?= $this->render('_header') ?>
 
-       <?= $content ?>
-
+        
+        <?= $content ?>
+        
 <?= $this->render('_footer') ?>
 
 <div class="black-menu"></div>

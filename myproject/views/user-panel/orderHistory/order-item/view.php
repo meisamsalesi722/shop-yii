@@ -53,7 +53,7 @@ use yii\widgets\DetailView;
                 'attribute' => 'رنگ',
                 'format' => 'raw',
                 'value' => function($model){
-                    return '<i class="fas fa-circle color-withe" style="color: '. $model->color->color_code . ';"></i>';
+                    return '<i class="fas fa-circle color-withe" style="color: '. ($model->color->color_code ?? ''). ';"></i>';
                 },
             ],
             [

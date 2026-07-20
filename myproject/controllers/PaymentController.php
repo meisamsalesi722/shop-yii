@@ -80,7 +80,7 @@ class PaymentController extends Controller
         $order->order_status = 3;
         $order->save();
         Yii::$app->session->setFlash('success' , 'سفارش شما با موفقیت ثبت شد');
-        return $this->goHome();
+        return $this->redirect(['/userpanel/order-history/view' , 'id' => $order_id]);
 
     }
 
@@ -108,7 +108,7 @@ class PaymentController extends Controller
           
           if($result['message']){
             Yii::$app->session->setFlash($result['message'][0],  $result['message'][1]);
-            return $this->goHome();
+            return $this->redirect(['/userpanel/order-history/view' , 'id' => $order_id]);
           }
   }
 

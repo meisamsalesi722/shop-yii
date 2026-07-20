@@ -635,7 +635,7 @@ public function actionUpdate($id)
                     Yii::$app->session->setFlash('success' , 'تصویر با موفقیت اضافه شد');
                     return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
                 }
-                    Yii::$app->session->setFlash('success' , 'اضافه کردن تصویر با خطا مواجه شد');
+                    Yii::$app->session->setFlash('error' , 'اضافه کردن تصویر با خطا مواجه شد');
                     return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
                 }
 
@@ -678,7 +678,7 @@ public function actionUpdate($id)
                 Yii::$app->session->setFlash('success' , 'تصویر با موفقیت ویرایش شد');
                 return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
             }
-                Yii::$app->session->setFlash('success' , 'ویرایش تصویر با خطا مواجه شد');
+                Yii::$app->session->setFlash('error' , 'ویرایش تصویر با خطا مواجه شد');
                 return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
         }
     }

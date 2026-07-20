@@ -22,7 +22,9 @@ use yii\widgets\DetailView;
 
 
     <?= $this->render('/user-panel/orderHistory/_print' , ['model' => $model]);?>
-
+    <?php if($model->payment_status == 0){ ?>
+        <?= HTML::a('پرداخت مجدد' ,['/payment/payment-submit' ,'order_id' => $model->id] , ['class' => 'btn btn-warning']) ;?>
+    <?php }?>
 
 
 <?= Html::a('print', ['print-tcpdf', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>

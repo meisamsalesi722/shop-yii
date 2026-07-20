@@ -104,7 +104,7 @@ class BrandController extends Controller
                         Yii::$app->session->setFlash('success' , 'برند با موفقیت ثبت شد');
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
-                    Yii::$app->session->setFlash('success' , 'ثبت برند با خطا مواجه شد');
+                    Yii::$app->session->setFlash('error' , 'ثبت برند با خطا مواجه شد');
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             }
@@ -148,7 +148,7 @@ class BrandController extends Controller
                     Yii::$app->session->setFlash('success' , 'ویرایش با موفقیت انجام شد');
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
-                Yii::$app->session->setFlash('success' , 'ویرایش با خطا مواجه شد');
+                Yii::$app->session->setFlash('error' , 'ویرایش با خطا مواجه شد');
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }

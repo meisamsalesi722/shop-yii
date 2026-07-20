@@ -3,6 +3,12 @@
         'attributes' => [
             'id',
             [
+                'attribute' => 'وضعیت پرداخت',
+                'value' => function($model){
+                    return $model->payment_status == 0 ? 'پرداخت نشده' : 'پرداخت شده';
+                }
+            ],
+            [
                 'attribute' => 'نام مشتری',
                 'value' => function($model){
                     return $model->user->username;
