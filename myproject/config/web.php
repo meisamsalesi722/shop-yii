@@ -4,6 +4,11 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+        'modules' => [
+            'blog' => [
+                'class' => 'app\modules\blog\Module',
+            ],
+        ],
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -17,11 +22,16 @@ $config = [
             ],
         ],
     ],
+
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager', 
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'xCEkEHnOdfL3ZHiex8sDs3Hl_NllUNDP',

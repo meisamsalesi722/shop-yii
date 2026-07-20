@@ -27,6 +27,7 @@ class m260710_092834_create_order_table extends Migration
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
+            
         $this->addForeignKey('order_address_id_key' , 'order' , 'address_id' , 'address' , 'id' , 'CASCADE' , 'CASCADE');
         $this->addForeignKey('order_user_id_key' , 'order' , 'user_id' , 'user' , 'id' , 'CASCADE' , 'CASCADE');
         $this->addForeignKey('order_copan_id_key' , 'order' , 'copan_id' , 'copan' , 'id' , 'CASCADE' , 'CASCADE');

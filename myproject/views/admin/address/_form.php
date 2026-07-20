@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'recipient_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'prstal_code')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'postal_code')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

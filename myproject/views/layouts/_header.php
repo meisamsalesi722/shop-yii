@@ -108,7 +108,7 @@ use yii\widgets\ActiveForm;
                     </ul>
                 </div>
                 <div class="article">
-                    <a href="#">
+                    <a href="<?= Url::to(['/blog/blog']) ?>">
                         <i class="far fa-file-alt"></i>
                         <p>مجله لیموناد</p>
                     </a>

@@ -5,12 +5,9 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%user}}`.
  */
-class m260630_052459_create_user_table extends Migration
+class m260622_113232_create_user_table extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function safeUp()
+public function safeUp()
     {
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
@@ -18,12 +15,13 @@ class m260630_052459_create_user_table extends Migration
             'mobile' => $this->string(13),
             'email' => $this->string(255)->unique(),
             'avatar' => $this->text(),
+            'auth_key' => $this->string(255),
+            'status' => $this->tinyInteger()->defaultValue(10),
+            'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
+            'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropTable('{{%user}}');
