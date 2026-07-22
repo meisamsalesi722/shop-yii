@@ -17,6 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="order-item-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    
+    <p>
+        <?= Html::a('Create Category', ['/admin/order/order-item-create' , 'order_id' => $order_id], ['class' => 'btn btn-success']) ?>
+    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -39,15 +43,18 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view}',
+                'template' => '{view} {delete}',
                  'buttons' => [
-                    'view' => function ($url, $model, $key) {
+                    'view' => function ($url, $model, $key) use($order_id){
                         return Html::a(
                             '<i class="fas fa-eye"></i>',
-                            ['admin/order/order-item-view', 'id' => $model->id]
+                            ['admin/order/order-item-view', 'id' => $model->id , 'order_id' => $order_id]
                         );
                     },
                 ],
+                'urlCreator' => function ($action, OrderItem $model, $key, $index, $column) use($order_id) {
+                    return Url::toRoute([ 'admin/order/order-item-' . $action, 'id' => $model->id , 'order_id' => $order_id]);
+                 }
             ],
         ],
     ]); ?>

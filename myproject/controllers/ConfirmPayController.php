@@ -183,6 +183,7 @@ class ConfirmPayController extends Controller
                                     }
                                     $orderItemModel->final_product_price = $final_product_price;
                                     $orderItemModel->final_total_price = ($final_product_price) * $cartItem->number;
+                                    $orderItemModel->final_discount = $discount;
                                     $orderItemModel->color_id = $cartItem->color_id;
                                     $orderItemModel->guarantee_id = $cartItem->product->guarantee_id;
                                     

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+
 use Yii;
 use app\models\Otp;
 use app\models\User;
@@ -12,10 +13,10 @@ use yii\web\Controller;
 use app\models\SignupForm;
 use yii\httpclient\Client;
 use yii\mail\MailerInterface;
+use app\services\FastSmsService;
 
 class LoginRegisterController extends Controller
 {
-    protected $token = '24d0cc68956ee9def1c8e8972515710f';
 
         public function __construct(
         $id,
@@ -46,8 +47,8 @@ class LoginRegisterController extends Controller
                     } 
                     $otpCode = random_int(111111 , 999999);
                     $token = Yii::$app->security->generateRandomString(60);
-
-                    $this->sendSms([$mobile] , $otpCode);
+                    $fastSmsService = new FastSmsService();
+                    $fastSmsService->sendSms([$mobile] , $otpCode);
                     $otp = new Otp;
                     $otp->user_id = $user->id;
                     $otp->token = $token;
@@ -112,56 +113,5 @@ class LoginRegisterController extends Controller
 
         return $this->goHome();
     }
-
-
-    public function getToken(){
-        $client = new Client();
-
-        $response =
-         $client->createRequest()
-            ->setMethod('POST')
-            ->setUrl('https://edge.ippanel.com/v1/api/acl/auth/login')
-            ->addHeaders([
-                'Content-Type' =>'application/json',
-            ])
-            ->setContent(json_encode([
-                'username' => 'afradade003',
-                'password' => 'hosseiny003',
-            ]))
-            ->send();
-
-            $result = json_decode($response->content);
-            dd($result);
-            
-            // if ($response->isOk) {
-            //     if($result->meta->message_code == 200-1){
-            //         Yii::$app->cache->set('ippanel_token' , $response->data->token , 60 * 60 * 10 );
-            //     }
-            // }
-
-        }
-
-        public function sendSms(array $recipients , $code){
-            $client = new Client();
-
-            $response = $client->createRequest()
-            ->setMethod('POST')
-            ->setUrl('https://edge.ippanel.com/v1/api/send')
-            ->addHeaders([
-                'Authorization' => $this->token,
-                'Content-Type' => 'application/json'
-            ])
-            ->setContent(json_encode([
-                'sending_type' => 'pattern',
-                "from_number" => "+983000505",
-                "code" => "1hv13p1q7t7a0zd",
-                "recipients" => $recipients,
-                "params" => [
-                    'password' => $code
-                ],
-            ]))
-            ->send();
-            $result = json_decode($response->content);
-        }
 
 }

@@ -75,6 +75,9 @@ class PaymentController extends Controller
                 $paymented->save(false);
                 $authority = $result['response']['data']['authority'];
                 return $this->redirect("https://sandbox.zarinpal.com/pg/StartPay/". $authority);
+            }else{
+                Yii::$app->session->setFlash('error' , $result['message']);
+                return $this->redirect(['/userpanel/order-history/view' , 'id' => $order_id]);
             }
 
         $order->order_status = 3;

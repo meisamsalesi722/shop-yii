@@ -35,9 +35,9 @@ class Color extends \yii\db\ActiveRecord
         return [
             [['name', 'color_code'], 'default', 'value' => null],
             [[ 'created_at', 'updated_at'], 'safe'],
-            [['product_id'], 'required'],
+            [['product_id', 'price_increase'], 'required'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
-            [['name'], 'string', 'max' => 255],
+            [['name' , 'color_code'], 'string', 'max' => 255],
         ];
     }
 
@@ -48,10 +48,11 @@ class Color extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'color_code' => 'Color Code',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'name' => 'نام',
+            'color_code' => 'کد رنگی',
+            'price_increase' => 'قیمت اضافه شده',
+            'created_at' => 'تاریخ ساخت',
+            'updated_at' => 'اخرین ویرایش',
         ];
     }
 

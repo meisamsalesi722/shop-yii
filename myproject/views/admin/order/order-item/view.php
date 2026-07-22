@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => '/ Order', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => 'Order Items', 'url' => ['order-item' , 'order_id' => $model->order->id]];
+$this->params['breadcrumbs'][] = ['label' => 'Order Items', 'url' => ['order-item' , 'order_id' => $order_id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,6 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>
+        <?= Html::a('Update', ['/admin/order/order-item-update', 'id' => $model->id , 'order_id' => $order_id], ['class' => 'btn btn-primary']) ?>
+    </p>
 
 
     <?= DetailView::widget([

@@ -86,7 +86,6 @@ class BrandController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                dd(Yii::$app->request->post());
 
                 $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
                 if($model->validate()){

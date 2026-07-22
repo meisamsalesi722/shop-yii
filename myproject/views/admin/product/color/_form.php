@@ -16,6 +16,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'color_code')->input('color') ?>
 
+    <?= $form->field($model, 'price_increase')->textInput() ?>
+
+
         <?= $form->field($model, 'product_id')->hiddenInput([
             'value' => $product_id
         ])->label('') ?>

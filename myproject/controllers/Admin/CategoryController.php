@@ -165,10 +165,11 @@ class CategoryController extends Controller
                     $category_id = null;
                 }
 
-                $model->parent_id = (int)$category_id;
+                $model->parent_id = $category_id;
                 if($model->save()){
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
+                dd($model->parent_id ,$model->errors ,$category_id);
         }
 
  $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null ,'status' => 1])->all(), 'id', 'name');
