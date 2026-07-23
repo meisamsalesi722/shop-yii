@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\models\Address;
 use Yii;
 use TCPDF;
 use kartik\mpdf\Pdf;
@@ -10,6 +11,7 @@ use app\models\Order;
 use app\models\Product;
 use yii\web\Controller;
 use app\models\OrderItem;
+use yii\bootstrap5\Modal;
 use app\models\OrderSearch;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -150,11 +152,18 @@ class OrderController extends Controller
     {
         $searchModel = new OrderItemSearch();
         $dataProvider = $searchModel->search($this->request->queryParams , $order_id);
+        $model = Order::findOne($order_id);
+        $orderItemModel = new OrderItem();
 
+        $products = ArrayHelper::map(Product::find()->where(['product.status' => 1])->all() , 'id' , 'name');
+        
         return $this->render('order-item/index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'order_id' => $order_id,
+            'products' => $products,
+            'model' => $model,
+            'orderItemModel' => $orderItemModel,
         ]);
     }
 
@@ -228,7 +237,7 @@ class OrderController extends Controller
                     throw new \Exception('Order item could not be saved.');
                 }
                 $transaction->commit();
-                return $this->redirect(['/admin/order/order-item-view', 'order_id' => $order_id ,'id' => $model->id]);
+                return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
                 } catch (\Throwable $e) {
                     $transaction->rollBack();
                     throw $e;
@@ -302,9 +311,43 @@ class OrderController extends Controller
             return ['output' => []];
         }
 
-        // ----------------- end product count -----------------//
-        public function actionOrderItemUpdate($id , $order_id)
+    public function actionOrderItemDelete($id , $order_id)
     {
+        $transaction = Yii::$app->db->beginTransaction();
+        try{
+        $order_item = $this->findModelOrderItem($id);
+        
+        $product = Product::find()->where(['id' => $order_item->product_id])->one();
+        $product->marketable_number += ($order_item->number);
+        $product->sold_number -= ($order_item->number);
+
+        $order = Order::find()->where(['id' => $order_id])->one();
+        $price = $order_item->product->price;
+        if($order_item->color){
+            $price += $order_item->color->price_increase;
+        }
+        $order->original_price -= $price * $order_item->number;
+        $order->order_discount_amount -= $order_item->final_discount;
+        $order->order_final_amount -= $price * $order_item->number - $order_item->final_discount;
+        $order->order_total_products_discount_amount -= $order_item->final_discount;
+
+        $order->save(false);
+
+        $product->save(false);
+        
+        $order_item->delete();
+        $transaction->commit();
+
+        return $this->redirect(['/admin/order/order-item' , 'order_id' => $order_id]);
+
+        } catch (\Throwable $e) {
+                    $transaction->rollBack();
+                    throw $e;
+        }
+    }
+
+
+    public function actionGetInfo($id , $order_id){
         $model = $this->findModelOrderItem($id);
         $color = $model->color;
         $number = $model->number;
@@ -355,51 +398,35 @@ class OrderController extends Controller
             
             
             if($model->save()){
-                return $this->redirect(['/admin/order/order-item-view', 'order_id' => $order_id, 'id' => $model->id]);
+                return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
             }
         }
+        
         $colors = ArrayHelper::map($model->product->color , 'id' , 'name');
 
-        return $this->render('order-item/update', [
-            'model' => $model,
+        return $this->renderAjax('/admin/order/order-item/_form', [
             'colors' => $colors,
-            'order_id' => $order_id,
-        ]);
+            'model' => $model
+        ]);  
     }
 
-    public function actionOrderItemDelete($id , $order_id)
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-        try{
-        $order_item = $this->findModelOrderItem($id);
-        
-        $product = Product::find()->where(['id' => $order_item->product_id])->one();
-        $product->marketable_number += ($order_item->number);
-        $product->sold_number -= ($order_item->number);
+    public function actionEditAddress($order_id){
 
-        $order = Order::find()->where(['id' => $order_id])->one();
-        $price = $order_item->product->price;
-        if($order_item->color){
-            $price += $order_item->color->price_increase;
+        $modelOrder = Order::findOne($order_id);
+        $model = Address::findOne($modelOrder->address_id);
+
+            if ($this->request->isPost && $model->load($this->request->post())) {
+            if($model->save()){
+                Yii::$app->session->setFlash('success', 'ادرس با موفقیت ویرایش شد.');
+                return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
+            }
+            Yii::$app->session->setFlash('error', 'ویرایش ادرس با خطا مواجه شد.');
+                return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
         }
-        $order->original_price -= $price * $order_item->number;
-        $order->order_discount_amount -= $order_item->final_discount;
-        $order->order_final_amount -= $price * $order_item->number - $order_item->final_discount;
-        $order->order_total_products_discount_amount -= $order_item->final_discount;
 
-        $order->save(false);
-
-        $product->save(false);
-        
-        $order_item->delete();
-        $transaction->commit();
-
-        return $this->redirect(['/admin/order/order-item' , 'order_id' => $order_id]);
-
-        } catch (\Throwable $e) {
-                    $transaction->rollBack();
-                    throw $e;
-        }
+        return $this->renderAjax('/admin/address/_form', [
+            'model' => $model,
+        ]);  
     }
 
     /**

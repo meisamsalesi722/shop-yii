@@ -11,6 +11,8 @@ use app\models\OrderItem;
  */
 class OrderItemSearch extends OrderItem
 {
+    public $color;
+    public $product;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,8 @@ class OrderItemSearch extends OrderItem
     {
         return [
             [['id', 'order_id', 'product_id', 'number', 'color_id', 'guarantee_id'], 'integer'],
-            [['final_product_price', 'final_total_price', 'created_at', 'updated_at'], 'safe'],
+            [['color' , 'product'], 'string'],
+            [['final_product_price' , 'final_discount' , 'final_total_price', 'created_at', 'updated_at' , 'color'], 'safe'],
         ];
     }
 
@@ -45,6 +48,9 @@ class OrderItemSearch extends OrderItem
 
         // add conditions that should always apply here
 
+        $query->joinWith(['color c']);
+        $query->joinWith(['product p']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -65,12 +71,16 @@ class OrderItemSearch extends OrderItem
             'number' => $this->number,
             'color_id' => $this->color_id,
             'guarantee_id' => $this->guarantee_id,
+            'final_discount' => $this->final_discount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'final_product_price', $this->final_product_price])
-            ->andFilterWhere(['like', 'final_total_price', $this->final_total_price]);
+            ->andFilterWhere(['like', 'final_total_price', $this->final_total_price])
+            ->andFilterWhere(['like', 'c.name', $this->color])
+            ->andFilterWhere(['like', 'p.persian_name', $this->product])
+            ->orFilterWhere(['like', 'p.name', $this->product]);
 
         return $dataProvider;
     }

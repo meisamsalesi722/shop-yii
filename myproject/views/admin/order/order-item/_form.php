@@ -45,11 +45,11 @@ use yii\widgets\ActiveForm;
     ]);
     ?>
     
-<?php }else{ ?>
-    <?= $form->field($model, 'color_id')->dropDownList($colors) ?>
+    <?php }else{ ?>
+        <?= $form->field($model, 'color_id')->dropDownList($colors) ?>
 
-    <?= $form->field($model, 'number')->textInput(['type' => 'number' , 'min' => '1' , 'max' => ($model->product->marketable_number + $model->number)]) ?>
-<?php } ?>
+        <?= $form->field($model, 'number')->textInput(['type' => 'number' , 'min' => '1' , 'max' => ($model->product->marketable_number + $model->number)]) ?>
+    <?php } ?>
 
 
 

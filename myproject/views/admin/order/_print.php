@@ -17,7 +17,7 @@
             [
                 'attribute' => 'copan',
                 'value' => function($model){
-                    return $model->copan->code;
+                    return $model->copan ? $model->copan->code : 'کوپنی وارد نشده است';
                 }
             ],
             'original_price',

@@ -83,8 +83,7 @@ class AddressController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) ) {
-                // $model->user_id = Yii::$app->user->id;
-                $model->user_id = 1;
+                $model->user_id = Yii::$app->user->id;
                 if($model->save()){
                     Yii::$app->session->setFlash('success', 'ادرس با موفقیت ساخته شد.');
                     return $this->redirect(['view', 'id' => $model->id]);
@@ -110,8 +109,6 @@ class AddressController extends Controller
     {
         $model = $this->findModel($id);
         if ($this->request->isPost && $model->load($this->request->post())) {
-            // $model->user_id = Yii::$app->user->id;
-            $model->user_id = 1;
             if($model->save()){
                 Yii::$app->session->setFlash('success', 'ادرس با موفقیت ساخته شد.');
                 return $this->redirect(['view', 'id' => $model->id]);
