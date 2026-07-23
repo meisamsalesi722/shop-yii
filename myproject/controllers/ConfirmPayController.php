@@ -232,7 +232,7 @@ class ConfirmPayController extends Controller
                     }
 
             }
-            $addresses = Address::find()->all();
+            $addresses = Address::find()->where(['user_id' => Yii::$app->user->id])->all();
 
         return $this->render('/confirmPay/index' ,[
             'totalPrice' => $totalPrice,

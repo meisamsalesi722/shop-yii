@@ -92,6 +92,12 @@ class ProductController extends Controller
         }
         
         $colorId = $request->post('color_id');
+        $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'color_id' => $colorId])->all();
+
+        if($cartItem){
+            Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
+            return $this->redirect(['/product', 'id' => $id]);
+        }
         
         if(!empty($product->color)){
             if(!$colorId){
@@ -159,8 +165,12 @@ class ProductController extends Controller
         
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                $user = User::findOne(['email' => $model->email , 'id' => Yii::$app->user->id]);
-                if(!$user){
+                $user = Yii::$app->user->identity;
+                if($user && empty($user->email)){
+                    Yii::$app->session->setFlash('error' , 'برای ثبت نظر ابتدا ایمیل خود را وارد کنید');
+                    return $this->redirect(['/userpanel/user-info/update']);
+                }
+                if(!$user || $user->email != $model->email){
                     Yii::$app->session->setFlash('error' , 'کاربر مورد نظر یافت نشد یا ایمیل متعلق به شما نیست');
                     return $this->redirect(['/product' , 'id' => $id]);
                 }

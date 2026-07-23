@@ -96,10 +96,9 @@ $products = ArrayHelper::map(
     ->where([
         'or',
         ['discount_amount.id' => null],
-        ['<', 'discount_amount.end_date', time()],
+        ['<', 'discount_amount.end_date', date('y/m/d h:i:s')],
     ])->andWhere(['product.status' => 1])
     ->all() , 'id' , 'name');
-
         return $this->render('create', [
             'model' => $model,
             'products' => $products,

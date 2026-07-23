@@ -117,10 +117,7 @@ class CommentController extends Controller
         $model = $this->findModel($id);
         $product = $model->product;
         
-        // بررسی اجازه حذف
-        if ($model->user_id != Yii::$app->user->id) {
-            throw new NotFoundHttpException('شما اجازه حذف این نظر را ندارید.');
-        }
+
 
         // حذف نرم (تغییر وضعیت به DELETED)
         $model->status = Comment::STATUS_DELETED;

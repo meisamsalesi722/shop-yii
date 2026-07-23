@@ -636,16 +636,27 @@ $this->registerCssFile(
             <div class="visited-slider">
                 <div class="owl-carousel owl-theme second-slider" >
                     <?php foreach($newProducts as $newProduct){?>
-                    <div class="item" >
+                    <div class="item offer-item" >
                         <a href="<?= Url::to(['product/' , 'id' => $newProduct->id]) ?>" class="d-block text-center">
                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($newProduct->image ?? '') ?>" alt="">
-                            <div class="item-caption">
-                                <p><?= $newProduct->name ?></p>
-                                <div class="item-caption-bottom">
-                                    <span class="price"><?= $newProduct->price ?></span>
-                                    <span class="unit">تومان</span>
-                                </div>
-                            </div>
+                                   <div class=" img-caption">
+                                    <p ><?= $newProduct->name ?></p>
+                                    <span class="percent-off"><?= $newProduct->discountAmounts->percentage ?>%</span>
+                                        <?php 
+                                            $price = $newProduct->price;
+                                            $discount =($price / 100) * ($newProduct->discountAmounts->percentage);
+                                            $finalyPrice = $discount > $newProduct->discountAmounts->discount_ceiling ? 
+                                            $price - $newProduct->discountAmounts->discount_ceiling
+                                            : $price - $discount;
+
+                                        ?>
+                                    <span class="price-befor">
+                                         <?= $price ?>
+                                    </span>
+                                    <span class="price-after"> تومان 
+                                         <?= $finalyPrice ?>
+                                    </span>
+                                    </div>
                         </a>
                     </div>
                         <?php }?>

@@ -47,7 +47,7 @@ class DashboardController extends Controller
         $rejectedComments = Comment::find()->where(['status' => Comment::STATUS_REJECTED])->count();
         
         // آمار امروز
-        $today = strtotime('today');
+        $today = date("y/m/d h:i:s"); 
         $todayProducts = Product::find()->where(['>=', 'created_at', $today])->count();
         $todayComments = Comment::find()->where(['>=', 'created_at', $today])->count();
         $todayUsers = User::find()->where(['>=', 'created_at', $today])->count();

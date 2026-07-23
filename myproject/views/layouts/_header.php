@@ -1,5 +1,7 @@
 <?php
 // use Yii;
+
+use app\models\CartItem;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use app\models\Category;
@@ -44,8 +46,12 @@ use yii\widgets\ActiveForm;
                                     
 
                                     <?php }?>
+                                    <?php 
+                                        $cartItems = count(Yii::$app->user->identity->cartItems ?? []);
+                                     ?>
                                 <a href="<?= Url::to('/cart-item') ?>">
                                     <span>سبد خرید</span>
+                                    <span class="badge badge-secondary" style="font-size: 10px; margin:-30px -10px 0 -3px;"><?= $cartItems ?></span>
                                     <i class="fal fa-shopping-cart"></i>
                                 </a>              
                         </div>

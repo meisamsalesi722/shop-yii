@@ -18,6 +18,7 @@ class m260715_110837_create_ticket_table extends Migration
             'description' => $this->text()->notNull(),
             'status' => $this->tinyInteger(),
             'user_id' => $this->integer()->notNull(),
+            'is_admin' => $this->tinyInteger()->defaultValue(0),
             'ticket_id' => $this->integer(),
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
         ]);

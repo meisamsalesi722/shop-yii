@@ -30,7 +30,9 @@ $count = 0;
                                     <br>
                                     <?php if($item->color){ ?>
                                         <span class="status-product mt-2 text-muted"> رنگ محصول : <?= $item->color->name ?> </span>
-                                        <span class="status-product mt-2 text-muted"><i class="fas fa-circle " style="color: <?= $item->color->color_code ?>;"></i></span>
+                                        <span class="status-product mt-2 text-muted"><i class="fas fa-circle " style="color: <?= $item->color->color_code ?>;"></i></span>  
+                                        <br>
+                                        <span class="status-product mt-2 text-muted"> قیمت : <?= $item->product->price + ($item->color->price_increase ?? 0) ?> </span>
                                         <br>
                                     <?php } ?>
                                     <a href="<?= Url::to(['cart-item/delete' , 'id' => $item->id]) ?>" class="delete-btn btn btn-sm mt-2"><i class="fad fa-trash ml-2"></i>حذف کالا</a>
@@ -54,9 +56,45 @@ $count = 0;
                                 <?php ActiveForm::end() ?>
                             </div>
                             <div class="col-xl-3 col-lg-12 col-md-3 col-sm-12 col-12 my-center col-card">
-                                    <p class="tatal-price-row item-price">
-                                        <?= $item->product->price + ($item->color->price_increase ?? 0) ?> تومان
+                                <?php if($item->product->discountAmounts){?>
+
+                                    <?php 
+                                        $singlePrice = $item->product->price;
+                                        if($item->color){
+                                            $singlePrice += $item->color->price_increase;
+                                        }
+                                        $singleCount = $item->number;
+                                        
+                                        $SingleIemTotal = $singlePrice * $singleCount;
+                                        
+                                        $singleDiscount = 0;
+                                        
+                                        if ($item->product->discountAmounts) {
+                                            
+                                            $singleDiscount = ($SingleIemTotal * $item->product->discountAmounts->percentage) / 100;
+                                            
+                                            if ($singleDiscount > $item->product->discountAmounts->discount_ceiling) {
+                                                $singleDiscount = $item->product->discountAmounts->discount_ceiling;
+                                            }
+                                        }
+                                        
+                                        
+
+                                        $SingleTotalDiscount = $singleDiscount;
+                                        $SingleFinalPrice = $SingleIemTotal - $singleDiscount;    
+                                    ?>
+
+                                    <s class="tatal-price-row item-price">
+                                        <?= ($item->product->price + ($item->color->price_increase ?? 0) )* $item->number ?> تومان
+                                    </s>
+                                    <p class="tatal-price-row item-price m-3">
+                                        <?= $SingleFinalPrice ?> تومان
                                     </p>
+                                    <?php }else{ ?>
+                                        <p class="tatal-price-row item-price m-3">
+                                            <?= ($item->product->price + ($item->color->price_increase ?? 0) )* $item->number ?> تومان
+                                        </p>
+                                    <?php }?>
                             </div>
                         </div>
                         <?php 
@@ -75,7 +113,7 @@ $count = 0;
                                 <span>مبلغ کل ( <?= $count ?> کالا)</span>
                                 <span><?= $totalPrice ?> تومان</span>
                             </p>
-        
+
                             <p class="d-flex justify-content-between mt-4 mb-3">
                                 <span>تخفیف </span>
                                 <span><?= $totalDiscount ?> تومان</span>

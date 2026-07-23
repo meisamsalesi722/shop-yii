@@ -76,17 +76,16 @@ class CartItemController extends Controller
             $totalDiscount = 0;
             $finalPrice = 0;
 
-            foreach ($cartItems as $item) {
-
+            foreach ($cartItems as $key => $item) {
                 $price = $item->product->price;
                 if($item->color){
                     $price += $item->color->price_increase;
                 }
                 $count = $item->number;
-
+                
                 $itemTotal = $price * $count;
-                $totalPrice += $itemTotal;
-
+                $totalPrice += $itemTotal; 
+                
                 $discount = 0;
 
                 if ($item->product->discountAmounts) {
@@ -97,29 +96,30 @@ class CartItemController extends Controller
                         $discount = $item->product->discountAmounts->discount_ceiling;
                     }
                 }
-
+                
                 $totalDiscount += $discount;
                 $finalPrice += $itemTotal - $discount;
+                // if($key == 1){
+                // }
             }
-
-
-
-        if($request->isPost){
-            $transaction = Yii::$app->db->beginTransaction();
-            try{
-            $cartUpdate = CartItem::findOne($cartItemId);
-            $number = $cartUpdate->number;
-            $product = $cartUpdate->product;
-            $product->marketable_number += ($number - $request->post('number'));
+            
+            
+            if($request->isPost){
+                $transaction = Yii::$app->db->beginTransaction();
+                try{
+                    $cartUpdate = CartItem::findOne($cartItemId);
+                    $number = $cartUpdate->number;
+                    $product = $cartUpdate->product;
+                    $product->marketable_number += ($number - $request->post('number'));
             $product->frozen_number -= ($number - $request->post('number'));
-
+            
             $cartUpdate->number = $request->post('number');
-
+            
             if($cartUpdate->number > $cartUpdate->product->marketable_number + $cartUpdate->product->frozen_number){
                 Yii::$app->session->setFlash('موجودی محصول کافی نمیباشد');
                 return $this->redirect('/cart-item');
             }
-
+            
             
             
             if(!$cartUpdate->save() || !$product->save(false)){
@@ -127,11 +127,13 @@ class CartItemController extends Controller
             }
             $transaction->commit();
             return $this->refresh();    
-            }catch(\Throwable $e){
-                $transaction->rollBack();
-                throw $e;
-            }
+        }catch(\Throwable $e){
+            $transaction->rollBack();
+            throw $e;
         }
+    }
+
+
 
         foreach($cartItems as $cartItem){
             $now = new DateTime();
@@ -147,7 +149,6 @@ class CartItemController extends Controller
             }
         }
 
-        
         return $this->render('/cartItem/index', [
             'totalPrice' => $totalPrice,
             'finalPrice' => $finalPrice,

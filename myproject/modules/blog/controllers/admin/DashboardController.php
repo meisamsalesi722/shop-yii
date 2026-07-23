@@ -49,14 +49,15 @@ class DashboardController extends Controller
         $rejectedComments = CommentBlog::find()->where(['status' => CommentBlog::STATUS_REJECTED])->count();
         
         // آمار امروز
-        $today = strtotime('today');
+        $today = date("y/m/d h:i:s");
+        
         $todayArticles = Article::find()->where(['>=', 'created_at', $today])->count();
         $todayComments = CommentBlog::find()->where(['>=', 'created_at', $today])->count();
         $todayUsers = User::find()->where(['>=', 'created_at', $today])->count();
         
         // آخرین مقالات
         $latestArticles = Article::find()
-            ->with(['user', 'blog_category'])
+            ->with(['user'])
             ->orderBy(['created_at' => SORT_DESC])
             ->limit(5)
             ->all();
@@ -124,8 +125,8 @@ class DashboardController extends Controller
         $stats = [];
         for ($i = 6; $i >= 0; $i--) {
             $month = strtotime("-$i months");
-            $monthStart = strtotime(date('Y-m-01', $month));
-            $monthEnd = strtotime(date('Y-m-t', $month));
+            $monthStart = date('Y-m-01', $month);
+            $monthEnd = date('Y-m-t', $month);
             
             $stats[] = [
                 'month' => date('F', $month),
