@@ -12,6 +12,7 @@ use app\models\CategoryAttribute;
 class CategoryAttributeSearch extends CategoryAttribute
 {
 
+    public $category;
 
     /**
      * {@inheritdoc}
@@ -19,7 +20,8 @@ class CategoryAttributeSearch extends CategoryAttribute
     public function rules()
     {
         return [
-            [['id', 'category_id'], 'integer'],
+            [['id' , 'category_id'], 'integer'],
+            [['category'], 'string'],
             [['name', 'unit', 'value'], 'safe'],
         ];
     }
@@ -45,11 +47,13 @@ class CategoryAttributeSearch extends CategoryAttribute
     {
         $query = CategoryAttribute::find()->where(['category_id' => $category_id]);
 
+        $query->joinWith('category');
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        
 
         $this->load($params, $formName);
 
@@ -67,7 +71,8 @@ class CategoryAttributeSearch extends CategoryAttribute
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'unit', $this->unit])
-            ->andFilterWhere(['like', 'value', $this->value]);
+            ->andFilterWhere(['like', 'value', $this->value])
+            ->andFilterWhere(['like', 'category.name' , $this->category]);
 
         return $dataProvider;
     }

@@ -11,6 +11,7 @@ use app\models\Category;
  */
 class CategorySearch extends Category
 {
+    public $parent;
     /**
      * {@inheritdoc}
      */
@@ -18,6 +19,7 @@ class CategorySearch extends Category
     {
         return [
             [['id', 'parent_id', 'status'], 'integer'],
+            [['parent'], 'string'],
             [['name'], 'safe'],
         ];
     }
@@ -43,6 +45,7 @@ class CategorySearch extends Category
     {
         $query = Category::find();
 
+        $query->joinWith('parent p');
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -64,7 +67,8 @@ class CategorySearch extends Category
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+        ->andFilterWhere(['like', 'p.name', $this->parent]);
 
         return $dataProvider;
     }

@@ -11,6 +11,9 @@ use app\models\CartItem;
  */
 class CartItemSearch extends CartItem
 {
+    public $user;
+    public $product;
+    public $colro;
     /**
      * {@inheritdoc}
      */
@@ -42,6 +45,8 @@ class CartItemSearch extends CartItem
     {
         $query = CartItem::find();
 
+        $query->joinWith(['user' , 'product' , 'color']);
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -66,6 +71,10 @@ class CartItemSearch extends CartItem
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
+
+        $query->andFilterWhere(['like', 'color.name', $this->color])
+            ->andFilterWhere(['like', 'product.name', $this->product])
+            ->andFilterWhere(['like', 'user.uesrname', $this->user]);
 
         return $dataProvider;
     }

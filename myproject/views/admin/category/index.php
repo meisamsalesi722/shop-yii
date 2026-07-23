@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             [
-                'attribute' => 'parent_id',
+                'attribute' => 'parent',
                 'value' => function($model){
                     return $model->parent == null ?  'دسته اصلی' : '>>' . $model->parent->name ;
                 } 
