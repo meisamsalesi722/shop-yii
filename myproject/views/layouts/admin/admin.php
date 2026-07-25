@@ -38,26 +38,24 @@ AppAsset::register($this);
             ]) ?>
         <?php endif; ?>
 
+
         <!-- فلش‌ها -->
         <?php if (Yii::$app->session->hasFlash('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> <?= Yii::$app->session->getFlash('success') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+
+            <?= $this->render('/layouts/errors/toast/success') ?>
+
         <?php endif; ?>
 
         <?php if (Yii::$app->session->hasFlash('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> <?= Yii::$app->session->getFlash('error') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+
+            <?= $this->render('/layouts/errors/toast/error') ?>
+
         <?php endif; ?>
 
         <?php if (Yii::$app->session->hasFlash('warning')): ?>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle"></i> <?= Yii::$app->session->getFlash('warning') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+
+            <?= $this->render('/layouts/errors/toast/warning') ?>
+
         <?php endif; ?>
 
         <!-- محتوای اصلی -->
@@ -66,6 +64,7 @@ AppAsset::register($this);
         </div>
     </div>
 </div>
+
 
 <?= $this->render('_footer') ?>
 

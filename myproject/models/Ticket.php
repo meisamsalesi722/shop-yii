@@ -26,6 +26,9 @@ class Ticket extends \yii\db\ActiveRecord
     const STATUS_OPEN = 1;
     const STATUS_CLOSE = 2;
 
+    public $imageInput;
+    public $fileInput;
+
 
     /**
      * {@inheritdoc}
@@ -41,9 +44,22 @@ class Ticket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ticket_id'], 'default', 'value' => null],
+            [['imageInput'], 'file', 'extensions' => 'png, jpg, jpeg' , 'maxFiles' => 10,],
+            [['fileInput'], 'file', 'extensions' => 'pdf , zip , rar' ,'maxFiles' => 10,],
+            [['ticket_id' , 'department_id' , 'imageInput' , 'fileInput'], 'default', 'value' => null],
             [['status' , 'is_admin'], 'default', 'value' => 0],
-            [['subject', 'description', 'user_id'], 'required'],
+            [['subject' , 'user_id'], 'required'],
+            [
+                ['description'],
+                'required',
+                'when' => function ($model) {
+                    return empty($model->imageInput) && empty($model->fileInput);
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#ticket-imageinput').get(0).files.length === 0
+                        && $('#ticket-fileinput').get(0).files.length === 0;
+                }",
+            ],
             [['description'], 'string'],
             [['status', 'user_id', 'ticket_id'], 'integer'],
             [['created_at'], 'safe'],
@@ -77,6 +93,16 @@ class Ticket extends \yii\db\ActiveRecord
     public function getTicket()
     {
         return $this->hasOne(Ticket::class, ['id' => 'ticket_id']);
+    }
+
+    /**
+     * Gets query for [[Department]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment()
+    {
+        return $this->hasOne(Department::class, ['id' => 'department_id']);
     }
 
     /**

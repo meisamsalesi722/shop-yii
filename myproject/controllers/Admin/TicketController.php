@@ -5,8 +5,10 @@ namespace app\controllers\admin;
 use Yii;
 use app\models\Ticket;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\TicketSearch;
+use PHPUnit\Event\TestSuite\Loaded;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -48,8 +50,32 @@ class TicketController extends Controller
             'approved' => Ticket::find()->where(['status' => Ticket::STATUS_OPEN, 'ticket_id' => null])->count(),
             'rejected' => Ticket::find()->where(['status' => Ticket::STATUS_CLOSE, 'ticket_id' => null])->count(),
         ];
+
+        $department = [];
+        if(Yii::$app->user->can('bazaryab')){
+            $department[] = 1;
+        }
+        if(Yii::$app->user->can('fani')){
+            $department[] = 2;
+        }
+        if(Yii::$app->user->can('frosh')){
+            $department[] = 4;
+        }
+        if(Yii::$app->user->can('hoghoghi')){
+            $department[] = 5;
+        }
+        if(Yii::$app->user->can('mali')){
+            $department[] = 3;
+        }
+        if(Yii::$app->user->can('manabe')){
+            $department[] = 6;
+        }
+
+
+
+
         $tickets = Ticket::find()
-            ->where(['ticket_id' => null])
+            ->where(['ticket_id' => null , 'department_id' => array_values($department)])
             ->orderBy(['created_at' => SORT_DESC])
             ->all();
 
@@ -63,6 +89,21 @@ class TicketController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionReferral($id){
+        $model = Ticket::findOne($id);
+
+        if(Yii::$app->request->isPost){
+
+            if($model->load(Yii::$app->request->post())){
+                if($model->save('true' , ['department_id'])){
+                    return $this->redirect('/admin/ticket/index');
+                }
+            }
+        }
+
+        return $this->render('/admin/ticket/form-department' , ['model' => $model]);
     }
 
     /**
@@ -92,18 +133,53 @@ class TicketController extends Controller
 
         
         if ($this->request->isPost) {
+                    $modelNew->subject = 'پاسخ به: ' .  $model->subject;
+                    $modelNew->status = Ticket::STATUS_OPEN;
+                    $modelNew->user_id  = Yii::$app->user->id;
+                    $modelNew->ticket_id  = $id;
+                    $modelNew->is_admin = 1;
+                    $modelNew->description = Yii::$app->request->post('reply_content');
 
-                $modelNew->subject = 'پاسخ به: ' .  $model->subject;
-                $modelNew->status = Ticket::STATUS_OPEN;
-                $modelNew->user_id  = Yii::$app->user->id;
-                $modelNew->ticket_id  = $id;
-                $modelNew->is_admin = 1;
-                $modelNew->description = Yii::$app->request->post('reply_content');
-                if ($modelNew->save()) {
+                    $modelNew->imageInput = UploadedFile::getInstances($modelNew, 'imageInput');
+                    $modelNew->fileInput = UploadedFile::getInstances($modelNew, 'fileInput');
+                    $fileName = [];
+                    $imageNames = [];
+            
+                    if ($modelNew->validate()) {
+
+                    if($modelNew->imageInput){
+                        if (!file_exists('uploads/images/ticket')) {
+                            mkdir('uploads/images/ticket', 0777, true);
+                        }
+                        foreach ($modelNew->imageInput as $key => $image) {
+                            $imageName = time() . '_' . $key . '.' . $image->extension;
+                            $image->saveAs('uploads/images/ticket/' . $imageName);
+                            $imageNames[] = $imageName;
+                        }
+                        $modelNew->image = json_encode($imageNames);
+                    }
+                    if($modelNew->fileInput){
+                        if (!file_exists('uploads/file/ticket')) {
+                            mkdir('uploads/file/ticket', 0777, true);
+                        }
+                        foreach ($modelNew->fileInput as $key => $file) {
+                            $pdfName = time() . '_' . $key . '.' . $file->extension;
+                            $file->saveAs('uploads/file/ticket/' . $pdfName);
+                            $fileName[] = $pdfName;
+                        }
+                        $modelNew->file = json_encode($fileName);
+                    }
+
+                    
+                    
+                    if ($modelNew->save(false)) {
                     Yii::$app->session->setFlash('success', 'پاسخ شما با موفقیت ثبت شد.');
                 } else {
                     Yii::$app->session->setFlash('error', 'خطا در ثبت پاسخ.');
                 }
+            }else{
+                dd($modelNew->errors);
+            }
             }
                 $children = Ticket::find()
                     ->where(['ticket_id' => $id]) 

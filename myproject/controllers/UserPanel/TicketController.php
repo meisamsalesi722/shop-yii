@@ -5,6 +5,7 @@ namespace app\controllers\userpanel;
 use Yii;
 use app\models\Ticket;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\TicketSearch;
 use yii\data\ActiveDataProvider;
@@ -65,14 +66,21 @@ class TicketController extends Controller
         $model = new Ticket();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['userpanel/ticket', 'id' => $model->id]);
+               
+            if ($model->load($this->request->post())) {
+                $model->user_id = Yii::$app->user->id;
+                $model->department_id = (int)Yii::$app->request->post('Ticket')['department_id'];
+                dd($model);
+                if( $model->save()){
+                    return $this->redirect(['userpanel/ticket', 'id' => $model->id]);
+                }
             }
+            dd($model->errors);
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('/user-panel/ticket/create', [
+        return $this->render('/user-panel/ticket/department', [
             'model' => $model,
         ]);
     }
@@ -104,18 +112,53 @@ public function actionReply($id)
         Yii::$app->session->setFlash('error', 'این تیکت بسته شده است.');
         return $this->redirect(['/userpanel/ticket', 'id' => $id]);
     }
-    
     $reply = new Ticket();
-    $reply->subject = 'پاسخ به: ' . $parent->subject;
-    $reply->description = Yii::$app->request->post('reply_content');
-    $reply->ticket_id = $id; 
-    $reply->user_id = Yii::$app->user->id;
-    $reply->status = '1';
-    
-    if ($reply->save()) {
+
+                    $reply->subject = 'پاسخ به: ' . $parent->subject;
+                    $reply->description = Yii::$app->request->post('reply_content');
+                    $reply->ticket_id = $id; 
+                    $reply->user_id = Yii::$app->user->id;
+                    $reply->status = '1';
+
+                    $reply->imageInput = UploadedFile::getInstances($reply, 'imageInput');
+                    $reply->fileInput = UploadedFile::getInstances($reply, 'fileInput');
+                    $fileName = [];
+                    $imageNames = [];
+
+                    if ($reply->validate()) {
+
+                    if($reply->imageInput){
+                        if (!file_exists('uploads/images/ticket')) {
+                            mkdir('uploads/images/ticket', 0777, true);
+                        }
+                        foreach ($reply->imageInput as $key => $image) {
+                            $imageName = time() . '_' . $key . '.' . $image->extension;
+                            $image->saveAs('uploads/images/ticket/' . $imageName);
+                            $imageNames[] = $imageName;
+                        }
+                        $reply->image = json_encode($imageNames);
+                    }
+                    if($reply->fileInput){
+                        if (!file_exists('uploads/file/ticket')) {
+                            mkdir('uploads/file/ticket', 0777, true);
+                        }
+                        foreach ($reply->fileInput as $key => $file) {
+                            $pdfName = time() . '_' . $key . '.' . $file->extension;
+                            $file->saveAs('uploads/file/ticket/' . $pdfName);
+                            $fileName[] = $pdfName;
+                        }
+                        $reply->file = json_encode($fileName);
+                    }
+                    
+
+                    
+                    if ($reply->save(false)) {
         Yii::$app->session->setFlash('success', 'پاسخ شما با موفقیت ثبت شد.');
     } else {
         Yii::$app->session->setFlash('error', 'خطا در ثبت پاسخ.');
+    }
+    }else{
+        dd($reply->errors);
     }
     
     return $this->redirect(['view', 'id' => $id]);

@@ -27,7 +27,6 @@ use yii\grid\GridView;
     <?= Html::a('تیکت جدید' , '/userpanel/ticket/create' , [
         'class' => 'btn btn-success m-3 mb-4'
     ]) ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'layout' => "{items}\n{pager}",
@@ -37,6 +36,12 @@ use yii\grid\GridView;
             [
                 'attribute' => 'وضعیت',
                 'value' => 'StatusText'  
+            ],
+            [
+                'attribute' => 'دپارتمان',
+                'value' => function($model){
+                    return $model->department->title;
+                }  
             ],
             [
                 'class' => ActionColumn::className(),

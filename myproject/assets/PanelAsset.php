@@ -26,7 +26,6 @@ class PanelAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-
         
         '/fontawesome/all.css',
         '/css/style.css',
@@ -34,6 +33,7 @@ class PanelAsset extends AssetBundle
         "panel/panel-webeto-style.css",
         'panel/css/bootstrap.min.css',
         "panel/css/global.css",
+        '/fontawesome/all.css',
     ];
     public $js = [
         'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js', 
@@ -43,6 +43,8 @@ class PanelAsset extends AssetBundle
         '/js/jquery.min.js',
         '/js/bootstrap.bundle.min.js',
         '/js/main.js',
+
+        
     ];
     public $jsOptions = [
         'position' => View::POS_END,
