@@ -70,7 +70,6 @@ class TicketController extends Controller
             if ($model->load($this->request->post())) {
                 $model->user_id = Yii::$app->user->id;
                 $model->department_id = (int)Yii::$app->request->post('Ticket')['department_id'];
-                dd($model);
                 if( $model->save()){
                     return $this->redirect(['userpanel/ticket', 'id' => $model->id]);
                 }
@@ -124,9 +123,8 @@ public function actionReply($id)
                     $reply->fileInput = UploadedFile::getInstances($reply, 'fileInput');
                     $fileName = [];
                     $imageNames = [];
-
                     if ($reply->validate()) {
-
+                        
                     if($reply->imageInput){
                         if (!file_exists('uploads/images/ticket')) {
                             mkdir('uploads/images/ticket', 0777, true);

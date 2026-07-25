@@ -125,7 +125,6 @@ class BannerController extends Controller
         if ($this->request->isPost && $model->load($this->request->post())) {
             $model->imageFile = UploadedFile::getInstance($model, 'image');
             if ($model->validate()) {
-            // dd($model->position);
 
                 if ($model->imageFile) {
                     $model->deleteImage();

@@ -51,7 +51,6 @@ $response = curl_exec($curl);
 curl_close($curl);
 
 $response = json_decode($response , true);
-// dd($response);
   $code = $response['data']['code'] ?? $response['errors']['code'];
   $message = $response['data']['message'] ?? $response['errors']['message'];
 

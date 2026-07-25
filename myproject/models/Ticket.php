@@ -45,7 +45,11 @@ class Ticket extends \yii\db\ActiveRecord
     {
         return [
             [['imageInput'], 'file', 'extensions' => 'png, jpg, jpeg' , 'maxFiles' => 10,],
-            [['fileInput'], 'file', 'extensions' => 'pdf , zip , rar' ,'maxFiles' => 10,],
+            [['fileInput'], 'file',
+                'extensions' => ['rar', 'pdf', 'zip'],
+                'checkExtensionByMimeType' => false,
+                'maxFiles' => 10,
+            ],
             [['ticket_id' , 'department_id' , 'imageInput' , 'fileInput'], 'default', 'value' => null],
             [['status' , 'is_admin'], 'default', 'value' => 0],
             [['subject' , 'user_id'], 'required'],
