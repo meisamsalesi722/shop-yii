@@ -63,15 +63,15 @@ class DiscountAmount extends \yii\db\ActiveRecord
             'deleted_at' => 'Deleted At',
         ];
     }
-
-    /**
-     * Gets query for [[Product]].
+    
+        /**
+     * Gets query for [[VendorProduct]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProduct()
+    public function getVendorProduct()
     {
-        return $this->hasOne(Product::class, ['id' => 'product_id']);
+        return $this->hasOne(VendorProduct::class, ['id' => 'vendor_product_id']);
     }
 
 }

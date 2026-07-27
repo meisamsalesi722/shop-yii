@@ -1,5 +1,23 @@
 <?php 
+use app\models\User;
 use yii\helpers\Url;
+
+$grouped = [];
+
+foreach ($banners as $banner) {
+    $grouped[$banner->position][] = $banner;
+}
+
+$banerSliders       = array_slice($grouped[1] ?? [], 0, 10);
+$bottomRightBanner  = $grouped[2][0] ?? null;
+$bottomLeftBanner   = $grouped[3][0] ?? null;
+$leftBottomBanner   = $grouped[4][0] ?? null;
+$leftTopBanner      = $grouped[5][0] ?? null;
+$fourMiddleBanners  = array_slice($grouped[6] ?? [], 0, 4);
+$twoMiddleBanners   = array_slice($grouped[7] ?? [], 0, 2);
+$oneLastBanner      = $grouped[8][0] ?? null;
+
+
 ?>
     <section id="slider-section">
         <div class="container">
@@ -26,16 +44,16 @@ use yii\helpers\Url;
                     </div>
 
                     <div class="row mx-0">
-                        <div class="col-lg-6 d-none d-lg-block pr-0 pl-2 pt-3"><a href="<?= $bottomRightBanners->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomRightBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
-                        <div class="col-lg-6 d-none d-lg-block pl-0 pr-2 pt-3"><a href="<?= $bottomLeftBanners->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomLeftBanners->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
+                        <div class="col-lg-6 d-none d-lg-block pr-0 pl-2 pt-3"><a href="<?= $bottomRightBanner->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomRightBanner->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
+                        <div class="col-lg-6 d-none d-lg-block pl-0 pr-2 pt-3"><a href="<?= $bottomLeftBanner->url  ?? '#' ?>"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($bottomLeftBanner->image ?? '') ?>" alt=""  class="img-fluid slider-section-img"></a></div>
                     </div>
                     
                 </div>
                 <div class="col-lg-4 col-12  px-0 px-sm-2">
                     <div class="row pt-md-3 pt-lg-0">
-                        <a href="<?= $leftTopBanners->url ?? '#' ?>" class=" col-lg-12 d-none d-lg-block"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftTopBanners->image ?? '') ?>" alt="" class="img-fluid"></a> 
-                        <a href="<?= $leftBottomBanners->url ?? '#' ?>" class="col-lg-12 col-6 mt-lg-3 mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid img-big" ></a> 
-                        <a href="<?= $leftBottomBanners->url ?? '#' ?>" class="col-6 slider-section-img d-lg-none mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanners->image ?? '') ?>" alt="" class="img-fluid" ></a>
+                        <a href="<?= $leftTopBanner->url ?? '#' ?>" class=" col-lg-12 d-none d-lg-block"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftTopBanner->image ?? '') ?>" alt="" class="img-fluid"></a> 
+                        <a href="<?= $leftBottomBanner->url ?? '#' ?>" class="col-lg-12 col-6 mt-lg-3 mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanner->image ?? '') ?>" alt="" class="img-fluid img-big" ></a> 
+                        <a href="<?= $leftBottomBanner->url ?? '#' ?>" class="col-6 slider-section-img d-lg-none mt-3 mt-md-0"><img src="<?= Yii::getAlias('@web/uploads/images/') . ($leftBottomBanner->image ?? '') ?>" alt="" class="img-fluid" ></a>
                     </div>
                 </div>
             </div>
@@ -79,21 +97,26 @@ use yii\helpers\Url;
                                     <img src="<?= Yii::getAlias('@web/uploads/images/') . ($special->image ?? '') ?>" class="img-fluid" alt="">
                                     <div class="img-caption">
                                     <p ><?= $special->name ?></p>
-                                    <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                    <?php
+                                        $discountAmounts = $special->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts ?? null;
+                                        $price = $special->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price ?? null;
+                                     ?>
                                         <?php 
-                                            $price = $special->price;
-                                            $discount =($price / 100) * ($special->discountAmounts->percentage);
-                                            $finalyPrice = $discount > $special->discountAmounts->discount_ceiling ? 
-                                            $price - $special->discountAmounts->discount_ceiling
+                                        if($discountAmounts && $price){
+                                            $discount =($price / 100) * ($discountAmounts->percentage);
+                                            $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                            $price - $discountAmounts->discount_ceiling
                                             : $price - $discount;
-
-                                        ?>
+                                            
+                                            ?>
+                                            <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
                                     <span class="price-befor">
                                          <?= $price ?>
                                     </span>
                                     <span class="price-after"> تومان 
                                          <?= $finalyPrice ?>
                                     </span>
+                                    <?php } ?>
                                     </div>
                                 </div>
                             </a>
@@ -127,16 +150,19 @@ use yii\helpers\Url;
 
                                         <p><?= $newProduct->name ?></p>
                                         <div class="item-caption-bottom">
-                                            <?php if($newProduct->discountAmounts){?>
-                                            <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
-                                            <?php 
-                                                $price = $newProduct->price;
-                                                $discount =($price / 100) * ($newProduct->discountAmounts->percentage);
-                                                $finalyPrice = $discount > $newProduct->discountAmounts->discount_ceiling ? 
-                                                $price - $newProduct->discountAmounts->discount_ceiling
-                                                : $price - $discount;
-
+                                            <?php if(count($newProduct->productVariantsHasDiscount) > 0){?>
+                                            <?php
+                                                $discountAmounts = $newProduct->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts;
+                                                $price = $newProduct->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price;
                                             ?>
+                                            <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
+                                                <?php 
+                                                    $discount =($price / 100) * ($discountAmounts->percentage);
+                                                    $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                                    $price - $discountAmounts->discount_ceiling
+                                                    : $price - $discount;
+
+                                                ?>
                                             <span class="price-befor">
                                                 <?= $price ?>
                                             </span>
@@ -145,8 +171,7 @@ use yii\helpers\Url;
                                             </span>
                                             
                                             <?php }else{?>
-                                                
-                                                <span class="price"><?= $newProduct->price ?></span>
+                                                <span class="price"><?= $newProduct->productVariants[0]->vendorProducts[0]->price ?? '' ?></span>
                                                 <span class="unit">تومان</span>
                                             <?php }?>
                                         </div>
@@ -200,13 +225,16 @@ use yii\helpers\Url;
                                     <div class="item-caption">
                                         <p><?= $bestseller->name ?></p>
                                         <div class="item-caption-bottom">
-                                            <?php if($bestseller->discountAmounts){?>
-                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
+                                            <?php if(count($bestseller->productVariantsHasDiscount) > 0){?>
+                                                <?php
+                                                    $discountAmounts = $bestseller->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts;
+                                                    $price = $bestseller->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price;
+                                                ?>
+                                            <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
                                                 <?php 
-                                                    $price = $bestseller->price;
-                                                    $discount =($price / 100) * ($bestseller->discountAmounts->percentage);
-                                                    $finalyPrice = $discount > $bestseller->discountAmounts->discount_ceiling ? 
-                                                    $price - $bestseller->discountAmounts->discount_ceiling
+                                                    $discount =($price / 100) * ($discountAmounts->percentage);
+                                                    $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                                    $price - $discountAmounts->discount_ceiling
                                                     : $price - $discount;
 
                                                 ?>
@@ -218,8 +246,7 @@ use yii\helpers\Url;
                                                 </span>
                                                 
                                             <?php }else{?>
-                                                    
-                                                    <span class="price"><?= $bestseller->price ?></span>
+                                                    <span class="price"><?= $bestseller->productVariants[0]->vendorProducts[0]->price ?></span>
                                                     <span class="unit">تومان</span>
                                             <?php }?>
 
@@ -275,16 +302,19 @@ use yii\helpers\Url;
                                             <div class="item-caption">
                                                 <p><?= $productCategory1->name ?? 'یافت نشد' ?></p>
                                                 <div class="item-caption-bottom">
-                                                            <?php if($productCategory1->discountAmounts){?>
-                                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
-                                                                <?php 
-                                                                    $price = $productCategory1->price;
-                                                                    $discount =($price / 100) * ($productCategory1->discountAmounts->percentage);
-                                                                    $finalyPrice = $discount > $productCategory1->discountAmounts->discount_ceiling ? 
-                                                                    $price - $productCategory1->discountAmounts->discount_ceiling
-                                                                    : $price - $discount;
+                                                <?php if(count($productCategory1->productVariantsHasDiscount) > 0){?>
+                                                    <?php
+                                                        $discountAmounts = $productCategory1->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts;
+                                                        $price = $productCategory1->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price;
+                                                    ?>
+                                                <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
+                                                    <?php 
+                                                        $discount =($price / 100) * ($discountAmounts->percentage);
+                                                        $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                                        $price - $discountAmounts->discount_ceiling
+                                                        : $price - $discount;
 
-                                                                ?>
+                                                    ?>
                                                                 <span class="price-befor">
                                                                     <?= $price ?>
                                                                 </span>
@@ -294,7 +324,7 @@ use yii\helpers\Url;
                                                                 
                                                             <?php }else{?>
                                                                     
-                                                                    <span class="price"><?= $productCategory1->price ?></span>
+                                                                    <span class="price"><?= $productCategory1->productVariants[0]->vendorProducts[0]->price ?></span>
                                                                     <span class="unit">تومان</span>
                                                             <?php }?>
 
@@ -344,16 +374,19 @@ use yii\helpers\Url;
                                                 <div class="item-caption">
                                                     <p><?= $mostViewed->name ?></p>
                                                     <div class="item-caption-bottom">
-                                                                                                                  <?php if($mostViewed->discountAmounts){?>
-                                                                <span class="percent-off"><?= $special->discountAmounts->percentage ?>%</span>
-                                                                <?php 
-                                                                    $price = $mostViewed->price;
-                                                                    $discount =($price / 100) * ($mostViewed->discountAmounts->percentage);
-                                                                    $finalyPrice = $discount > $mostViewed->discountAmounts->discount_ceiling ? 
-                                                                    $price - $mostViewed->discountAmounts->discount_ceiling
-                                                                    : $price - $discount;
+                                                        <?php if(count($mostViewed->productVariantsHasDiscount) > 0){?>
+                                                            <?php
+                                                                $discountAmounts = $mostViewed->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts;
+                                                                $price = $mostViewed->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price;
+                                                            ?>
+                                                        <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
+                                                            <?php 
+                                                                $discount =($price / 100) * ($discountAmounts->percentage);
+                                                                $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                                                $price - $discountAmounts->discount_ceiling
+                                                                : $price - $discount;
 
-                                                                ?>
+                                                            ?>
                                                                 <span class="price-befor">
                                                                     <?= $price ?>
                                                                 </span>
@@ -363,7 +396,7 @@ use yii\helpers\Url;
                                                                 
                                                             <?php }else{?>
                                                                     
-                                                                    <span class="price"><?= $mostViewed->price ?></span>
+                                                                    <span class="price"><?= $mostViewed->productVariants[0]->vendorProducts[0]->price ?></span>
                                                                     <span class="unit">تومان</span>
                                                             <?php }?>
                                                     </div>

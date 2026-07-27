@@ -144,7 +144,12 @@ class ProductController extends Controller
                     if($model->save(false)){
                         $category = Category::findOne(['id' => $model->category_id]);
                         $attributes = $category->categoryAttributes;
-                        return $this->render('create-attribute', [ 'product_id' => $model->id ,'model' => $model , 'attributes' => $attributes]);
+                        if(!empty($attributes)){
+                            return $this->render('create-attribute', [ 'product_id' => $model->id ,'model' => $model , 'attributes' => $attributes]);
+                        }else{
+                            Yii::$app->session->setFlash('success', 'ساخت محصول با موفقیت انجام شد.');
+                            return $this->redirect(['view', 'id' => $model->id]);
+                        }
                     }
 
                     Yii::$app->session->setFlash('error', 'ساخت محصول با خطا مواجه شد.');
@@ -153,17 +158,13 @@ class ProductController extends Controller
         }} else {
             $model->loadDefaultValues();
         }
-        $guarantee = ArrayHelper::map(Guarantee::find()->where(['status' => 1])->all(), 'id', 'name');
         $brands = ArrayHelper::map(Brand::find()->where(['status' => 1])->all(), 'id', 'original_name');
-        $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
         $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null,'status' => 1])->all(), 'id', 'name');
 
 
         return $this->render('create', [
             'model' => $model,
-            'guarantee' => $guarantee,
             'brands' => $brands,
-            'colors' => $colors,
             'categories' => $categories,
         ]);
     }
@@ -277,8 +278,13 @@ public function actionUpdate($id)
             }
             if($model->save(false)){
                 $category = Category::findOne(['id' => $model->category_id]);
-                    $attributes = $category->categoryAttributes;
-                return $this->render('create-attribute', [ 'product_id' => $id ,'model' => $model , 'attributes' => $attributes]);
+                $attributes = $category->categoryAttributes;
+                if(!empty($attributes)){
+                    return $this->render('create-attribute', [ 'product_id' => $id ,'model' => $model , 'attributes' => $attributes]);
+                }else{
+                    Yii::$app->session->setFlash('success', 'ویرایش محصول با موفقیت انجام شد.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
             
                     Yii::$app->session->setFlash('error', 'ویرایش محصول با خطا مواجه شد.');
@@ -288,16 +294,12 @@ public function actionUpdate($id)
         }
     }
 
-    $guarantee = ArrayHelper::map(Guarantee::find()->where(['status' => 1])->all(), 'id', 'name');
     $brands = ArrayHelper::map(Brand::find()->where(['status' => 1])->all(), 'id', 'original_name');
-    $colors = ArrayHelper::map(Color::find()->all(), 'id', 'name');
     $categories = ArrayHelper::map(Category::find()->where(['parent_id' => null , 'status' => 1])->all(), 'id', 'name');
 
     return $this->render('update', [
         'model' => $model,
-        'guarantee' => $guarantee,
         'brands' => $brands,
-        'colors' => $colors,
         'categories' => $categories,
     ]);
 }
@@ -452,129 +454,7 @@ public function actionUpdate($id)
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-
-
-
-    // -----------------------------------------    product color    ---------------------------------------------//
-
-    
-    /**
-     * Lists all Color models.
-     *
-     * @return string
-     */
-    public function actionColorIndex($product_id)
-    {
-        $searchModel = new ColorSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams , $product_id);
-
-        return $this->render('color/index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'product_id' => $product_id
-        ]);
-    }
-
-    /**
-     * Displays a single Color model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionColorView($id , $product_id)
-    {
-        return $this->render('color/view', [
-            'model' => $this->findColorModel($id , $product_id),
-            'product_id' => $product_id
-        ]);
-    }
-
-    /**
-     * Creates a new Color model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
-    public function actionColorCreate($product_id)
-    {
-        $model = new Color();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['color-view', 'product_id' => $product_id , 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-        $products = ArrayHelper::map(Product::find()->where(['status' => 1])->all() , 'id' , 'name');
-
-        return $this->render('color/create', [
-            'model' => $model,
-            'product_id' => $product_id,
-        ]);
-    }
-
-    /**
-     * Updates an existing Color model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionColorUpdate($id , $product_id)
-    {
-        $model = $this->findColorModel($id , $product_id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['color-view', 'product_id' => $product_id ,'id' => $model->id]);
-        }
-
-        return $this->render('color/update', [
-            'model' => $model,
-            'product_id' => $product_id,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Color model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionColorDelete($id , $product_id)
-    {
-        $this->findColorModel($id , $product_id)->delete();
-
-        return $this->redirect(['color-index' , 'product_id' => $product_id]);
-    }
-
-    /**
-     * Finds the Color model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Color the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findColorModel($id , $product_id)
-    {
-        if (($model = Color::findOne(['id' => $id , 'product_id' => $product_id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-
-
-
-
-
     // ----------------------------------    gallery    -------------------------------------//
-
-    
-
-
-
 
 
     /**
@@ -719,4 +599,5 @@ public function actionUpdate($id)
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    
 }

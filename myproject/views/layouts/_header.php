@@ -73,7 +73,7 @@ use yii\widgets\ActiveForm;
                                     <div class="first-col">
                                         <nav>
                                             <?php 
-                                                    $categories = Category::find()->with('children.children')->where(['parent_id' => null ,'status' => 1])->all();
+                                                    $categories = Category::find()->with('parent')->where(['parent_id' => null ,'status' => 1])->all();
                                             ?>
                                         <?php foreach ($categories as $key => $category) { ?>
 

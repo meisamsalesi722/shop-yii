@@ -29,8 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\SerialColumn',
             ],
-            
-
             'id',
             'name',
             [
@@ -40,10 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->image ?? '') .'" alt="" style="max-width:100px;">';
                 }
             ],
-            'price',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {update} {delete} {meta} {color} {gallery}',
+                'template' => '{view} {update} {delete} {meta} {gallery} {product-variant}',
                  'buttons' => [
                     'meta' => function ($url, $model, $key) {
                         return Html::a(
@@ -51,16 +48,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['admin/product/meta-index', 'product_id' => $model->id]
                         );
                     },
-                    'color' => function ($url, $model, $key) {
-                        return Html::a(
-                            '<i class="fas fa-palette"></i>',
-                            ['admin/product/color-index', 'product_id' => $model->id]
-                        );
-                    },
                     'gallery' => function ($url, $model, $key) {
                         return Html::a(
                             '<i class="fas fa-images"></i>',
                             ['admin/product/gallery-index', 'product_id' => $model->id]
+                        );
+                    },
+                    'product-variant' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-folder-tree"></i>',
+                            ['admin/product-variant/index', 'product_id' => $model->id]
                         );
                     },
                 ],

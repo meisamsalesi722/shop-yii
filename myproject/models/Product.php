@@ -59,16 +59,16 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'imageFile', 'price', 'introduction', 'status', 'sold_number', 'frozen_number', 'marketable_number'], 'default', 'value' => null],
-            [['introduction' , 'persian_name'], 'string'],
-            [['price', 'category_id', 'status', 'sold_number', 'frozen_number', 'marketable_number', 'brand_id', 'guarantee_id'], 'integer'],
-            [['category3_id', 'brand_id', 'guarantee_id' , 'persian_name'], 'required'],
-            [['name'], 'string', 'max' => 255],
+            [['name', 'introduction', 'slug', 'status'], 'default', 'value' => null],
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
+            [['image', 'introduction'], 'string'],
+            [['view'], 'default', 'value' => 0],
+            [['category3_id','persian_name', 'brand_id'], 'required'],
+            [['view', 'category_id', 'status', 'brand_id'], 'integer'],
+            [['created_at', 'updated_at' , 'category2_id', 'category3_id' , 'category1_id'], 'safe'],
+            [['name', 'persian_name', 'slug'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
-            [['guarantee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Guarantee::class, 'targetAttribute' => ['guarantee_id' => 'id']],
-             [['category1_id' , 'created_at' , 'updated_at' , 'imageFile' , 'category2_id', 'category3_id'], 'safe'],
-             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
         ];
     }
 
@@ -84,7 +84,7 @@ class Product extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
- public function attributeLabels()
+    public function attributeLabels()
     {
         return [
             'id' => 'ID',
@@ -92,18 +92,13 @@ class Product extends \yii\db\ActiveRecord
             'persian_name' => 'Persian Name',
             'image' => 'Image',
             'view' => 'View',
-            'price' => 'Price',
             'introduction' => 'Introduction',
             'slug' => 'Slug',
             'category_id' => 'Category ID',
             'status' => 'Status',
-            'sold_number' => 'Sold Number',
-            'frozen_number' => 'Frozen Number',
-            'marketable_number' => 'Marketable Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'brand_id' => 'Brand ID',
-            'guarantee_id' => 'Guarantee ID',
         ];
     }
 
@@ -126,16 +121,7 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(CartItem::class, ['product_id' => 'id']);
     }
-    /**
-     * Gets query for [[Color]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getColor()
-    {
-        return $this->hasMany(Color::class, ['product_id' => 'id']);
-    }
-
+    
     /**
      * Gets query for [[Category]].
      *
@@ -144,21 +130,6 @@ class Product extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category_id']);
-    }
-
-    /**
-     * Gets query for [[DiscountAmounts]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDiscountAmounts()
-    {
-        return $this->hasOne(DiscountAmount::class, ['product_id' => 'id']);
-    }
-
-    public function getGuarantee()
-    {
-        return $this->hasOne(Guarantee::class, ['id' => 'guarantee_id']);
     }
 
   /**
@@ -203,5 +174,32 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->getComments()->count();
     }
+
+        /**
+     * Gets query for [[ProductVariants]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductVariants()
+    {
+        return $this->hasMany(ProductVariant::class, ['product_id' => 'id']);
+    }
+
+    public function getProductVariantsHasDiscount()
+    {
+        return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
+        ->innerJoinWith('vendorProducts.discountAmounts')
+        ->groupBy('product_variant.id');
+
+    }
+
+    public function getProductVariantsHasVendorProducts()
+    {
+        return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
+        ->innerJoinWith('vendorProducts')
+        ->groupBy('product_variant.id');
+    }
+
+
 
 }

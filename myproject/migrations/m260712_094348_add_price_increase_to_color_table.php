@@ -9,11 +9,11 @@ class m260712_094348_add_price_increase_to_color_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn(
-            'color',
-            'price_increase',
-            $this->integer()->notNull(),
-        );
+        // $this->addColumn(
+        //     'color',
+        //     'price_increase',
+        //     $this->integer()->notNull(),
+        // );
     }
 
     /**

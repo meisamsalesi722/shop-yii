@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%discount_amount}}`.
  */
-class m260630_074229_create_discount_amount_table extends Migration
+class m260726_081656_create_discount_amount_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -14,7 +14,7 @@ class m260630_074229_create_discount_amount_table extends Migration
     {
         $this->createTable('{{%discount_amount}}', [
             'id' => $this->primaryKey(),
-            'product_id' => $this->integer()->notNull(),
+            'vendor_product_id' => $this->integer()->notNull(),
             'percentage' => $this->integer(3),
             'status' => $this->tinyInteger()->defaultValue(0),
             'discount_ceiling' => $this->bigInteger(),
@@ -25,10 +25,10 @@ class m260630_074229_create_discount_amount_table extends Migration
         ]);
 
         $this->addForeignKey(
-            'discount_amount_product_id_key',
+            'discount_amount_vendor_product_id_key',
             'discount_amount',
-            'product_id',
-            'product',
+            'vendor_product_id',
+            'vendor_product',
             'id',
             'CASCADE',
             'CASCADE',

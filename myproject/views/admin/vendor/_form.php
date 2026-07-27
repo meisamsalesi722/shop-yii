@@ -4,24 +4,20 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\Color $model */
+/** @var app\models\Vendor $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="color-form">
+<div class="vendor-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    
+    <?= $form->field($model, 'imageFile')->fileInput(['rows' => 6 , 'accept' => 'image/*']) ?>
 
-    <?= $form->field($model, 'color_code')->input('color') ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'price_increase')->textInput() ?>
-
-
-        <?= $form->field($model, 'product_id')->hiddenInput([
-            'value' => $product_id
-        ])->label('') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

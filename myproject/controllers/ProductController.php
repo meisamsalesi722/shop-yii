@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\CartItem;
-use app\models\Color;
 use Yii;
 use app\models\User;
+use app\models\Color;
 use yii\web\Response;
 use yii\base\Security;
 use app\models\Comment;
 use app\models\Product;
 use yii\web\Controller;
+use app\models\CartItem;
 use yii\web\ErrorAction;
 use app\models\LoginForm;
 use app\models\ProductUser;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use app\models\VendorProduct;
 use yii\mail\MailerInterface;
+use app\models\ProductVariant;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
@@ -74,26 +76,29 @@ class ProductController extends Controller
     public function actionIndex($id)
     {
         $model = new Comment();
-        $product = $this->findModel($id);
+        $product = Product::find()->where(['product.id' => $id])->innerJoinWith('productVariants.vendorProducts')->one();
+        $productVariants = $product->productVariantsHasVendorProducts ?? '';
+        $productVariant = ProductVariant::find()->where(['product_id' => $product->id])->innerJoinWith('vendorProducts')->one();
         $modelCartItem =  new CartItem();
 
-        $color_id = null;
-    $request = Yii::$app->request;
+        
+        
+        $productVariant_id = $productVariant->id;
+        $request = Yii::$app->request;
     
     if ($request->isPost) {
-        if(Yii::$app->request->post('change_color') == 1){
-            $color = Color::findOne(Yii::$app->request->post('color_id'));
-            $product->price += $color->price_increase;
-            $color_id = Yii::$app->request->post('color_id');
+        if(Yii::$app->request->post('change_productVariants') == 1){
+            $productVariant = ProductVariant::find()->where(['product_variant.id' => Yii::$app->request->post('productVariant_id')])->innerJoinWith('vendorProducts')->one();
+            $productVariant_id = Yii::$app->request->post('productVariant_id');
         }else{
-
-        if(Yii::$app->user->isGuest){
-            return $this->redirect('/login-register');
-        }
-        
-        $colorId = $request->post('color_id');
-        $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'color_id' => $colorId])->all();
-
+            if(Yii::$app->user->isGuest){
+                return $this->redirect('/login-register');
+            }
+            
+            $vendor_product_id = $request->post('vendor_product_id');
+            $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'vendor_product_id' => $vendor_product_id ])->all();
+            
+            dd(Yii::$app->request->post());
         if($cartItem){
             Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
             return $this->redirect(['/product', 'id' => $id]);
@@ -119,8 +124,10 @@ class ProductController extends Controller
     } else {
         Yii::$app->session->setFlash('error', 'افزودن به سبد خرید با شکست مواجه شد.');
     }
-
-    return $this->redirect(['/product', 'id' => $id]);
+    return $this->redirect(['/product', 
+        'id' => $id,
+       
+    ]);
 }
 }
         
@@ -134,6 +141,7 @@ class ProductController extends Controller
         //   $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
         //     return !in_array($meta->meta_key, $attributeNames, true);
         // });
+
         $newProducts = Product::find()->where(['!=' , 'id' , $id])->andWhere(['status' => 1])->orderBy('created_at DESC')->limit(10)->all();
 
 
@@ -148,7 +156,9 @@ class ProductController extends Controller
             'productMetas' => $productMetas,
             // 'productMetasdi' => $productMetasdi,
             'newProducts' => $newProducts,
-            'color_id' => $color_id
+            'productVariant_id' => $productVariant_id,
+             'productVariants' => $productVariants,
+             'productVariant' => $productVariant
         ]);
 
     }
@@ -213,7 +223,7 @@ class ProductController extends Controller
 
         protected function findModel($id)
     {
-        if (($model = Product::findOne(['id' => $id])) !== null) {
+        if (($model = Product::find()->where(['product.id' => $id])->one()) !== null) {
             return $model;
         }
 

@@ -9,16 +9,16 @@ class m260705_063709_add_guarantee_to_product_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('product', 'guarantee_id', $this->integer()->notNull());
-        $this->addForeignKey(
-            'guarantee_id_product_id_key',
-            'product',
-            'guarantee_id',
-            'guarantee',
-            'id',
-            'CASCADE',
-            'CASCADE',
-        );
+        // $this->addColumn('product', 'guarantee_id', $this->integer()->notNull());
+        // $this->addForeignKey(
+        //     'guarantee_id_product_id_key',
+        //     'product',
+        //     'guarantee_id',
+        //     'guarantee',
+        //     'id',
+        //     'CASCADE',
+        //     'CASCADE',
+        // );
     }
 
     /**

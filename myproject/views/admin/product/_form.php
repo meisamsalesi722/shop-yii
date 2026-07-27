@@ -18,7 +18,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'imageFile')->fileInput() ?>
 
-    <?= $form->field($model, 'price')->textInput() ?>
     <?= $form->field($model, 'persian_name')->textInput() ?>
 
     <?= $form->field($model, 'introduction')->textarea(['rows' => 6]) ?>
@@ -56,17 +55,9 @@ use yii\widgets\ActiveForm;
         ]
     ) ?>
 
-    <?= $form->field($model, 'sold_number')->textInput() ?>
-
-    <?= $form->field($model, 'frozen_number')->textInput() ?>
-
-    <?= $form->field($model, 'marketable_number')->textInput() ?>
-
     <?= $form->field($model, 'brand_id')->dropDownList($brands,
     ['prompt' => 'انتخاب کنید']) ?>
 
-    <?= $form->field($model, 'guarantee_id')->dropDownList($guarantee,
-    ['prompt' => 'انتخاب کنید']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

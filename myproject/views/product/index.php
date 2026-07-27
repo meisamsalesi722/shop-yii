@@ -75,17 +75,20 @@ $this->registerCssFile(
                     <?php 
                          $form = ActiveForm::begin([
                             'options' => [
-                                'id' => 'color_form',
+                                'id' => 'productVariants_form',
                             ]
                          ]); ?>
-                    <?php if(count($product->color) > 0 ){?>
+ 
+                    <?php if(count($productVariants) > 0 ){?>
                         <div class="select-color d-flex">
                              <span class="my-auto">انتخاب رنگ: </span> 
-                             <input type="hidden" id="change_color" name="change_color">
-                            <?php foreach($product->color as $color){?>
-                                <label for="color_<?= $color->id ?>" class="select-color-item <?= $color_id == $color->id ? 'active' : '' ?>" ><i class="fas fa-circle color-withe" style="color: <?= $color->color_code ?>;"></i> <?= $color->name ?> </label>
+                             <input type="hidden" id="change_productVariants" name="change_productVariants">
+
+                             
+                            <?php foreach($productVariants as $variant){?>
+                                <label for="productVariant_<?= $variant->id ?>" class="select-color-item <?= $variant->id == $productVariant_id ? 'active' : '' ?>" ><i class="fas fa-circle color-withe" style="color: <?= $variant->color_code ?>;"></i> <?= $variant->color ?> </label>
                                 
-                                <input type="radio" class="d-none" onchange=" $('#change_color').val(1);$('#color_form').submit()" <?= $color_id == $color->id ? 'checked' : '' ?>   id="color_<?= $color->id ?>" value="<?= $color->id ?>" name="color_id">
+                                <input type="radio" class="d-none" onchange=" $('#change_productVariants').val(1);$('#productVariants_form').submit()" <?= $variant->id == $productVariant_id ? 'checked' : '' ?>   id="productVariant_<?= $variant->id ?>" value="<?= $variant->id ?>" name="productVariant_id">
                             <?php }?>
                         </div>
                     <?php }?>
@@ -122,10 +125,10 @@ $this->registerCssFile(
 
                 <div class="col-lg-3 ">
                     <div class="product-left">
-                        <?php if($product->guarantee){?>
+                        <?php if($productVariant->guarantee){?>
                             <div class="product-left-warenty">
                                 <i class="far fa-shield-check"></i>
-                                <?= $product->guarantee->name ?>
+                                <?= $productVariant->guarantee ?>
                             </div>
                         <?php } ?>
                         <div class="product-left-available <?= $product->status == 0 ? 'text-danger' : '' ?>">
@@ -133,21 +136,32 @@ $this->registerCssFile(
                                 <?= $product->status == 1 ? 'اماده ارسال' : 'امکان ارسال وجود ندارد'?>
                         </div>
                         <div class="product-left-not-available">
-                            <i class="far fa-dolly-flatbed-<?= $product->marketable_number > 0 ? 'alt' : 'empty'?>"></i>
-                            <?= $product->marketable_number > 0 ? ($product->marketable_number < 5 ? $product->marketable_number . ' عدد باقی مانده است ' : 'موجود') : 'ناموجود' ?>
+                            <?php 
+                                $sum = 0 ;
+                                foreach($productVariant->vendorProducts as $vendorProduct){
+                                    $sum += $vendorProduct->marketable_number;
+                                }
+
+                            ?>
+                            <i class="far fa-dolly-flatbed-<?= $sum > 0 ? 'alt' : 'empty'?>"></i>
+                            <?= $sum > 0 ? ($sum < 5 ? $sum . ' عدد باقی مانده است ' : 'موجود') : 'ناموجود' ?>
                         </div>
                         <div class="product-left-price text-left">
-                            <?php if($product->discountAmounts){?>
+                            <?php $vendorProduct = $productVariant->vendorProducts;
+                            if($productVariant->vendorProductsHasDiscount){?>
+                                <?php 
+                                    $discountAmounts = $productVariant->vendorProductsHasDiscount[0]->discountAmounts;
+                                ?>
                             <?php 
-                                $price = $product->price;
-                                $discount =($price / 100) * ($product->discountAmounts->percentage);
-                                $finalyPrice = $discount > $product->discountAmounts->discount_ceiling ? 
-                                $price - $product->discountAmounts->discount_ceiling
+                                $price = $vendorProduct[0]->price;
+                                $discount =($price / 100) * ($discountAmounts->percentage);
+                                $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                $price - $discountAmounts->discount_ceiling
                                 : $price - $discount;
                             ?>
                             <span class="befor"><?= $price ?> </span>
                             <div class="d-flex justify-content-between">
-                                <div class="price-off"><?= $product->discountAmounts->percentage ?>%</div>
+                                <div class="price-off"><?= $discountAmounts->percentage ?>%</div>
                                 <div>
                                     <span class="after"> <?= $finalyPrice ?> </span>
                                     <span class="price">تومان</span>
@@ -156,13 +170,14 @@ $this->registerCssFile(
                             <?php }else{ ?>
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <span class="after"> <?= $product->price ?> </span>
+                                        <span class="after"> <?= $vendorProduct[0]->price ?> </span>
                                         <span class="price">تومان</span>
                                     </div>
                                 </div>
                             <?php }?>
                                 
                         </div>
+
                         <div class="product-left-favorit">
                             <?php
                                 $user_id = Yii::$app->user->id;
@@ -176,11 +191,13 @@ $this->registerCssFile(
                                     ['class' => 'text-dark']
                                 ) ?>
                         </div>
-                        
-                        <button onclick="$('#color_form').submit();" class="btn w-100" <?= $product->marketable_number > 0 ? '' : 'disabled' ?>>
+                        <input type="text" class="d-none" name="vendor_product_id" value="<?php //$productVariant->vendorProducts[0] ?>" id="">
+                        <button onclick="$('#productVariants_form').submit();" class="btn w-100" <?=  $productVariant->vendorProducts[0]->marketable_number > 0 ? '' : 'disabled' ?>>
                             <i class="fal fa-shopping-cart"></i>
                             افزودن به سبد خرید
                         </button>
+
+                        
 
 
                     </div>
@@ -641,21 +658,30 @@ $this->registerCssFile(
                             <img src="<?= Yii::getAlias('@web/uploads/images/') . ($newProduct->image ?? '') ?>" alt="">
                                    <div class=" img-caption">
                                     <p ><?= $newProduct->name ?></p>
-                                    <span class="percent-off"><?= $newProduct->discountAmounts->percentage ?>%</span>
-                                        <?php 
-                                            $price = $newProduct->price;
-                                            $discount =($price / 100) * ($newProduct->discountAmounts->percentage);
-                                            $finalyPrice = $discount > $newProduct->discountAmounts->discount_ceiling ? 
-                                            $price - $newProduct->discountAmounts->discount_ceiling
-                                            : $price - $discount;
+                                            <?php if(count($newProduct->productVariantsHasDiscount) > 0){?>
+                                            <?php
+                                                $discountAmounts = $newProduct->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->discountAmounts;
+                                                $price = $newProduct->productVariantsHasDiscount[0]->vendorProductsHasDiscount[0]->price;
+                                            ?>
+                                            <span class="percent-off"><?= $discountAmounts->percentage ?>%</span>
+                                                <?php 
+                                                    $discount =($price / 100) * ($discountAmounts->percentage);
+                                                    $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
+                                                    $price - $discountAmounts->discount_ceiling
+                                                    : $price - $discount;
 
-                                        ?>
-                                    <span class="price-befor">
-                                         <?= $price ?>
-                                    </span>
-                                    <span class="price-after"> تومان 
-                                         <?= $finalyPrice ?>
-                                    </span>
+                                                ?>
+                                            <span class="price-befor">
+                                                <?= $price ?>
+                                            </span>
+                                            <span class="price-after"> تومان 
+                                                <?= $finalyPrice ?>
+                                            </span>
+                                            
+                                            <?php }else{?>
+                                                <span class="price"><?= $newProduct->productVariants[0]->vendorProducts[0]->price ?? '' ?></span>
+                                                <span class="unit">تومان</span>
+                                            <?php }?>
                                     </div>
                         </a>
                     </div>
@@ -687,4 +713,5 @@ $this->registerCssFile(
         document.querySelector('label[for="' + this.id + '"]').classList.add('active');
     });
 });
+</script>
 </script>

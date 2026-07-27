@@ -91,6 +91,20 @@ $currentRoute = Yii::$app->controller->getRoute();
         
         <li>
             <?= Html::a(
+                '<i class="fas fa-shopping-cart"></i> فروشندگان',
+                Url::to(['/admin/vendor/index']),
+                ['class' => str_contains($currentRoute , 'admin/vendor/') ? 'active' : '']
+                ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-shopping-cart"></i> محصولات شما',
+                Url::to(['/admin/vendor-product/index']),
+                ['class' => str_contains($currentRoute , 'admin/order') ? 'active' : '']
+                ) ?>
+        </li>
+        <li>
+            <?= Html::a(
                 '<i class="fas fa-shopping-cart"></i> سفارشات',
                 Url::to(['/admin/order/index']),
                 ['class' => str_contains($currentRoute , 'admin/order') ? 'active' : '']

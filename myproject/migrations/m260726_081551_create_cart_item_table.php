@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%cart_item}}`.
  */
-class m260630_062828_create_cart_item_table extends Migration
+class m260726_081551_create_cart_item_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -15,9 +15,9 @@ class m260630_062828_create_cart_item_table extends Migration
         $this->createTable('{{%cart_item}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'product_id' => $this->integer()->notNull(),
+            'vendor_product_id' => $this->integer()->notNull(),
             'number' => $this->integer(),
-            'color_id' => $this->integer(),
+            // 'color_id' => $this->integer(),
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
@@ -31,9 +31,9 @@ class m260630_062828_create_cart_item_table extends Migration
             'CASCADE',
         );
         $this->addForeignKey(
-            'cart_item_product_id_key',
+            'cart_item_vendor_producte_id_key',
             'cart_item',
-            'product_id',
+            'vendor_product_id',
             'product',
             'id',
             'CASCADE',
