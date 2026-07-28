@@ -7,11 +7,76 @@ use yii\widgets\ActiveForm;
 use app\assets\FrontendAsset;
 use app\models\ProductUser;
 
+
 $this->registerCssFile(
     '@web/css/product.css',
     ['depends' => [\app\assets\FrontendAsset::class]]
 );
 ?>
+<style>
+    /* ===== SELLER SELECTION STYLES ===== */
+    .product-left-sellers {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        border: 1px solid #eef3f8;
+    }
+
+    .product-left-sellers .sellers-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .product-left-sellers .sellers-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .product-left-sellers .sellers-list::-webkit-scrollbar-thumb {
+        background: #c1c9d6;
+        border-radius: 10px;
+    }
+
+    .product-left-sellers .seller-item {
+        transition: all 0.25s ease;
+    }
+
+    .product-left-sellers .seller-item:hover {
+        border-color: #90b8e8 !important;
+        background: #f6faff !important;
+        transform: translateX(-3px);
+        box-shadow: 0 4px 12px rgba(42, 125, 225, 0.08);
+    }
+
+    .product-left-sellers .seller-item.active-seller {
+        border-color: #2a7de1 !important;
+        background: #f0f7ff !important;
+    }
+
+    .product-left-sellers .seller-item .seller-action {
+        transition: all 0.2s ease;
+    }
+
+    .product-left-sellers .seller-item:hover .seller-action {
+        display: block !important;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .product-left-sellers .seller-item {
+            padding: 10px 12px !important;
+        }
+        
+        .product-left-sellers .seller-item .seller-info .seller-name {
+            font-size: 13px !important;
+        }
+        
+        .product-left-sellers .seller-item .price-box span {
+            font-size: 14px !important;
+        }
+    }
+</style>
+
 <!-------------------------------------Start product page--------------------------------->
 
         <section id="breadcrumb-top">
@@ -78,17 +143,21 @@ $this->registerCssFile(
                                 'id' => 'productVariants_form',
                             ]
                          ]); ?>
+
+                        <input type="number" class="d-none" name="vendor_product_id" value="<?= $vendorProduct->id ?>">
+                    
+
  
+                    
                     <?php if(count($productVariants) > 0 ){?>
                         <div class="select-color d-flex">
                              <span class="my-auto">انتخاب رنگ: </span> 
                              <input type="hidden" id="change_productVariants" name="change_productVariants">
-
+                             
                              
                             <?php foreach($productVariants as $variant){?>
                                 <label for="productVariant_<?= $variant->id ?>" class="select-color-item <?= $variant->id == $productVariant_id ? 'active' : '' ?>" ><i class="fas fa-circle color-withe" style="color: <?= $variant->color_code ?>;"></i> <?= $variant->color ?> </label>
-                                
-                                <input type="radio" class="d-none" onchange=" $('#change_productVariants').val(1);$('#productVariants_form').submit()" <?= $variant->id == $productVariant_id ? 'checked' : '' ?>   id="productVariant_<?= $variant->id ?>" value="<?= $variant->id ?>" name="productVariant_id">
+                                <input type="radio" class="d-none" onchange="$('#change_productVariants').val(1);$('#productVariants_form').submit()" <?= $variant->id == $productVariant_id ? 'checked' : '' ?>   id="productVariant_<?= $variant->id ?>" value="<?= $variant->id ?>" name="productVariant_id">
                             <?php }?>
                         </div>
                     <?php }?>
@@ -138,8 +207,8 @@ $this->registerCssFile(
                         <div class="product-left-not-available">
                             <?php 
                                 $sum = 0 ;
-                                foreach($productVariant->vendorProducts as $vendorProduct){
-                                    $sum += $vendorProduct->marketable_number;
+                                foreach($productVariant->vendorProducts as $countVendorProduct){
+                                    $sum += $countVendorProduct->marketable_number;
                                 }
 
                             ?>
@@ -147,30 +216,30 @@ $this->registerCssFile(
                             <?= $sum > 0 ? ($sum < 5 ? $sum . ' عدد باقی مانده است ' : 'موجود') : 'ناموجود' ?>
                         </div>
                         <div class="product-left-price text-left">
-                            <?php $vendorProduct = $productVariant->vendorProducts;
-                            if($productVariant->vendorProductsHasDiscount){?>
+                            <?php 
+                            if($vendorProduct->discountAmounts){?>
                                 <?php 
-                                    $discountAmounts = $productVariant->vendorProductsHasDiscount[0]->discountAmounts;
+                                    $discountAmounts = $vendorProduct->discountAmounts;
                                 ?>
                             <?php 
-                                $price = $vendorProduct[0]->price;
+                                $price = $vendorProduct->price;
                                 $discount =($price / 100) * ($discountAmounts->percentage);
                                 $finalyPrice = $discount > $discountAmounts->discount_ceiling ? 
                                 $price - $discountAmounts->discount_ceiling
                                 : $price - $discount;
                             ?>
-                            <span class="befor"><?= $price ?> </span>
+                            <span class="befor"><?= number_format($price) ?> </span>
                             <div class="d-flex justify-content-between">
                                 <div class="price-off"><?= $discountAmounts->percentage ?>%</div>
                                 <div>
-                                    <span class="after"> <?= $finalyPrice ?> </span>
+                                    <span class="after"> <?= number_format($finalyPrice) ?> </span>
                                     <span class="price">تومان</span>
                                 </div>
                             </div>
                             <?php }else{ ?>
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <span class="after"> <?= $vendorProduct[0]->price ?> </span>
+                                        <span class="after"> <?= number_format($vendorProduct->price) ?> </span>
                                         <span class="price">تومان</span>
                                     </div>
                                 </div>
@@ -191,8 +260,8 @@ $this->registerCssFile(
                                     ['class' => 'text-dark']
                                 ) ?>
                         </div>
-                        <input type="text" class="d-none" name="vendor_product_id" value="<?php //$productVariant->vendorProducts[0] ?>" id="">
-                        <button onclick="$('#productVariants_form').submit();" class="btn w-100" <?=  $productVariant->vendorProducts[0]->marketable_number > 0 ? '' : 'disabled' ?>>
+
+                        <button onclick="$('#productVariants_form').submit();" class="btn w-100" <?=  $vendorProduct->marketable_number > 0 ? '' : 'disabled' ?>>
                             <i class="fal fa-shopping-cart"></i>
                             افزودن به سبد خرید
                         </button>
@@ -209,6 +278,140 @@ $this->registerCssFile(
         </div>
         
 </section>
+
+                        <!-- --------------------------------- -->
+                         <!-- ===== START SELLER SELECTION SECTION ===== -->
+<div class="product-left-sellers mt-3  w-75 mx-auto">
+    <div class="sellers-header d-flex justify-content-between align-items-center mb-2">
+        <span class="font-weight-bold" style="font-size: 15px;">
+            <i class="fas fa-store-alt text-primary ml-1"></i>
+            فروشندگان این کالا
+        </span>
+        <span class="badge badge-light text-dark px-3 py-2" style="font-size: 12px; border-radius: 20px;">
+            <i class="fas fa-check-circle text-success ml-1"></i>
+            <?= count($productVariant->vendorProducts) ?> فروشنده
+        </span>
+    </div>
+
+    <div class="sellers-list" style="max-height: 320px; overflow-y: auto; padding-left: 4px;">
+        <?php foreach($productVariant->vendorProducts as $index => $singleVendorProduct): ?>
+            <?php 
+                if($singleVendorProduct->marketable_number == 0){
+                    continue;
+                }
+                $hasDiscount = isset($singleVendorProduct->discountAmounts);
+                $finalPrice = $singleVendorProduct->price;
+                $discountPercent = 0;
+                if($hasDiscount) {
+                    $discountAmounts = $singleVendorProduct->discountAmounts;
+                    $discount = ($singleVendorProduct->price / 100) * ($discountAmounts->percentage);
+                    $finalPrice = $discount > $discountAmounts->discount_ceiling ? 
+                        $singleVendorProduct->price - $discountAmounts->discount_ceiling : 
+                        $singleVendorProduct->price - $discount;
+                    $discountPercent = $discountAmounts->percentage;
+                }
+                
+                $isAvailable = $singleVendorProduct->marketable_number > 0;
+
+                $stockStatus = $isAvailable ? 'موجود' : 'ناموجود';
+                $stockClass = $isAvailable ? 'text-success' : 'text-danger';
+            ?>
+
+                <form action="<?= Url::to(['' , 'id' => $product_id])?>" method="post" id="change-vendor-product">
+                    <?php $form = ActiveForm::begin() ?>
+
+                        <input type="hidden" id="input-vendor-product-id" name="change_vendor_product_id">
+
+                    <?php ActiveForm::end() ?>
+                </form>
+            
+            <div class="seller-item <?= $vendorProduct->id == $singleVendorProduct->id ? 'active-seller' : '' ?>"
+                 style="background: #fafcff; 
+                        border: 1.5px solid #e6edf5; 
+                        border-radius: 12px; 
+                        padding: 12px 14px; 
+                        margin-bottom: 10px; 
+                        transition: all 0.2s ease;
+                        cursor: pointer;"
+                 onclick="$('#input-vendor-product-id').val(<?= $singleVendorProduct->id ?>)  ; $('#change-vendor-product').submit()">
+                 
+                
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="seller-info" style="flex: 1;">
+                        <!-- نام فروشنده -->
+                        <div class="seller-name d-flex align-items-center mb-1">
+                            <i class="fas fa-store text-primary ml-1" style="font-size: 14px;"></i>
+                            <span style="font-weight: 600; font-size: 14px; color: #1a2639;">
+                                <?= $singleVendorProduct->vendor->name ?? 'فروشنده' ?>
+                            </span>
+                        </div>
+                        
+                        <!-- گارانتی و مشخصات -->
+                        <div class="d-flex flex-wrap align-items-center gap-2" style="gap: 6px; font-size: 12px; color: #4b5a6f;">
+                            <span class="badge" style="background: #e9eff6; padding: 3px 10px; border-radius: 30px; font-weight: 500;">
+                                <i class="fas fa-shield-alt text-primary ml-1"></i>
+                                <?= $singleVendorProduct->productVariant->guarantee ?? 'گارانتی ۱۸ ماهه هما تکام' ?>
+                            </span>
+                            
+                            <?php if($hasDiscount): ?>
+                                <span class="badge" style="background: #ffebee; color: #d32f2f; padding: 3px 10px; border-radius: 30px; font-weight: 600;">
+                                    <i class="fas fa-tag ml-1"></i>
+                                    <?= $discountPercent ?>% تخفیف
+                                </span>
+                            <?php endif; ?>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- قیمت و وضعیت -->
+                    <div class="seller-price-status text-left" style="min-width: 100px;">
+                        <div class="price-box">
+                            <?php if($hasDiscount): ?>
+                                <span style="font-size: 12px; color: #9e9e9e; text-decoration: line-through; display: block;">
+                                    <?= number_format($singleVendorProduct->price) ?>
+                                </span>
+                                <span style="font-weight: 700; font-size: 16px; color: #d32f2f;">
+                                    <?= number_format($finalPrice) ?>
+                                </span>
+                            <?php else: ?>
+                                <span style="font-weight: 700; font-size: 16px; color: #1a2639;">
+                                    <?= number_format($singleVendorProduct->price) ?>
+                                </span>
+                            <?php endif; ?>
+                            <span style="font-size: 11px; color: #7f8c9b;">تومان</span>
+                        </div>
+                        
+                        <div class="stock-status mt-1 <?= $stockClass ?>" style="font-size: 12px; font-weight: 500;">
+                            <i class="fas fa-<?= $isAvailable ? 'check-circle' : 'times-circle' ?> ml-1"></i>
+                            <?= $stockStatus ?>
+                            <?php if($isAvailable && $singleVendorProduct->marketable_number < 5): ?>
+                                <span style="font-size: 10px; color: #f57c00;">
+                                    (<?= $singleVendorProduct->marketable_number ?> عدد)
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <!-- دکمه انتخاب (مخفی در حالت عادی، نمایش روی هاور یا انتخاب) -->
+                <div class="seller-action mt-2 text-left" style="display: <?= $vendorProduct->id == $singleVendorProduct->id ? 'block' : 'none' ?>;">
+                    <button class="btn btn-sm btn-primary select-seller-btn" 
+                            style="border-radius: 30px; padding: 4px 18px; font-size: 12px; font-weight: 600;"
+                        >
+                        <i class="fas fa-check ml-1"></i> انتخاب شده
+                    </button>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    
+    <!-- توضیحات پایین -->
+    <div class="sellers-footer mt-2" style="font-size: 11px; color: #9e9e9e; border-top: 1px dashed #e6edf5; padding-top: 10px;">
+        <i class="fas fa-info-circle text-primary ml-1"></i>
+        انتخاب هر فروشنده، قیمت و گارانتی مربوط به آن را تغییر می‌دهد.
+    </div>
+</div>
+<!-- ===== END SELLER SELECTION SECTION ===== -->
+                        <!-- --------------------------------- -->
 
 
 <!-------------------------------------END product --------------------------------->
@@ -675,11 +878,11 @@ $this->registerCssFile(
                                                 <?= $price ?>
                                             </span>
                                             <span class="price-after"> تومان 
-                                                <?= $finalyPrice ?>
+                                                <?= number_format($finalyPrice) ?>
                                             </span>
                                             
                                             <?php }else{?>
-                                                <span class="price"><?= $newProduct->productVariants[0]->vendorProducts[0]->price ?? '' ?></span>
+                                                <span class="price"><?= number_format($newProduct->productVariants[0]->vendorProducts[0]->price) ?></span>
                                                 <span class="unit">تومان</span>
                                             <?php }?>
                                     </div>
@@ -714,4 +917,5 @@ $this->registerCssFile(
     });
 });
 </script>
+
 </script>

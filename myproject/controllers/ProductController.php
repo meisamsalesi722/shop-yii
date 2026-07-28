@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
-use app\models\User;
-use app\models\Color;
-use yii\web\Response;
-use yii\base\Security;
+
 use app\models\Comment;
 use app\models\Product;
 use yii\web\Controller;
 use app\models\CartItem;
 use yii\web\ErrorAction;
-use app\models\LoginForm;
 use app\models\ProductUser;
-use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\VendorProduct;
-use yii\mail\MailerInterface;
 use app\models\ProductVariant;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
@@ -80,17 +74,18 @@ class ProductController extends Controller
         $productVariants = $product->productVariantsHasVendorProducts ?? '';
         $productVariant = ProductVariant::find()->where(['product_id' => $product->id])->innerJoinWith('vendorProducts')->one();
         $modelCartItem =  new CartItem();
+        $vendorProduct = $productVariant->vendorProducts[0];
 
-        
-        
-        $productVariant_id = $productVariant->id;
+
         $request = Yii::$app->request;
     
     if ($request->isPost) {
         if(Yii::$app->request->post('change_productVariants') == 1){
             $productVariant = ProductVariant::find()->where(['product_variant.id' => Yii::$app->request->post('productVariant_id')])->innerJoinWith('vendorProducts')->one();
-            $productVariant_id = Yii::$app->request->post('productVariant_id');
-        }else{
+            $vendorProduct = $productVariant->vendorProducts[0];
+        }else if(Yii::$app->request->post('change_vendor_product_id')){
+            $vendorProduct = VendorProduct::find()->where(['id' => Yii::$app->request->post('change_vendor_product_id')])->one();
+    }else{
             if(Yii::$app->user->isGuest){
                 return $this->redirect('/login-register');
             }
@@ -98,35 +93,27 @@ class ProductController extends Controller
             $vendor_product_id = $request->post('vendor_product_id');
             $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'vendor_product_id' => $vendor_product_id ])->all();
             
-            dd(Yii::$app->request->post());
-        if($cartItem){
-            Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
-            return $this->redirect(['/product', 'id' => $id]);
-        }
-        
-        if(!empty($product->color)){
-            if(!$colorId){
-                Yii::$app->session->setFlash('error', 'لطفا رنگ محصول را انتخاب کنید.');
+            if($cartItem){
+                Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
                 return $this->redirect(['/product', 'id' => $id]);
             }
-            $modelCartItem->color_id = (int)$colorId;
-        }
+        
         
         $modelCartItem->user_id = (int)(Yii::$app->user->id) ;
-        $modelCartItem->product_id = (int)$id;
+        $modelCartItem->vendor_product_id = (int)Yii::$app->request->post('vendor_product_id');
         $modelCartItem->number = 1;
         
     if ($modelCartItem->save()) {
         Yii::$app->session->setFlash('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
-                $product->frozen_number += 1;
-                $product->marketable_number -= 1;
-                $product->save(false);
+                $vendorProduct->frozen_number += 1;
+                $vendorProduct->marketable_number -= 1;
+                $vendorProduct->save(true,['frozen_number' , 'marketable_number']);
     } else {
         Yii::$app->session->setFlash('error', 'افزودن به سبد خرید با شکست مواجه شد.');
+        dd($modelCartItem->errors , $modelCartItem);
     }
     return $this->redirect(['/product', 
         'id' => $id,
-       
     ]);
 }
 }
@@ -138,16 +125,13 @@ class ProductController extends Controller
             return in_array($meta->meta_key, $attributeNames, true);
         }));
 
-        //   $productMetasdi = array_filter($product->productMetas, function ($meta) use ($attributeNames) {
-        //     return !in_array($meta->meta_key, $attributeNames, true);
-        // });
 
-        $newProducts = Product::find()->where(['!=' , 'id' , $id])->andWhere(['status' => 1])->orderBy('created_at DESC')->limit(10)->all();
+        $newProducts = Product::find()->where(['product.status' => 1])->with('productVariantsHasDiscount')->innerJoinWith('productVariants.vendorProducts')->orderBy('created_at DESC')->limit(10)->all();
 
 
 
         $comments = Comment::find()->where(['parent_id' => null , 'product_id' => $product->id , 'status' => Comment::STATUS_APPROVED])->all();
-
+        $productVariant_id = $productVariant->id;
 
         return $this->render('index', [
             'model' => $model,
@@ -158,7 +142,8 @@ class ProductController extends Controller
             'newProducts' => $newProducts,
             'productVariant_id' => $productVariant_id,
              'productVariants' => $productVariants,
-             'productVariant' => $productVariant
+             'productVariant' => $productVariant,
+             'vendorProduct' => $vendorProduct
         ]);
 
     }

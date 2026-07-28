@@ -34,7 +34,7 @@ class m260726_081551_create_cart_item_table extends Migration
             'cart_item_vendor_producte_id_key',
             'cart_item',
             'vendor_product_id',
-            'product',
+            'vendor_product',
             'id',
             'CASCADE',
             'CASCADE',
