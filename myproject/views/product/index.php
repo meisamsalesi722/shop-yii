@@ -145,6 +145,9 @@ $this->registerCssFile(
                          ]); ?>
 
                         <input type="number" class="d-none" name="vendor_product_id" value="<?= $vendorProduct->id ?>">
+
+                        <input type="number" class="d-none" name="product_variant_id" value="<?= $productVariant_id ?>">
+                        <input type="number" class="d-none" name="vendor_id" value="<?= $vendorProduct->vendor->id ?>">
                     
 
  

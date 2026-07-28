@@ -7,17 +7,11 @@ namespace app\controllers;
 use Yii;
 use DateTime;
 use Exception;
-use app\models\Brand;
-use yii\base\Security;
-use app\models\Product;
 use yii\web\Controller;
 use app\models\CartItem;
 use yii\web\ErrorAction;
-use yii\filters\VerbFilter;
-use yii\mail\MailerInterface;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
-use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
 class CartItemController extends Controller
@@ -67,33 +61,29 @@ class CartItemController extends Controller
      */
     public function actionIndex()
     {
+
         $user_id = Yii::$app->user->id; 
-        $cartItems = CartItem::find()->with(['product' , 'color'])->where(['user_id' => $user_id])->all();
+        $cartItems = CartItem::find()->with(['vendorProduct'])->where(['user_id' => $user_id])->all();
         $request = Yii::$app->request;
         $cartItemId = $request->get('cartItemId');
 
             $totalPrice = 0;
             $totalDiscount = 0;
             $finalPrice = 0;
-
             foreach ($cartItems as $key => $item) {
-                $price = $item->product->price;
-                if($item->color){
-                    $price += $item->color->price_increase;
-                }
+                $price = $item->vendorProduct->price;
                 $count = $item->number;
-                
                 $itemTotal = $price * $count;
                 $totalPrice += $itemTotal; 
                 
                 $discount = 0;
 
-                if ($item->product->discountAmounts) {
+                if ($item->vendorProduct->discountAmounts) {
 
-                    $discount = ($itemTotal * $item->product->discountAmounts->percentage) / 100;
+                    $discount = ($itemTotal * $item->vendorProduct->discountAmounts->percentage) / 100;
 
-                    if ($discount > $item->product->discountAmounts->discount_ceiling) {
-                        $discount = $item->product->discountAmounts->discount_ceiling;
+                    if ($discount > $item->vendorProduct->discountAmounts->discount_ceiling) {
+                        $discount = $item->vendorProduct->discountAmounts->discount_ceiling;
                     }
                 }
                 
@@ -109,29 +99,30 @@ class CartItemController extends Controller
                 try{
                     $cartUpdate = CartItem::findOne($cartItemId);
                     $number = $cartUpdate->number;
-                    $product = $cartUpdate->product;
-                    $product->marketable_number += ($number - $request->post('number'));
-            $product->frozen_number -= ($number - $request->post('number'));
+                    $vendorProduct = $cartUpdate->vendorProduct;
+                    $vendorProduct->marketable_number += ($number - $request->post('number'));
+                    $vendorProduct->frozen_number -= ($number - $request->post('number'));
+                    
+                    $cartUpdate->number = $request->post('number');
             
-            $cartUpdate->number = $request->post('number');
-            
-            if($cartUpdate->number > $cartUpdate->product->marketable_number + $cartUpdate->product->frozen_number){
-                Yii::$app->session->setFlash('موجودی محصول کافی نمیباشد');
-                return $this->redirect('/cart-item');
+                    if($cartUpdate->number > $cartUpdate->vendorProduct->marketable_number + $cartUpdate->vendorProduct->frozen_number){
+                        Yii::$app->session->setFlash('موجودی محصول کافی نمیباشد');
+                        return $this->redirect('/cart-item');
+                    }
+                    if(!$vendorProduct->save(true , ['marketable_number' , 'frozen_number'])){
+                        throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                    }
+                    if(!$cartUpdate->save(true , ['number'])){
+                        throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                    }
+                    $transaction->commit();
+                    return $this->refresh();    
+                }catch(\Throwable $e){
+                    $transaction->rollBack();
+                    throw $e;
+                }
             }
-            
-            
-            
-            if(!$cartUpdate->save() || !$product->save(false)){
-                throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
-            }
-            $transaction->commit();
-            return $this->refresh();    
-        }catch(\Throwable $e){
-            $transaction->rollBack();
-            throw $e;
-        }
-    }
+
 
 
 
@@ -140,14 +131,15 @@ class CartItemController extends Controller
             $expireDate = (new DateTime($cartItem->updated_at))->modify('+1 day');
 
             if($now > $expireDate){
-                $product = $cartItem->product;
-                $product->frozen_number -= $cartItem->number;
-                $product->marketable_number += $cartItem->number;
-                $product->save(false);
+                $vendorProduct = $cartItem->vendorProduct;
+                $vendorProduct->frozen_number -= $cartItem->number;
+                $vendorProduct->marketable_number += $cartItem->number;
+                $vendorProduct->save(true , ['marketable_number' , 'frozen_number']);
                 
                 $cartItem->delete();
             }
         }
+
 
         return $this->render('/cartItem/index', [
             'totalPrice' => $totalPrice,
@@ -162,11 +154,10 @@ class CartItemController extends Controller
         {
             $cartItem = $this->findModel($id);
 
-                
-                $product = $cartItem->product;
-                $product->frozen_number -= $cartItem->number;
-                $product->marketable_number += $cartItem->number;
-                $product->save(false);
+                $vendorProduct = $cartItem->vendorProduct;
+                $vendorProduct->frozen_number -= $cartItem->number;
+                $vendorProduct->marketable_number += $cartItem->number;
+                $vendorProduct->save(false);
             $cartItem->delete();
 
             return $this->redirect(['index']);

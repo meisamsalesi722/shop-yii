@@ -28,11 +28,13 @@ $count = 0;
                                     <?= $item->product->name ?> <br />
                                     <span class="status-product mt-2 text-muted"> گروه محصول : <?= $item->product->category->name ?> </span>
                                     <br>
-                                    <?php if($item->color){ ?>
-                                        <span class="status-product mt-2 text-muted"> رنگ محصول : <?= $item->color->name ?> </span>
-                                        <span class="status-product mt-2 text-muted"><i class="fas fa-circle " style="color: <?= $item->color->color_code ?>;"></i></span>  
+                                    <span class="status-product mt-2 text-muted"> فروشنده : <?= $item->vendor->name ?> </span>
+                                    <br>
+                                    <?php if($item->productVariant->color){ ?>
+                                        <span class="status-product mt-2 text-muted"> رنگ محصول : <?= $item->productVariant->color ?> </span>
+                                        <span class="status-product mt-2 text-muted"><i class="fas fa-circle " style="color: <?= $item->productVariant->color_code ?>;"></i></span>
                                         <br>
-                                        <span class="status-product mt-2 text-muted"> قیمت : <?= $item->product->price + ($item->color->price_increase ?? 0) ?> </span>
+                                        <span class="status-product mt-2 text-muted"> قیمت : <?= $item->vendorProduct->price ?> </span>
                                         <br>
                                     <?php } ?>
                                     <a href="<?= Url::to(['cart-item/delete' , 'id' => $item->id]) ?>" class="delete-btn btn btn-sm mt-2"><i class="fad fa-trash ml-2"></i>حذف کالا</a>
@@ -47,7 +49,7 @@ $count = 0;
                                 ]
                                 ]) ?>
                                 <select class="count-drop text-dark mx-auto" name="number" id="drop-63" onchange="$('#number_form'+<?= $key ?>).submit();">
-                                    <?php for( $i = 0 ; $i < $item->product->marketable_number + $item->number ; $i++) {
+                                    <?php for( $i = 0 ; $i < $item->vendorProduct->marketable_number + $item->number ; $i++) {
                                     ?>
                                     <option value="<?= $i + 1 ?>" <?= $item->number == $i + 1 ? 'selected' : '' ?> ><?= $i+1 ?></option>
                                     <?php }?>
@@ -56,25 +58,23 @@ $count = 0;
                                 <?php ActiveForm::end() ?>
                             </div>
                             <div class="col-xl-3 col-lg-12 col-md-3 col-sm-12 col-12 my-center col-card">
-                                <?php if($item->product->discountAmounts){?>
+                                <?php if($item->vendorProduct->discountAmounts){?>
 
                                     <?php 
-                                        $singlePrice = $item->product->price;
-                                        if($item->color){
-                                            $singlePrice += $item->color->price_increase;
-                                        }
+                                        $singlePrice = $item->vendorProduct->price;
+
                                         $singleCount = $item->number;
                                         
                                         $SingleIemTotal = $singlePrice * $singleCount;
                                         
                                         $singleDiscount = 0;
                                         
-                                        if ($item->product->discountAmounts) {
+                                        if ($item->vendorProduct->discountAmounts) {
                                             
-                                            $singleDiscount = ($SingleIemTotal * $item->product->discountAmounts->percentage) / 100;
+                                            $singleDiscount = ($SingleIemTotal * $item->vendorProduct->discountAmounts->percentage) / 100;
                                             
-                                            if ($singleDiscount > $item->product->discountAmounts->discount_ceiling) {
-                                                $singleDiscount = $item->product->discountAmounts->discount_ceiling;
+                                            if ($singleDiscount > $item->vendorProduct->discountAmounts->discount_ceiling) {
+                                                $singleDiscount = $item->vendorProduct->discountAmounts->discount_ceiling;
                                             }
                                         }
                                         
@@ -85,14 +85,14 @@ $count = 0;
                                     ?>
 
                                     <s class="tatal-price-row item-price">
-                                        <?= ($item->product->price + ($item->color->price_increase ?? 0) )* $item->number ?> تومان
+                                        <?= ($item->vendorProduct->price )* $item->number ?> تومان
                                     </s>
                                     <p class="tatal-price-row item-price m-3">
                                         <?= $SingleFinalPrice ?> تومان
                                     </p>
                                     <?php }else{ ?>
                                         <p class="tatal-price-row item-price m-3">
-                                            <?= ($item->product->price + ($item->color->price_increase ?? 0) )* $item->number ?> تومان
+                                            <?= ($item->vendorProduct->price)* $item->number ?> تومان
                                         </p>
                                     <?php }?>
                             </div>

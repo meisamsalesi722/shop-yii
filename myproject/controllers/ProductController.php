@@ -79,44 +79,47 @@ class ProductController extends Controller
 
         $request = Yii::$app->request;
     
-    if ($request->isPost) {
-        if(Yii::$app->request->post('change_productVariants') == 1){
-            $productVariant = ProductVariant::find()->where(['product_variant.id' => Yii::$app->request->post('productVariant_id')])->innerJoinWith('vendorProducts')->one();
-            $vendorProduct = $productVariant->vendorProducts[0];
-        }else if(Yii::$app->request->post('change_vendor_product_id')){
-            $vendorProduct = VendorProduct::find()->where(['id' => Yii::$app->request->post('change_vendor_product_id')])->one();
-    }else{
-            if(Yii::$app->user->isGuest){
-                return $this->redirect('/login-register');
-            }
+        if ($request->isPost) {
+            if(Yii::$app->request->post('change_productVariants') == 1){
+                $productVariant = ProductVariant::find()->where(['product_variant.id' => Yii::$app->request->post('productVariant_id')])->innerJoinWith('vendorProducts')->one();
+                $vendorProduct = $productVariant->vendorProducts[0];
+            }else if(Yii::$app->request->post('change_vendor_product_id')){
+                $vendorProduct = VendorProduct::find()->where(['id' => Yii::$app->request->post('change_vendor_product_id')])->one();
+            }else{
+                if(Yii::$app->user->isGuest){
+                    return $this->redirect('/login-register');
+                }
+                
+                $vendor_product_id = $request->post('vendor_product_id');
+                $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'vendor_product_id' => $vendor_product_id ])->all();
+                
+                if($cartItem){
+                    Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
+                    return $this->redirect(['/product', 'id' => $id]);
+                }
             
-            $vendor_product_id = $request->post('vendor_product_id');
-            $cartItem = CartItem::find()->where(['user_id' => Yii::$app->user->id , 'vendor_product_id' => $vendor_product_id ])->all();
+                $modelCartItem->user_id = (int)(Yii::$app->user->id) ;
+                $modelCartItem->vendor_product_id = (int)Yii::$app->request->post('vendor_product_id');
+                $modelCartItem->number = 1;
+                
+                $modelCartItem->product_variant_id  =(int)Yii::$app->request->post('product_variant_id');
+                $modelCartItem->product_id  = $id;
+                $modelCartItem->vendor_id = (int)Yii::$app->request->post('vendor_id');
             
-            if($cartItem){
-                Yii::$app->session->setFlash('error', 'این محصول قبلا به سبد خرید اضافه شده است.');
-                return $this->redirect(['/product', 'id' => $id]);
+                if ($modelCartItem->save()) {
+                    Yii::$app->session->setFlash('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                            $vendorProduct->frozen_number += 1;
+                            $vendorProduct->marketable_number -= 1;
+                            $vendorProduct->save(true,['frozen_number' , 'marketable_number']);
+                } else {
+                    Yii::$app->session->setFlash('error', 'افزودن به سبد خرید با شکست مواجه شد.');
+                    dd($modelCartItem->errors , $modelCartItem);
+                }
+                return $this->redirect(['/product', 
+                    'id' => $id,
+                ]);
             }
-        
-        
-        $modelCartItem->user_id = (int)(Yii::$app->user->id) ;
-        $modelCartItem->vendor_product_id = (int)Yii::$app->request->post('vendor_product_id');
-        $modelCartItem->number = 1;
-        
-    if ($modelCartItem->save()) {
-        Yii::$app->session->setFlash('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
-                $vendorProduct->frozen_number += 1;
-                $vendorProduct->marketable_number -= 1;
-                $vendorProduct->save(true,['frozen_number' , 'marketable_number']);
-    } else {
-        Yii::$app->session->setFlash('error', 'افزودن به سبد خرید با شکست مواجه شد.');
-        dd($modelCartItem->errors , $modelCartItem);
-    }
-    return $this->redirect(['/product', 
-        'id' => $id,
-    ]);
-}
-}
+        }
         
 
         $attributeNames = ArrayHelper::getColumn($product->category->categoryAttributes,'name');
