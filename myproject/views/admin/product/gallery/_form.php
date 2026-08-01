@@ -12,7 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'imageFile')->fileInput() ?>
+    <?= $form->field($model, 'imageFile[]')->fileInput([
+        'multiple' => true, 'accept' => 'image/*',
+    ]) ?>
 
     <?= $form->field($model, 'product_id')->hiddenInput([
         'value' => $product_id

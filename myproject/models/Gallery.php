@@ -32,7 +32,7 @@ class Gallery extends \yii\db\ActiveRecord
     {
         return [
             [[ 'product_id'], 'required'],
-            [['imageFile'], 'file' , 'extensions' => 'jpg,png,jpeg,webp'],
+            [['imageFile'], 'file' , 'extensions' => 'jpg,png,jpeg,webp' , 'maxFiles' => 10],
             [['product_id'], 'integer'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
