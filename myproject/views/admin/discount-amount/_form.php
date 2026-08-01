@@ -1,6 +1,8 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
+use kartik\depdrop\DepDrop;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -12,20 +14,38 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'product_id')->dropDownList($products,
-    ['prompt' => 'انتخاب کنید']) ?>
+
+        <?= $form->field($model, 'product_id')->dropDownList(
+            $products, ['prompt' => 'انتخاب کنید' , 'id' => 'product-level1']
+        )->label('محصول') ?>
+
+
+    <?=
+    $form->field($model, 'product_variant_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'product-variant'],
+        'pluginOptions'=>[
+            'depends'=>['product-level1'],
+            'placeholder' => 'Select...',
+            'url' => Url::to(['/admin/order/product-variant-list'])
+        ]
+    ])->label('مشخصات محصول');
+    ?>
+
+    <?=
+    $form->field($model, 'vendor_product_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'vendor-product'],
+        'pluginOptions'=>[
+            'depends'=>['product-variant'],
+            'placeholder' => 'Select...',
+            'url' => Url::to(['/admin/order/vendor-product-list'])
+        ]
+    ])->label('قیمت، فروشنده');
+    ?>
 
     <?= $form->field($model, 'percentage')->textInput() ?>
 
 
-    <?= $form->field($model, 'status')->dropDownList(
-        [
-            '0' => 'غیر فعال',
-            '1' => 'فعال'
-        ]
-    ) ?>
 
-    <?= $form->field($model, 'discount_ceiling')->textInput() ?>
 
     <?= $form->field($model, 'start_date')->input('date') ?>
 

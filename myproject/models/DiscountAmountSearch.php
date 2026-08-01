@@ -17,7 +17,7 @@ class DiscountAmountSearch extends DiscountAmount
     public function rules()
     {
         return [
-            [['id', 'product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
+            [['id', 'vendor_product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
             [['start_date', 'end_date'], 'safe'],
         ];
     }
@@ -60,7 +60,7 @@ class DiscountAmountSearch extends DiscountAmount
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'product_id' => $this->product_id,
+            'vendor_product_id ' => $this->vendor_product_id ,
             'percentage' => $this->percentage,
             'status' => $this->status,
             'discount_ceiling' => $this->discount_ceiling,

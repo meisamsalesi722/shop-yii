@@ -3,12 +3,13 @@
 namespace app\models;
 
 use Yii;
+use app\models\VendorProduct;
 
 /**
  * This is the model class for table "discount_amount".
  *
  * @property int $id
- * @property int $product_id
+ * @property int $vendor_product_id 
  * @property int|null $percentage
  * @property int|null $status
  * @property int|null $discount_ceiling
@@ -21,6 +22,11 @@ use Yii;
  */
 class DiscountAmount extends \yii\db\ActiveRecord
 {
+
+    public $product_id;
+    public $product_variant_id;
+    public $is_discount_active; 
+    
 
 
     /**
@@ -37,12 +43,32 @@ class DiscountAmount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['percentage', 'discount_ceiling', 'start_date', 'end_date'], 'default', 'value' => null],
+            [['discount_ceiling'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 0],
-            [['product_id'], 'required'],
-            [['product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
-            [['start_date', 'end_date'], 'safe'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            // [['vendor_product_id'], 'required'],
+            [['vendor_product_id', 'percentage', 'status', 'discount_ceiling'], 'integer'],
+            [['vendor_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => VendorProduct::class, 'targetAttribute' => ['vendor_product_id' => 'id']],
+            
+            // قوانین تخفیف
+            [['is_discount_active'], 'boolean'],
+            [['percentage'], 'number', 'min' => 1, 'max' => 100],
+            [['percentage'], 'required', 'when' => function($model) {
+                return $model->is_discount_active == 1;
+            }, 'whenClient' => "function (attribute, value) {
+                return $('#is_discount_active').val() == 1;
+            }"],
+            [['start_date', 'end_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['start_date'], 'required', 'when' => function($model) {
+                return $model->is_discount_active == 1;
+            }, 'whenClient' => "function (attribute, value) {
+                return $('#is_discount_active').val() == 1;
+            }"],
+            [['end_date'], 'required', 'when' => function($model) {
+                return $model->is_discount_active == 1;
+            }, 'whenClient' => "function (attribute, value) {
+                return $('#is_discount_active').val() == 1;
+            }"],
+            [['end_date'], 'compare', 'compareAttribute' => 'start_date', 'operator' => '>=', 'message' => 'تاریخ پایان باید بزرگتر یا مساوی تاریخ شروع باشد.'],
         ];
     }
 
@@ -53,14 +79,16 @@ class DiscountAmount extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'product_id' => 'Product ID',
-            'percentage' => 'Percentage',
+            'vendor_product_id' => 'vendor Product ID',
             'status' => 'Status',
             'discount_ceiling' => 'Discount Ceiling',
-            'start_date' => 'Start Date',
-            'end_date' => 'End Date',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',
+            'percentage' => 'درصد تخفیف',
+            'start_date' => 'تاریخ شروع تخفیف',
+            'end_date' => 'تاریخ پایان تخفیف',
+            'is_discount_active' => 'فعال‌سازی تخفیف',
+
         ];
     }
     

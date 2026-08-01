@@ -2,11 +2,14 @@
 
 namespace app\controllers\admin;
 
+use Yii;
 use app\models\Product;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use app\models\VendorProduct;
 use app\models\DiscountAmount;
+use app\models\ProductVariant;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use app\models\DiscountAmountSearch;
@@ -90,20 +93,129 @@ class DiscountAmountController extends Controller
             $model->loadDefaultValues();
         }
 
+// $products = ArrayHelper::map(
+//     Product::find()
+//     ->joinWith('productVariants.vendorProducts.discountAmounts')
+//     ->where([
+//         'or',
+//         ['discount_amount.id' => null],
+//         ['<', 'discount_amount.end_date', date('y/m/d h:i:s')],
+//     ])->andWhere(['product.status' => 1])
+//     ->all() , 'id' , 'name');
 $products = ArrayHelper::map(
-    Product::find()
-    ->joinWith('discountAmounts')
-    ->where([
-        'or',
-        ['discount_amount.id' => null],
-        ['<', 'discount_amount.end_date', date('y/m/d h:i:s')],
-    ])->andWhere(['product.status' => 1])
-    ->all() , 'id' , 'name');
+    Product::find()->distinct()->leftJoin(
+            'product_variant',
+            'product_variant.product_id = product.id'
+        )
+        ->leftJoin(
+            'vendor_product',
+            'vendor_product.product_variant_id = product_variant.id'
+        )
+        ->leftJoin(
+            'discount_amount',
+            'discount_amount.vendor_product_id = vendor_product.id
+             AND discount_amount.end_date > NOW()'
+        )
+        ->where(['product.status' => 1])
+        ->andWhere(['IS', 'discount_amount.id', null])
+        ->all(),
+    'id',
+    'name'
+);
+
         return $this->render('create', [
             'model' => $model,
             'products' => $products,
         ]);
     }
+
+    // -------------------- variant list ---------------------//
+        public function actionProductVariantList()
+        {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            
+            $product = Yii::$app->request->post('depdrop_parents');
+            
+            if (!empty($product)) {
+
+                $product_id = $product[0];
+                // $productVariants = ProductVariant::find()->joinWith('vendorProducts.discountAmounts')
+                //     ->where(['product_id' => $product_id])
+                //     ->andWhere(['discount_amount.id' => null])
+                //     ->andWhere([
+                //             'or',
+                //             ['discount_amount.id' => null],
+                //             ['<', 'discount_amount.end_date', date('y/m/d h:i:s')],
+                //         ])
+                //     ->all();
+$productVariants = ProductVariant::find()
+    ->distinct()
+    ->leftJoin(
+        'vendor_product',
+        'vendor_product.product_variant_id = product_variant.id'
+    )
+    ->leftJoin(
+        'discount_amount',
+        'discount_amount.vendor_product_id = vendor_product.id
+         AND discount_amount.end_date > NOW()'
+    )
+    ->where([
+        'product_variant.product_id' => $product_id
+    ])
+    ->andWhere(['IS', 'discount_amount.id', null])
+    ->all();
+                    
+                $output = [];
+                foreach ($productVariants as $productVariant) {
+                    $output[] = [
+                        'id' => $productVariant->id,
+                        'name' =>'رنگ: ' . $productVariant->color . '  گارانتی:  ' . $productVariant->guarantee,
+                    ];
+                }
+                
+                return ['output' => $output];
+            }
+            
+            return ['output' => []];
+        }
+        public function actionVendorProductList()
+        {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            
+            $productVariant = Yii::$app->request->post('depdrop_parents');
+            
+            if (!empty($productVariant)) {
+
+                $productVariantId = $productVariant[0];
+                // $vendorProducts = VendorProduct::find()
+                //     ->where(['product_variant_id' => $productVariantId])
+                //     ->all();
+$vendorProducts = VendorProduct::find()
+    ->leftJoin(
+        'discount_amount',
+        'discount_amount.vendor_product_id = vendor_product.id
+         AND discount_amount.end_date > NOW()'
+    )
+    ->where([
+        'vendor_product.product_variant_id' => $productVariantId
+    ])
+    ->andWhere(['IS', 'discount_amount.id', null])
+    ->all();
+                    
+                $output = [];
+                foreach ($vendorProducts as $vendorProduct) {
+                    $output[] = [
+                        'id' => $vendorProduct->id,
+                        'name' => $vendorProduct->price . '_' . $vendorProduct->vendor->name,
+                    ];
+                }
+                
+                return ['output' => $output];
+            }
+            
+            return ['output' => []];
+        }
+        // ----------------- end color list ----------------//
 
     /**
      * Updates an existing DiscountAmount model.
@@ -115,19 +227,19 @@ $products = ArrayHelper::map(
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $product = $model->product;
+        $vendorProduct = $model->vendorProduct;
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $products = Product::find()->joinWith('discountAmounts')->where(['or',['discount_amount.id' => null],['<', 'discount_amount.end_date', time()]])->andWhere(['product.status' => 1])->all();
+        $products = VendorProduct::find()->joinWith('discountAmounts')->where(['or',['discount_amount.id' => null],['<', 'discount_amount.end_date', time()]])->andWhere(['vendor_product.status' => 1])->all();
 
         
         
-        $products = ArrayHelper::map(($products) , 'id' , 'name');
+        $vendorProducts = ArrayHelper::map(($vendorProducts) , 'id' , 'price');
         
-        $products[$product->id] = $product->name;
+        $vendorProducts[$vendorProduct->id] = $vendorProduct->price;
 
         return $this->render('update', [
             'model' => $model,

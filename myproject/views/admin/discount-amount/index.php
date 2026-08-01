@@ -29,8 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-                'attribute' => 'product_id',
-                'value' => 'product.name',
+                'attribute' => 'vendor_product_id ',
+                'value' => 'vendorProduct.id',
+            ],
+            [
+                'attribute' => 'vendor_product_id ',
+                'value' => 'vendorProduct.productVariant.product.name',
             ],
             'percentage',
             [
