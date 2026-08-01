@@ -16,19 +16,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['/admin/order/order-item-update', 'id' => $model->id , 'order_id' => $order_id], ['class' => 'btn btn-primary']) ?>
-    </p>
-
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
             [
-                'attribute' => 'product_id',
+                'attribute' => 'image',
+                'format' => 'raw',
                 'value' => function($model){
-                    return $model->product->name;
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->vendorProduct->productVariant->product->image ?? '') .'" alt="" style="max-width:100px;">';
+                }
+            ],
+            [
+                'attribute' => 'vendor_product_id',
+                'value' => function($model){
+                    return $model->vendorProduct->id;
                 },
             ],
             'number',
@@ -37,14 +40,22 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'color_id',
                 'value' => function($model){
-                    return $model->color->name;
+                    return $model->vendorProduct->productVariant->color;
                 },
             ],
             [
                 'attribute' => 'guarantee_id',
                 'value' => function($model){
-                    return $model->guarantee->name;
+                    return $model->vendorProduct->productVariant->guarantee;
                 },
+            ],
+
+            [
+                'attribute'=> 'product',
+                'label' => 'محصول',
+                'value' => function($model){
+                    return $model->vendorProduct->productVariant->product->persian_name;
+                }
             ],
             'created_at',
             'updated_at',

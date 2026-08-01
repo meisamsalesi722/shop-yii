@@ -16,40 +16,44 @@ use yii\widgets\ActiveForm;
 
     <?php //$form->field($model, 'user_id')->textInput() ?>
 
-    <?php if ($model->isNewRecord){ ?>
 
-        <?= $form->field($model, 'product_id')->dropDownList(
+        <?= $form->field($orderItemModel, 'product_id')->dropDownList(
             $products, ['prompt' => 'انتخاب کنید' , 'id' => 'product-level1']
         ) ?>
 
 
     <?=
-    $form->field($model, 'color_id')->widget(DepDrop::class, [
-        'options' => ['id'=>'product-level2'],
+    $form->field($orderItemModel, 'product_variant_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'product-variant'],
         'pluginOptions'=>[
             'depends'=>['product-level1'],
             'placeholder' => 'Select...',
-            'url' => Url::to(['/admin/order/color-list'])
+            'url' => Url::to(['/admin/order/product-variant-list'])
         ]
     ]);
     ?>
 
     <?=
-        $form->field($model, 'number')->widget(DepDrop::class, [
+    $form->field($orderItemModel, 'vendor_product_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'vendor-product'],
+        'pluginOptions'=>[
+            'depends'=>['product-variant'],
+            'placeholder' => 'Select...',
+            'url' => Url::to(['/admin/order/vendor-product-list'])
+        ]
+    ]);
+    ?>
+
+    <?=
+        $form->field($orderItemModel, 'number')->widget(DepDrop::class, [
         'options' => ['id'=>'number-level2'],
         'pluginOptions'=>[
-            'depends'=>['product-level1'],
+            'depends'=>['vendor-product'],
             'placeholder' => 'Select...',
             'url' => Url::to(['/admin/order/product-count'])
         ]
     ]);
     ?>
-    
-    <?php }else{ ?>
-        <?= $form->field($model, 'color_id')->dropDownList($colors) ?>
-
-        <?= $form->field($model, 'number')->textInput(['type' => 'number' , 'min' => '1' , 'max' => ($model->product->marketable_number + $model->number)]) ?>
-    <?php } ?>
 
 
 

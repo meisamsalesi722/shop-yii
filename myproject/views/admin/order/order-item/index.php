@@ -43,29 +43,40 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= $form->field($orderItemModel, 'product_id')->dropDownList(
             $products, ['prompt' => 'انتخاب کنید' , 'id' => 'product-level1']
-        ) ?>
+        )->label('محصول') ?>
 
 
     <?=
-    $form->field($orderItemModel, 'color_id')->widget(DepDrop::class, [
-        'options' => ['id'=>'product-level2'],
+    $form->field($orderItemModel, 'product_variant_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'product-variant'],
         'pluginOptions'=>[
             'depends'=>['product-level1'],
             'placeholder' => 'Select...',
-            'url' => Url::to(['/admin/order/color-list'])
+            'url' => Url::to(['/admin/order/product-variant-list'])
         ]
-    ]);
+    ])->label('مشخصات محصول');
+    ?>
+
+    <?=
+    $form->field($orderItemModel, 'vendor_product_id')->widget(DepDrop::class, [
+        'options' => ['id'=>'vendor-product'],
+        'pluginOptions'=>[
+            'depends'=>['product-variant'],
+            'placeholder' => 'Select...',
+            'url' => Url::to(['/admin/order/vendor-product-list'])
+        ]
+    ])->label('قیمت، فروشنده');
     ?>
 
     <?=
         $form->field($orderItemModel, 'number')->widget(DepDrop::class, [
         'options' => ['id'=>'number-level2'],
         'pluginOptions'=>[
-            'depends'=>['product-level1'],
+            'depends'=>['vendor-product'],
             'placeholder' => 'Select...',
             'url' => Url::to(['/admin/order/product-count'])
         ]
-    ]);
+    ])->label('تعداد');
     ?>
     
 
@@ -93,19 +104,19 @@ Modal::end();
             [
                 'attribute' => 'قیمت مجموع',
                 'value' => function($model){
-                    return $model->original_price . ' تومان ';
+                    return number_format($model->original_price) . ' تومان ';
                 }
             ],
             [
                 'attribute' => 'مجموع تخفیف',
                 'value' => function($model){
-                    return $model->order_discount_amount . ' تومان ';
+                    return number_format($model->order_discount_amount) . ' تومان ';
                 }
             ],
             [
                 'attribute' => 'قیمت نهایی ',
                 'value' => function($model){
-                    return $model->order_final_amount . ' تومان ';
+                    return number_format($model->order_final_amount) . ' تومان ';
                 }
             ],
 
@@ -141,13 +152,15 @@ Modal::end();
                 'attribute' => 'image',
                 'format' => 'raw',
                 'value' => function($model){
-                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->product->image ?? '') .'" alt="" style="max-width:100px;">';
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->vendorProduct->productVariant->product->image ?? '') .'" alt="" style="max-width:100px;">';
                 }
             ],
             [
                 'attribute'=> 'product',
                 'label' => 'محصول',
-                'value' => 'product.persian_name',
+                'value' => function($model){
+                    return strlen($model->vendorProduct->productVariant->product->persian_name) > 50 ? substr($model->vendorProduct->productVariant->product->persian_name , 0 ,50) . '...'  : $model->vendorProduct->productVariant->product->persian_name;
+                }
             ],
 
             
@@ -160,31 +173,30 @@ Modal::end();
                 'attribute' => 'final_product_price',
                 'label' => 'قیمت محصول',
                 'value' => function($model){
-                    return $model->final_product_price . 'تومان';
+                    return number_format($model->final_product_price) . ' تومان ';
                 }
             ],
             [
                 'attribute' => 'final_total_price',
                 'label' => 'قیمت نهایی محصول',
                 'value' => function($model){
-                    return $model->final_total_price . 'تومان';
+                    return number_format($model->final_total_price) . ' تومان ';
                 }
             ],
             [
                 'attribute' => 'final_discount',
                 'label' => 'تخفیف نهایی محصول',
                 'value' => function($model){
-                    return $model->final_discount . 'تومان';
+                    return number_format($model->final_discount) . ' تومان ';
                 }
             ],
             [
                 'label' => 'رنگ',
-                'attribute' => 'color',
-                'value' => 'color.name'
+                'value' => 'vendorProduct.productVariant.color'
             ],
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {delete} {update}',
+                'template' => '{view} {delete} ',
                  'buttons' => [
                     'view' => function ($url, $model, $key) use($order_id){
                         return Html::a(

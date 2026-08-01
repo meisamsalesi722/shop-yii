@@ -17,6 +17,8 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use app\models\OrderItemSearch;
+use app\models\ProductVariant;
+use app\models\VendorProduct;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -62,7 +64,7 @@ class OrderController extends Controller
     public function actionIndex()
     {
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search($this->request->queryParams , true);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -151,11 +153,11 @@ class OrderController extends Controller
     public function actionOrderItem($order_id)
     {
         $searchModel = new OrderItemSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams , $order_id);
+        $dataProvider = $searchModel->search($this->request->queryParams , $order_id , true);
         $model = Order::findOne($order_id);
         $orderItemModel = new OrderItem();
 
-        $products = ArrayHelper::map(Product::find()->where(['product.status' => 1])->all() , 'id' , 'name');
+        $products = ArrayHelper::map(Product::find()->innerJoinWith('productVariants.vendorProducts')->where(['product.status' => 1])->all() , 'id' , 'name');
         
         return $this->render('order-item/index', [
             'searchModel' => $searchModel,
@@ -194,31 +196,28 @@ class OrderController extends Controller
             if ($model->load($this->request->post())) {
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
-                $price = $model->product->price;
-                if($model->color){
-                    $price += $model->color->price_increase;
-                }
+                $price = $model->vendorProduct->price;
+
                 $count = $model->number;
                 $itemTotal = $price * $count;
                 $discount = 0;
-                if ($model->product->discountAmounts) {
-                    $discount = ($itemTotal * $model->product->discountAmounts->percentage) / 100;
-                    if ($discount > $model->product->discountAmounts->discount_ceiling) {
-                        $discount = $model->product->discountAmounts->discount_ceiling;
+                if ($model->vendorProduct->discountAmounts) {
+                    $discount = ($itemTotal * $model->vendorProduct->discountAmounts->percentage) / 100;
+                    if ($discount > $model->vendorProduct->discountAmounts->discount_ceiling) {
+                        $discount = $model->vendorProduct->discountAmounts->discount_ceiling;
                     }
                 }
                 $model->final_discount = $discount;
                 $model->order_id = $order_id;
                 $model->final_product_price = $price - ($discount / $count);
                 $model->final_total_price = ($price - $discount / $count) * $model->number;
-                $model->guarantee_id = $model->product->guarantee->id;
                 
-                $product = Product::findOne($model->product_id);
+                $vendorProduct = VendorProduct::findOne($model->vendor_product_id);
 
 
-                    $product->marketable_number -= $model->number;
-                    $product->sold_number += $model->number;
-                    if (!$product->save(false)) {
+                    $vendorProduct->marketable_number -= $model->number;
+                    $vendorProduct->sold_number += $model->number;
+                    if (!$vendorProduct->save(true , ['marketable_number' , 'sold_number'])) {
                         throw new \Exception('Product could not be saved.');
                     };
                 
@@ -246,16 +245,15 @@ class OrderController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-        $products = ArrayHelper::map(Product::find()->where(['product.status' => 1])->all() , 'id' , 'name');
+
 
         return $this->render('order-item/create', [
             'model' => $model,
-            'products' => $products,
             'order_id' => $order_id,
         ]);
     }
-// -------------------- color list ---------------------//
-        public function actionColorList()
+// -------------------- variant list ---------------------//
+        public function actionProductVariantList()
         {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             
@@ -264,16 +262,41 @@ class OrderController extends Controller
             if (!empty($product)) {
 
                 $product_id = $product[0];
-                $colors = Color::find()
+                $productVariants = ProductVariant::find()
                     ->where(['product_id' => $product_id])
-                    ->orderBy('name')
                     ->all();
                     
                 $output = [];
-                foreach ($colors as $color) {
+                foreach ($productVariants as $productVariant) {
                     $output[] = [
-                        'id' => $color->id,
-                        'name' => $color->name
+                        'id' => $productVariant->id,
+                        'name' =>'رنگ: ' . $productVariant->color . '  گارانتی:  ' . $productVariant->guarantee,
+                    ];
+                }
+                
+                return ['output' => $output];
+            }
+            
+            return ['output' => []];
+        }
+        public function actionVendorProductList()
+        {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            
+            $productVariant = Yii::$app->request->post('depdrop_parents');
+            
+            if (!empty($productVariant)) {
+
+                $productVariantId = $productVariant[0];
+                $vendorProducts = VendorProduct::find()
+                    ->where(['product_variant_id' => $productVariantId])
+                    ->all();
+                    
+                $output = [];
+                foreach ($vendorProducts as $vendorProduct) {
+                    $output[] = [
+                        'id' => $vendorProduct->id,
+                        'name' => $vendorProduct->price . '_' . $vendorProduct->vendor->name,
                     ];
                 }
                 
@@ -289,14 +312,14 @@ class OrderController extends Controller
         {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             
-            $product = Yii::$app->request->post('depdrop_parents');
+            $vendorProduct = Yii::$app->request->post('depdrop_parents');
             
-            if (!empty($product)) {
+            if (!empty($vendorProduct)) {
 
-                $product_id = $product[0];
+                $vendorProductId = $vendorProduct[0];
 
-                $product = Product::findOne($product_id);
-                $productCount = $product->marketable_number;
+                $vendorProduct = VendorProduct::findOne($vendorProductId);
+                $productCount = $vendorProduct->marketable_number;
 
                 for($i = 1 ; $i <= $productCount ; $i++){
                     $output[] = [
@@ -317,15 +340,13 @@ class OrderController extends Controller
         try{
         $order_item = $this->findModelOrderItem($id);
         
-        $product = Product::find()->where(['id' => $order_item->product_id])->one();
-        $product->marketable_number += ($order_item->number);
-        $product->sold_number -= ($order_item->number);
+        $vendorProduct = VendorProduct::find()->where(['id' => $order_item->vendor_product_id])->one();
+        $vendorProduct->marketable_number += ($order_item->number);
+        $vendorProduct->sold_number -= ($order_item->number);
 
         $order = Order::find()->where(['id' => $order_id])->one();
-        $price = $order_item->product->price;
-        if($order_item->color){
-            $price += $order_item->color->price_increase;
-        }
+        $price = $order_item->vendorProduct->price;
+
         $order->original_price -= $price * $order_item->number;
         $order->order_discount_amount -= $order_item->final_discount;
         $order->order_final_amount -= $price * $order_item->number - $order_item->final_discount;
@@ -333,7 +354,7 @@ class OrderController extends Controller
 
         $order->save(false);
 
-        $product->save(false);
+        $vendorProduct->save(false);
         
         $order_item->delete();
         $transaction->commit();
@@ -347,68 +368,60 @@ class OrderController extends Controller
     }
 
 
-    public function actionGetInfo($id , $order_id){
-        $model = $this->findModelOrderItem($id);
-        $color = $model->color;
-        $number = $model->number;
+    // public function actionGetInfo($id , $order_id){
+    //     $model = $this->findModelOrderItem($id);
+    //     $number = $model->number;
         
-        $oldDiscount = $model->final_discount;
-        $oldPrice = ($model->final_product_price * $number + $oldDiscount) ;
+    //     $oldDiscount = $model->final_discount;
+    //     $oldPrice = ($model->final_product_price * $number + $oldDiscount) ;
         
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
+    //     if ($this->request->isPost && $model->load($this->request->post())) {
 
 
-            $product = Product::findOne($model->product_id);
-            $product->marketable_number += ($number - $model->number);
-            $product->sold_number -= ($number - $model->number);
+    //         $vendorProduct = VendorProduct::findOne($model->vendor_product_id);
+    //         $vendorProduct->marketable_number += ($number - $model->number);
+    //         $vendorProduct->sold_number -= ($number - $model->number);
 
-            if(!$product->save(false)){
-                dd('false');
-            };
-                $price = $model->product->price;
-                if($model->color){
-                    $price += $model->color->price_increase;
-                }
-                $count = $model->number;
-                $itemTotal = $price * $count;
+    //         if(!$vendorProduct->save(true , ['marketable_number' , 'sold_number'])){
+    //             dd('false');
+    //         };
+    //             $price = $model->vendorProduct->price;
+    //             $count = $model->number;
+    //             $itemTotal = $price * $count;
 
-            if($model->color_id != $color->id){
-                $model->final_product_price += ($model->color->price_increase - $color->price_increase);
-            }
-
-            $model->final_total_price = (string)($model->final_product_price * $model->number);
-                $discount = 0;
-                if ($model->product->discountAmounts) {
-                    $discount = ($itemTotal * $model->product->discountAmounts->percentage) / 100;
-                    if ($discount > $model->product->discountAmounts->discount_ceiling) {
-                        $discount = $model->product->discountAmounts->discount_ceiling;
-                    }
-                }
-            $model->final_discount += $discount - $oldDiscount;
+    //         $model->final_total_price = (string)($model->final_product_price * $model->number);
+    //             $discount = 0;
+    //             if ($model->vendorProduct->discountAmounts) {
+    //                 $discount = ($itemTotal * $model->vendorProduct->discountAmounts->percentage) / 100;
+    //                 if ($discount > $model->vendorProduct->discountAmounts->discount_ceiling) {
+    //                     $discount = $model->vendorProduct->discountAmounts->discount_ceiling;
+    //                 }
+    //             }
+    //         $model->final_discount += $discount - $oldDiscount;
                 
-            $order = Order::find()->where(['id' => $order_id])->one();
-            $order->original_price += ($itemTotal) - ($oldPrice);
-            $order->order_discount_amount += ($discount) - ($oldDiscount);
-            $order->order_final_amount += ((($itemTotal)) - ($discount) ) - (($oldPrice) - ($oldDiscount));
-            $order->order_total_products_discount_amount += ($discount) - ($oldDiscount);
+    //         $order = Order::find()->where(['id' => $order_id])->one();
+    //         $order->original_price += ($itemTotal) - ($oldPrice);
+    //         $order->order_discount_amount += ($discount) - ($oldDiscount);
+    //         $order->order_final_amount += ((($itemTotal)) - ($discount) ) - (($oldPrice) - ($oldDiscount));
+    //         $order->order_total_products_discount_amount += ($discount) - ($oldDiscount);
 
-            $order->save(false);
+    //         $order->save(false);
 
             
             
-            if($model->save()){
-                return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
-            }
-        }
+    //         if($model->save()){
+    //             return $this->redirect(['/admin/order/order-item/', 'order_id' => $order_id]);
+    //         }
+    //     }
         
-        $colors = ArrayHelper::map($model->product->color , 'id' , 'name');
+    //     $products = ArrayHelper::map($model->vendorProduct->productVariant->product , 'id' , 'name');
 
-        return $this->renderAjax('/admin/order/order-item/_form', [
-            'colors' => $colors,
-            'model' => $model
-        ]);  
-    }
+    //     return $this->renderAjax('/admin/order/order-item/_form', [
+    //         'products' => $products,
+    //         'model' => $model
+    //     ]);  
+    // }
 
     public function actionEditAddress($order_id){
 
