@@ -17,7 +17,7 @@ use yii\widgets\DetailView;
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-start justify-content-lg-center mb-0">
                 <li class="breadcrumb-item"><a href="<?= Url::to(['site/index']) ?>">صفحه اصلی</a></li>
-                <li class="breadcrumb-item"><a href="<?= Url::to(['/ticket/userpanel/ticket']) ?>">تیکت‌ها</a></li>
+                <li class="breadcrumb-item"><a href="<?= Url::to(['/ticket/vendor/ticket']) ?>">تیکت‌ها</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?= Html::encode($model->subject) ?></li>
             </ol>
         </nav>
@@ -188,7 +188,7 @@ use yii\widgets\DetailView;
 
 
                     <?php $form = ActiveForm::begin([
-                        'action' =>  Url::to(['/ticket/userpanel/ticket/reply', 'id' => $model->id]),
+                        'action' =>  Url::to(['/ticket/vendor/ticket/reply', 'id' => $model->id]),
                         'options' => 
                             [
                             'enctype' => 'multipart/form-data'
@@ -228,7 +228,7 @@ use yii\widgets\DetailView;
             <div class="ticket-actions mt-3 d-flex gap-2">
                 
                 <?= Html::a('<i class="fa fa-arrow-right"></i> بازگشت به لیست', 
-                    ['/ticket/userpanel/ticket'], 
+                    ['/ticket/vendor/ticket'], 
                     ['class' => 'btn btn-outline-primary']
                 ) ?>
             </div>

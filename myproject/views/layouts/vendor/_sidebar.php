@@ -61,6 +61,13 @@ $currentRoute = Yii::$app->controller->getRoute();
                 ['class' => str_contains($currentRoute , 'vendor/products-awaiting-approval/index') ? 'active' : '']
                 ) ?>
         </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-ticket"></i>تیکت ها',
+                Url::to( ['/ticket/vendor/ticket/index']),
+                ['class' => str_contains($currentRoute , 'vendor/ticket') ? 'active' : '']
+                ) ?>
+        </li>
 
 
 

@@ -9,6 +9,9 @@ use app\models\Product;
 use yii\web\Controller;
 use app\models\Category;
 use app\models\Favorite;
+use app\models\OrderItem;
+use app\models\Vendor;
+use app\models\VendorProduct;
 use yii\filters\AccessControl;
 
 class DashboardController extends Controller
@@ -45,6 +48,10 @@ class DashboardController extends Controller
         $pendingComments = Comment::find()->where(['status' => Comment::STATUS_PENDING])->count();
         $approvedComments = Comment::find()->where(['status' => Comment::STATUS_APPROVED])->count();
         $rejectedComments = Comment::find()->where(['status' => Comment::STATUS_REJECTED])->count();
+
+        $pendingProduct = Product::find()->where(['status' => 0])->count();
+        $approvedProduct = Product::find()->where(['status' => 1])->count();
+        $rejectedProduct = Product::find()->where(['status' => 2])->count();
         
         // آمار امروز
         $today = date("y/m/d h:i:s"); 
@@ -90,6 +97,32 @@ class DashboardController extends Controller
             ->orderBy(['product_count' => SORT_DESC])
             ->limit(5)
             ->all();
+
+            $vendorsAproved = Vendor::find()->where(['status' => 1])->count();
+            $vendorsrejected = Vendor::find()->where(['status' => 2])->count();
+            $vendorspending = Vendor::find()->where(['status' => 0])->count();
+            $bestsellers = Product::find()
+                ->select([
+                    'product.*',
+                    'total_sold' => 'SUM(vendor_product.sold_number)',
+                ])
+                ->joinWith('productVariants.vendorProducts')
+                ->where(['product.status' => 1])
+                ->groupBy('product.id')
+                ->orderBy(['total_sold' => SORT_DESC])
+                ->limit(10)
+                ->all();
+
+                $bestsellersItem = [];
+                foreach ($bestsellers as $bestseller) {
+                $bestsellersItem[] = [
+                    'name' => $bestseller->name,
+                    'count' => $bestseller->total_sold,
+                ];
+            }
+
+            $orderItemCount = $this->getOrderItemCount();
+            
         
         // آمار ماهانه
         $monthlyStats = $this->getMonthlyStats();
@@ -113,6 +146,15 @@ class DashboardController extends Controller
             'popularProducts' => $popularProducts,
             'popularCategories' => $popularCategories,
             'monthlyStats' => $monthlyStats,
+            'pendingProduct' => $pendingProduct ,
+            'rejectedProduct' => $rejectedProduct ,
+            'approvedProduct' => $approvedProduct ,
+            'orderItemCount' => $orderItemCount ,
+            'vendorspending' => $vendorspending ,
+            'vendorsrejected' => $vendorsrejected ,
+            'vendorsAproved' => $vendorsAproved ,
+            'bestsellers' => $bestsellers ,
+            'bestsellersItem' => $bestsellersItem ,
         ]);
     }
     
@@ -137,6 +179,35 @@ class DashboardController extends Controller
                     ->count(),
             ];
         }
+        return $stats;
+    }
+
+    public function getOrderItemCount(){
+
+        $stats = [];
+        for($i = 0 ; $i <= 5 ; $i++){
+            $month = strtotime("-$i months");
+            $monthStart = date('Y-m-01', $month);
+            $monthEnd = date('Y-m-t', $month);
+            
+            $orderItemsNotPaid = OrderItem::find()->joinWith('order')->where(['between' , 'order_item.created_at' , $monthStart , $monthEnd])->andWhere(['order.payment_status' => 0])->all();
+            $orderItemspaid = OrderItem::find()->joinWith('order')->where(['between' , 'order_item.created_at' , $monthStart , $monthEnd])->andWhere(['order.payment_status' => 1])->all();
+            $countNotPaid = 0;
+            $countpaid = 0;
+            foreach($orderItemsNotPaid as $orderItemNotPaid){
+                $countNotPaid += $orderItemNotPaid->number;
+            }
+            foreach($orderItemspaid as $orderItempaid){
+                $countpaid += $orderItempaid->number;
+            }
+
+            $stats[] = [
+                'mount' => date('F', $month),
+                'orderItemsNotPaid' => $countNotPaid,
+                'orderItemspaid' => $countpaid,
+            ];
+        }
+
         return $stats;
     }
 }

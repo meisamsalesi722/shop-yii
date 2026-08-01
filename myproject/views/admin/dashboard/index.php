@@ -154,6 +154,55 @@ $this->title = 'داشبورد مدیریت';
                 </div>
             </div>
         </div>
+        <div class="col-xl-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-primary"></i> وضعیت محصولات
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="productChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-primary"></i> تعداد فروش
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="selsChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-primary"></i>فروشندگان
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="userChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-primary"></i>فروشندگان
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="bestSelsChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Latest & Popular -->
@@ -447,6 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Comments Chart
     const commentsCtx = document.getElementById('commentsChart').getContext('2d');
+    console.log(commentsCtx);
     
     new Chart(commentsCtx, {
         type: 'doughnut',
@@ -477,5 +527,167 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    const productCtx = document.getElementById('productChart').getContext('2d');
+    console.log(productCtx);
+    
+    new Chart(productCtx , {
+        type : 'doughnut',
+        data : {
+            labels : ['تایید شده' , 'در انتظار تایید'  , 'رد شده'],
+            datasets : [{
+                    data : [
+                        <?= $approvedProduct ?>,
+                        <?= $pendingProduct ?>,
+                        <?= $rejectedProduct ?>,
+                    ],
+                    backgroundColor : [
+                        '#198754',
+                        'blue',
+                        'red'
+                    ]
+                }
+            ]
+        },
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    })
+    
+    const selsCtx = document.getElementById('selsChart').getContext('2d');
+    const orderItemCountData = <?= json_encode($orderItemCount) ?>;
+    console.log(orderItemCountData);
+
+
+    new Chart(selsCtx , {
+        type : 'line',
+        data : {
+            labels : orderItemCountData.map(item => item.mount),
+            datasets : [
+                {
+                    label: ['پرداخت نشده'],
+                    data : orderItemCountData.map(count => count.orderItemsNotPaid),
+                    backgroundColor : [
+                        'red',
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                },
+                {
+                    label : ['پرداخت شده'],
+                    data : orderItemCountData.map(count => count.orderItemspaid),
+                    backgroundColor : [
+                        'green',
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                },
+
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    })
+    
+    const userCtx = document.getElementById('userChart').getContext('2d');
+
+    console.log(userCtx);
+    
+    new Chart(userCtx , {
+        type : 'pie',
+        data : {
+            labels : ['تایید شده ' , 'در انتظار تایید' , 'رد شده'],
+            datasets : [
+                {
+                    label: ['تعداد فروشندگان'],
+                    data : [
+                        <?= $vendorsAproved ?>,
+                        <?= $vendorspending ?>,
+                        <?= $vendorsrejected ?>,
+                    ],
+                    backgroundColor: [
+                        'green',
+                        'orange',
+                        'red',
+                    ],
+                    borderColor: [
+                        'green',
+                        'orange',
+                        'red',
+                    ],
+                    borderWidth: 1,
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+    })
+
+    const bestSelsCtx = document.getElementById('bestSelsChart').getContext('2d');
+    const bestsellersItem = <?= json_encode($bestsellersItem) ?>;
+    console.log(bestsellersItem);
+    
+    new Chart(bestSelsCtx , {
+        type : 'bar',
+        data : {
+            labels : bestsellersItem.map(item => item.name),
+            datasets : [
+                {
+                    label: 'تعداد فروش',
+                    data : bestsellersItem.map(item => item.count),
+                    backgroundColor: [
+                        'green',
+                        'orange',
+                        'red',
+                    ],
+                    borderColor: [
+                        'green',
+                        'orange',
+                        'red',
+                    ],
+                    borderWidth: 1,
+                },
+            ]
+        },
+    options: {
+        indexAxis: 'y',   // افقی شدن نمودار
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                beginAtZero: true
+            }
+        }
+    }
+    })
+
+
+
+
+    
+    
 });
 </script>

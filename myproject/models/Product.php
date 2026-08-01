@@ -45,6 +45,8 @@ class Product extends \yii\db\ActiveRecord
     public $meta_value;
     public $imageFile;
     public $exist;
+    public $total_sold;
+
     /**
      * {@inheritdoc}
      */

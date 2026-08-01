@@ -24,7 +24,7 @@ use yii\grid\GridView;
 
 
 
-    <?= Html::a('تیکت جدید' , '/ticket/userpanel/ticket/create' , [
+    <?= Html::a('تیکت جدید' , '/ticket/vendor/ticket/create' , [
         'class' => 'btn btn-success m-3 mb-4'
     ]) ?>
     <?= GridView::widget([

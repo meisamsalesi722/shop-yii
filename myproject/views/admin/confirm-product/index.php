@@ -82,6 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>تصویر</th>
                                     <th>نام محصول</th>
                                     <th>دسته‌بندی</th>
+                                    <th>فروشنده</th>
                                     <th>وضعیت</th>
                                     <th>تاریخ ثبت</th>
                                     <th>عملیات</th>
@@ -108,6 +109,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </td>
                                             <td>
                                                 <?= $product->category->name ?? 'دسته‌بندی نشده' ?>
+                                            </td>
+                                            <td>
+                                                <?= $product->user->vendor->name ?? 'فروشنده یافت نشد' ?>
                                             </td>
                                             <td>
                                                 <?php 

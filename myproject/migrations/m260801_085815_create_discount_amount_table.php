@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%discount_amount}}`.
  */
-class m260726_081656_create_discount_amount_table extends Migration
+class m260801_085815_create_discount_amount_table extends Migration
 {
     /**
      * {@inheritdoc}

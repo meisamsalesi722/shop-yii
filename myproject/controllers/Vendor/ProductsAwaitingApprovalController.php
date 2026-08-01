@@ -64,6 +64,8 @@ class ProductsAwaitingApprovalController extends Controller
         $params['ProductSearch']['user_id'] = Yii::$app->user->id;
         $queryParams = array_merge($this->request->queryParams , $params);
         $dataProvider = $searchModel->search($queryParams);
+
+        $dataProvider->query->where(['user_id' => Yii::$app->user->identity->vendor->user_id]);
         
 
         return $this->render('index', [

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\ticket\controllers\userpanel;
+namespace app\modules\ticket\controllers\vendor;
 
 use Yii;
 use app\modules\ticket\models\Ticket;
@@ -16,7 +16,7 @@ use yii\web\NotFoundHttpException;
  */
 class TicketController extends Controller
 {
-    public $layout = '/user-panel/main';
+    public $layout = '/vendor/admin';
 
     /**
      * @inheritDoc
@@ -62,7 +62,7 @@ class TicketController extends Controller
             ],
         ]);
 
-        return $this->render('/user-panel/ticket/index', [
+        return $this->render('/vendor/ticket/index', [
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -78,7 +78,7 @@ class TicketController extends Controller
                 $model->user_id = Yii::$app->user->id;
                 $model->department_id = (int)Yii::$app->request->post('Ticket')['department_id'];
                 if( $model->save()){
-                    return $this->redirect(['userpanel/ticket', 'id' => $model->id]);
+                    return $this->redirect(['ticket/vendor/ticket', 'id' => $model->id]);
                 }
             }
             dd($model->errors);
@@ -86,7 +86,7 @@ class TicketController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('/user-panel/ticket/department', [
+        return $this->render('/vendor/ticket/department', [
             'model' => $model,
         ]);
     }
@@ -104,7 +104,7 @@ class TicketController extends Controller
             ->orderBy(['created_at' => SORT_ASC])
             ->all();
 
-        return $this->render('/user-panel/ticket/view', [
+        return $this->render('/vendor/ticket/view', [
             'children' => $children,
             'model' => $this->findModel($id),
         ]);
@@ -116,7 +116,7 @@ public function actionReply($id)
     
     if ($parent->status == Ticket::STATUS_CLOSE) {
         Yii::$app->session->setFlash('error', 'این تیکت بسته شده است.');
-        return $this->redirect(['/userpanel/ticket', 'id' => $id]);
+        return $this->redirect(['/vendor/ticket', 'id' => $id]);
     }
     $reply = new Ticket();
 

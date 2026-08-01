@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%cart_item}}`.
  */
-class m260726_081551_create_cart_item_table extends Migration
+class m260801_085317_create_cart_item_table extends Migration
 {
     /**
      * {@inheritdoc}
