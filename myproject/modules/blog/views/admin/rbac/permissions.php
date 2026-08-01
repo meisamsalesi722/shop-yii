@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
@@ -7,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ArrayDataProvider */
 
-$this->title = 'مدیریت نقش‌ها';
+$this->title = 'مدیریت دسترسی‌ها';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -20,8 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </h4>
                 <div>
                     <?= Html::a(
-                        '<i class="fas fa-plus"></i> نقش جدید',
-                        ['create-role'],
+                        '<i class="fas fa-plus"></i> دسترسی جدید',
+                        ['create-permission'],
                         ['class' => 'btn btn-light btn-sm']
                     ) ?>
                     <?= Html::a(
@@ -30,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'btn btn-light btn-sm']
                     ) ?>
                     <?= Html::a(
-                        '<i class="fas fa-user-cog"></i> سطوح دسترسی',
-                        ['permissions'],
+                        '<i class="fas fa-role"></i> مدیریت نقش‌ها',
+                        ['index'],
                         ['class' => 'btn btn-light btn-sm']
                     ) ?>
                 </div>
@@ -48,10 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     
                     [
                         'attribute' => 'name',
-                        'label' => 'نام نقش',
+                        'label' => 'نام دسترسی',
                         'format' => 'raw',
                         'value' => function($model) {
-                            return '<span class="badge bg-primary">' . Html::encode($model->name) . '</span>';
+                            return '<span class="badge bg-success">' . Html::encode($model->name) . '</span>';
                         },
                     ],
                     [
@@ -71,37 +72,49 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class' => 'yii\grid\ActionColumn',
                         'header' => 'عملیات',
-                        'template' => '{update} {delete} {view}',
+                        'template' => '{view} {update} {delete}',
                         'buttons' => [
-                            'update' => function($url, $model) {
-                                return Html::a(
-                                    '<i class="fas fa-edit"></i>',
-                                    ['update-role', 'name' => $model->name],
-                                    ['class' => 'btn btn-sm btn-primary']
-                                );
-                            },
-                            'delete' => function($url, $model) {
-                                return Html::a(
-                                    '<i class="fas fa-trash"></i>',
-                                    ['delete-role', 'name' => $model->name],
-                                    [
-                                        'class' => 'btn btn-sm btn-danger',
-                                        'data-confirm' => 'آیا از حذف این نقش مطمئن هستید؟',
-                                        'data-method' => 'post',
-                                    ]
-                                );
-                            },
                             'view' => function($url, $model) {
                                 return Html::a(
                                     '<i class="fas fa-eye"></i>',
-                                    ['view-role', 'name' => $model->name],
+                                    ['view-permission', 'name' => $model->name],
                                     [
                                         'class' => 'btn btn-sm btn-warning',
                                         'data-method' => 'post',
                                     ]
                                 );
                             },
+                            'update' => function($url, $model) {
+                                return Html::a(
+                                    '<i class="fas fa-edit"></i>',
+                                    ['update-permission', 'name' => $model->name],
+                                    ['class' => 'btn btn-sm btn-primary']
+                                );
+                            },
+                            'delete' => function($url, $model) {
+                                return Html::a(
+                                    '<i class="fas fa-trash"></i>',
+                                    ['delete-permission', 'name' => $model->name],
+                                    [
+                                        'class' => 'btn btn-sm btn-danger',
+                                        'data-confirm' => 'آیا از حذف این دسترسی مطمئن هستید؟',
+                                        'data-method' => 'post',
+                                    ]
+                                );
+                            },
                         ],
+                        'urlCreator' => function ($action, $model, $key, $index) {
+                            switch ($action) {
+                                case 'view':
+                                    return ['view-permission', 'name' => $model->name];
+                                case 'update':
+                                    return ['update-permission', 'name' => $model->name];
+                                case 'delete':
+                                    return ['delete-permission', 'name' => $model->name];
+                                default:
+                                    return '#';
+                            }
+                        },
                     ],
                 ],
             ]) ?>

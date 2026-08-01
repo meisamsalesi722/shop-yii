@@ -13,7 +13,6 @@ class PaymentService {
   public function zarinPal($amount , $order_id , $payment_id){
     
 
-
       $merchentID = '7e854bb2-38d1-11e8-85ac-005056a205be';
 
       $data = [

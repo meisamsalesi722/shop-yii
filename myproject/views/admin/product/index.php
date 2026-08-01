@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'product-variant' => function ($url, $model, $key) {
                         return Html::a(
                             '<i class="fas fa-folder-tree"></i>',
-                            ['admin/product-variant/index', 'product_id' => $model->id]
+                            ['admin/product-variant/index' , 'product_id' => $model->id]
                         );
                     },
                 ],

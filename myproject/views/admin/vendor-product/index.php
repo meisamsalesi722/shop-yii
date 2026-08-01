@@ -51,8 +51,22 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'template' => '{view} {update} {delete}',
-                'urlCreator' => function ($action, VendorProduct $model, $key, $index, $column) {
-                    return Url::toRoute([$action , 'id' => $model->id]);
+                'buttons' => [
+                    'update' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-edit"></i>',
+                            ['update', 'product_variant_id' => $model->productVariant->id , 'id' => $model->id]
+                        );
+                    },
+                    'view' => function ($url, $model, $key) {
+                        return Html::a(
+                            '<i class="fas fa-eye"></i>',
+                            ['view', 'product_variant_id' => $model->productVariant->id , 'id' => $model->id]
+                        );
+                    },
+                ],
+                'urlCreator' => function ($action, VendorProduct $model, $key, $index, $column) use($product_variant_id) {
+                    return Url::toRoute([$action , 'product_variant_id' => $product_variant_id ,'id' => $model->id]);
                  }
             ],
         ],

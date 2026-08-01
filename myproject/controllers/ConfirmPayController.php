@@ -64,8 +64,8 @@ class ConfirmPayController extends Controller
         }
 
         $addressModel = new Address();
-        $user_id = Yii::$app->user->id; 
-        $cartItems = CartItem::find()->with(['product' , 'color'])->where(['user_id' => $user_id])->all();
+        $user_id = Yii::$app->user->id;
+        $cartItems = CartItem::find()->with(['vendorProduct'])->where(['user_id' => $user_id])->all();
 
             $totalPrice = 0;
             $totalDiscount = 0;
@@ -81,10 +81,7 @@ class ConfirmPayController extends Controller
 
             foreach ($cartItems as $item) {
 
-                $price = $item->product->price;
-                if($item->color){
-                    $price += $item->color->price_increase;
-                }
+                $price = $item->vendorProduct->price;
                 $count = $item->number;
 
                 $itemTotal = $price * $count;
@@ -92,18 +89,18 @@ class ConfirmPayController extends Controller
 
                 $discount = 0;
 
-                if ($item->product->discountAmounts) {
+                if ($item->vendorProduct->discountAmounts) {
 
-                    $discount = ($itemTotal * $item->product->discountAmounts->percentage) / 100;
+                    $discount = ($itemTotal * $item->vendorProduct->discountAmounts->percentage) / 100;
 
-                    if ($discount > $item->product->discountAmounts->discount_ceiling) {
-                        $discount = $item->product->discountAmounts->discount_ceiling;
+                    if ($discount > $item->vendorProduct->discountAmounts->discount_ceiling) {
+                        $discount = $item->vendorProduct->discountAmounts->discount_ceiling;
                     }
                 }
                 
 
-                $totalDiscount += $discount;
-                $finalPrice += $itemTotal - $discount;
+                $totalDiscount += $discount * $count;
+                $finalPrice += $itemTotal - $totalDiscount;
             }
 
             if(Yii::$app->request->isPost){
@@ -154,48 +151,43 @@ class ConfirmPayController extends Controller
                                     $discount = 0;
                                     $singleItemDiscount = 0;
                                     $count = $cartItem->number;
-                                    $price = $cartItem->product->price;
-                                    if($cartItem->color){
-                                        $price += $cartItem->color->price_increase;
-                                    }
+                                    $price = $cartItem->vendorProduct->price;
+
                                     $itemTotal = $price * $count;
-                                    if ($cartItem->product->discountAmounts) {
+                                    if ($cartItem->vendorProduct->discountAmounts) {
                                         
-                                        $discount = ($itemTotal * $cartItem->product->discountAmounts->percentage) / 100;
-                                        $singleItemDiscount = ($price * $cartItem->product->discountAmounts->percentage) / 100;
+                                        $discount = ($itemTotal * $cartItem->vendorProduct->discountAmounts->percentage) / 100;
+                                        $singleItemDiscount = ($price * $cartItem->vendorProduct->discountAmounts->percentage) / 100;
                                         
-                                        if ($discount > $cartItem->product->discountAmounts->discount_ceiling) {
-                                            $discount = $cartItem->product->discountAmounts->discount_ceiling;
+                                        if ($discount > $cartItem->vendorProduct->discountAmounts->discount_ceiling) {
+                                            $discount = $cartItem->vendorProduct->discountAmounts->discount_ceiling;
                                         }
-                                        if ($singleItemDiscount > $cartItem->product->discountAmounts->discount_ceiling) {
-                                            $singleItemDiscount = $cartItem->product->discountAmounts->discount_ceiling;
+                                        if ($singleItemDiscount > $cartItem->vendorProduct->discountAmounts->discount_ceiling) {
+                                            $singleItemDiscount = $cartItem->vendorProduct->discountAmounts->discount_ceiling;
                                         }
                                     }
                                     
                                     $orderItemModel = new OrderItem();
                                     $orderItemModel->order_id = $orderModel->id;
                                     
-                                    $orderItemModel->product_id = $cartItem->product_id;
+                                    $orderItemModel->vendor_product_id = $cartItem->vendorProduct->id;
                                     $orderItemModel->number = $cartItem->number;
-                                    $final_product_price = $cartItem->product->price - $singleItemDiscount;
-                                    if($cartItem->color){
-                                        $final_product_price += $cartItem->color->price_increase;
-                                    }
+                                    $final_product_price = $cartItem->vendorProduct->price - $singleItemDiscount;
+
                                     $orderItemModel->final_product_price = $final_product_price;
                                     $orderItemModel->final_total_price = ($final_product_price) * $cartItem->number;
                                     $orderItemModel->final_discount = $discount;
-                                    $orderItemModel->color_id = $cartItem->color_id;
-                                    $orderItemModel->guarantee_id = $cartItem->product->guarantee_id;
                                     
                                     if(!$orderItemModel->save()){
+                                        dd($orderItemModel->errors);
                                         throw new Exception('ذخیره اطلاعات با خطا مواجه شد');
                                     }
                                     
-                                    $product = $cartItem->product;
-                                    $product->frozen_number -= $cartItem->number;
-                                    $product->sold_number += $cartItem->number; 
-                                    if(!$product->save(false) ||  !$cartItem->delete()){
-                                        dd('eror 1');
+                                    $vendorProduct = $cartItem->vendorProduct;
+                                    $vendorProduct->frozen_number -= $cartItem->number;
+                                    $vendorProduct->sold_number += $cartItem->number; 
+                                    if(!$vendorProduct->save(true , ['frozen_number' , 'sold_number']) ||  !$cartItem->delete()){
+                                        dd($vendorProduct->errors , $cartItem->errors);
                                     }
                                     
                                 }

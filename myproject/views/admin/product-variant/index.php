@@ -60,7 +60,6 @@ $this->params['breadcrumbs'][] = 'Product Variant';
                         );
                     },
                     'view' => function ($url, $model, $key) {
-
                          $url = Url::to(["/admin/vendor-product/vendors", 'id' => $model->id,]);
                         return '<a value="' .$url. '" class="item-more show-vendor" id="show-vendor-'.$model->id.'" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="دیگر فروشندگان" aria-label="دیگر فروشندگان"><i class="fa fa-edit"> دیگر فروشندگان </i></a>';
                     },

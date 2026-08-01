@@ -302,4 +302,154 @@ public function actionViewRole($name)
             'allRoles' => array_keys($allRoles),
         ];
     }
+
+    public function actionCreatePermission()
+    {
+        $auth = Yii::$app->authManager;
+
+        if (Yii::$app->request->isPost) {
+
+            $name = trim(Yii::$app->request->post('name'));
+            $description = trim(Yii::$app->request->post('description'));
+
+            if (empty($name)) {
+                Yii::$app->session->setFlash('error', 'نام دسترسی الزامی است.');
+                return $this->refresh();
+            }
+
+            // بررسی تکراری نبودن
+            if ($auth->getPermission($name)) {
+                Yii::$app->session->setFlash('error', 'این دسترسی قبلاً وجود دارد.');
+                return $this->refresh();
+            }
+
+            $permission = $auth->createPermission($name);
+            $permission->description = $description;
+
+            if ($auth->add($permission)) {
+                Yii::$app->session->setFlash('success', 'دسترسی با موفقیت ایجاد شد.');
+                return $this->redirect(['permissions']);
+            }
+
+            Yii::$app->session->setFlash('error', 'خطا در ایجاد دسترسی.');
+        }
+
+        return $this->render('create-permission');
+    }
+
+    public function actionUpdatePermission($name)
+{
+    $auth = Yii::$app->authManager;
+
+    $permission = $auth->getPermission($name);
+
+    if (!$permission) {
+        throw new NotFoundHttpException('دسترسی مورد نظر پیدا نشد.');
+    }
+
+    if (Yii::$app->request->isPost) {
+
+        $newName = trim(Yii::$app->request->post('name'));
+        $description = trim(Yii::$app->request->post('description'));
+
+        if (empty($newName)) {
+            Yii::$app->session->setFlash('error', 'نام دسترسی الزامی است.');
+            return $this->refresh();
+        }
+
+        // اگر نام تغییر کرده، بررسی کن تکراری نباشد
+        if ($newName != $name && $auth->getPermission($newName)) {
+            Yii::$app->session->setFlash('error', 'این نام قبلاً استفاده شده است.');
+            return $this->refresh();
+        }
+
+        $permission->name = $newName;
+        $permission->description = $description;
+
+        if ($auth->update($name, $permission)) {
+            Yii::$app->session->setFlash('success', 'دسترسی با موفقیت ویرایش شد.');
+            return $this->redirect(['permissions']);
+        }
+
+        Yii::$app->session->setFlash('error', 'خطا در ویرایش دسترسی.');
+    }
+
+    return $this->render('update-permission', [
+        'permission' => $permission,
+    ]);
+}
+
+
+public function actionDeletePermission($name)
+{
+    $auth = Yii::$app->authManager;
+
+    $permission = $auth->getPermission($name);
+
+    if (!$permission) {
+        throw new NotFoundHttpException('دسترسی مورد نظر پیدا نشد.');
+    }
+
+    try {
+        // اگر این Permission به Role یا Permission دیگری متصل باشد،
+        // ابتدا ارتباطاتش حذف می‌شود.
+        $auth->removeChildren($permission);
+
+        // حذف خود Permission
+        $auth->remove($permission);
+
+        Yii::$app->session->setFlash('success', 'دسترسی با موفقیت حذف شد.');
+    } catch (\Throwable $e) {
+        Yii::$app->session->setFlash('error', 'خطا در حذف دسترسی.');
+    }
+
+    return $this->redirect(['permissions']);
+}
+
+public function actionViewPermission($name)
+{
+    $auth = Yii::$app->authManager;
+
+    $permission = $auth->getPermission($name);
+
+    if (!$permission) {
+        throw new \yii\web\NotFoundHttpException('دسترسی مورد نظر پیدا نشد.');
+    }
+
+    // نقش‌هایی که این Permission را دارند
+    $roles = [];
+    foreach ($auth->getRoles() as $role) {
+        $permissions = $auth->getPermissionsByRole($role->name);
+
+        if (isset($permissions[$permission->name])) {
+            $roles[] = $role;
+        }
+    }
+
+    return $this->render('view-permission', [
+        'permission' => $permission,
+        'roles' => $roles,
+    ]);
+}
+
+public function actionPermissions()
+{
+    $auth = Yii::$app->authManager;
+
+    $permissions = $auth->getPermissions();
+
+    $dataProvider = new \yii\data\ArrayDataProvider([
+        'allModels' => $permissions,
+        'pagination' => [
+            'pageSize' => 10,
+        ],
+        'sort' => [
+            'attributes' => ['name', 'description', 'createdAt'],
+        ],
+    ]);
+
+    return $this->render('permissions', [
+        'dataProvider' => $dataProvider,
+    ]);
+}
 }

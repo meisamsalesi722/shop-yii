@@ -84,13 +84,12 @@ class CartItemController extends Controller
 
                     if ($discount > $item->vendorProduct->discountAmounts->discount_ceiling) {
                         $discount = $item->vendorProduct->discountAmounts->discount_ceiling;
+                        
                     }
                 }
                 
-                $totalDiscount += $discount;
-                $finalPrice += $itemTotal - $discount;
-                // if($key == 1){
-                // }
+                $totalDiscount += $discount * $count;
+                $finalPrice += $itemTotal - $totalDiscount;
             }
             
             
@@ -116,15 +115,17 @@ class CartItemController extends Controller
                         throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
                     }
                     $transaction->commit();
-                    return $this->refresh();    
+
+                    return $this->refresh();
                 }catch(\Throwable $e){
                     $transaction->rollBack();
                     throw $e;
                 }
+
             }
-
-
-
+            
+            
+            
 
         foreach($cartItems as $cartItem){
             $now = new DateTime();
@@ -139,6 +140,8 @@ class CartItemController extends Controller
                 $cartItem->delete();
             }
         }
+
+
 
 
         return $this->render('/cartItem/index', [

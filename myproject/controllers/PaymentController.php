@@ -5,28 +5,15 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
-use Exception;
-use yii\data\Sort;
-use app\models\User;
-use app\models\Brand;
-use app\models\Copan;
+
 use app\models\Order;
-use yii\base\Security;
-use app\models\Address;
+
 use app\models\Payment;
-use app\models\Product;
 use yii\web\Controller;
-use app\models\CartItem;
-use yii\data\Pagination;
-use yii\web\ErrorAction;
-use app\models\OrderItem;
-use yii\filters\VerbFilter;
-use yii\mail\MailerInterface;
-use yii\captcha\CaptchaAction;
+
 use yii\filters\AccessControl;
 use app\services\PaymentService;
-use yii\data\ActiveDataProvider;
-use yii\web\NotFoundHttpException;
+
 
 class PaymentController extends Controller
 {
@@ -69,7 +56,6 @@ class PaymentController extends Controller
 
 
             $result =  $paymentService->zarinPal($order->order_final_amount , $order->id , $paymented->id);
-
               if($result['code'] === 100){
                 $paymented->bank_first_responce = json_encode($result['response']);
                 $paymented->save(false);

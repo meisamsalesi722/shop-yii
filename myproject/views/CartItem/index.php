@@ -80,8 +80,8 @@ $count = 0;
                                         
                                         
 
-                                        $SingleTotalDiscount = $singleDiscount;
-                                        $SingleFinalPrice = $SingleIemTotal - $singleDiscount;    
+                                        $SingleTotalDiscount = $singleDiscount * $singleCount;
+                                        $SingleFinalPrice = $SingleIemTotal - $SingleTotalDiscount;    
                                     ?>
 
                                     <s class="tatal-price-row item-price">

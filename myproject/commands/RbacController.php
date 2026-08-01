@@ -20,23 +20,23 @@ class RbacController extends \yii\console\Controller
         $deleteArticle = $auth->createPermission('deleteArticle');
         $auth->add($deleteArticle);
 
-        $deleteArticle = $auth->createPermission('bazaryab');
-        $auth->add($deleteArticle);
+        $bazaryab = $auth->createPermission('bazaryab');
+        $auth->add($bazaryab);
 
-        $deleteArticle = $auth->createPermission('fani');
-        $auth->add($deleteArticle);
+        $fani = $auth->createPermission('fani');
+        $auth->add($fani);
 
-        $deleteArticle = $auth->createPermission('mali');
-        $auth->add($deleteArticle);
+        $mali = $auth->createPermission('mali');
+        $auth->add($mali);
 
-        $deleteArticle = $auth->createPermission('frosh');
-        $auth->add($deleteArticle);
+        $frosh = $auth->createPermission('frosh');
+        $auth->add($frosh);
         
-        $deleteArticle = $auth->createPermission('hoghoghi');
-        $auth->add($deleteArticle);
+        $hoghoghi = $auth->createPermission('hoghoghi');
+        $auth->add($hoghoghi);
 
-        $deleteArticle = $auth->createPermission('manabe');
-        $auth->add($deleteArticle);
+        $manabe = $auth->createPermission('manabe');
+        $auth->add($manabe);
 
 
         // ================= ROLES =================
