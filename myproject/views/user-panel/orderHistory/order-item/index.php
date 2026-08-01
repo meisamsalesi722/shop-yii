@@ -32,12 +32,12 @@ use yii\grid\GridView;
                 'attribute' => 'تصویر محصول',
                 'format' => 'raw',
                 'value' => function($model){
-                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->product->image ?? '') .'" alt="" style="max-width:70px; ">';
+                    return '<img src="' . Yii::getAlias('@web/uploads/images/') . ($model->vendorProduct->productVariant->product->image ?? '') .'" alt="" style="max-width:70px; ">';
                 }
             ],
             [
                 'attribute'=> 'محصول',
-                'value' => 'product.name',
+                'value' => 'vendorProduct.productVariant.product.name',
             ],
 
             [

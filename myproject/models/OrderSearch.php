@@ -40,9 +40,10 @@ class OrderSearch extends Order
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $admin = null , $formName = null)
     {
         $query = Order::find();
+
 
         // add conditions that should always apply here
 

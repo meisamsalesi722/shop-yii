@@ -21,6 +21,7 @@ class m260726_073359_create_vendor_table extends Migration
             'created_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP"),
             'updated_at' => $this->timestamp()->defaultExpression("CURRENT_TIMESTAMP")->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
+        $this->addForeignKey('vendor_user_id' , 'vendor' , 'user_id' , 'user' , 'id' , 'CASCADE' , 'CASCADE');
     }
 
     /**

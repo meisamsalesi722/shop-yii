@@ -11,7 +11,7 @@ use yii\widgets\DetailView;
                 <li class="breadcrumb-item"><a href="#">صفحه اصلی</a></li>
                 <li class="breadcrumb-item"><a href="<?= Url::to('/userpanel/order-history/') ?>">تاریخچه سفارشات</a></li>
                 <li class="breadcrumb-item"><a href="<?= Url::to(['/userpanel/order-history/order-item' , 'order_id' => $model->order->id]) ?>"><?= $model->order->id ?></a></li>
-                <li class="breadcrumb-item active" aria-current="page"><?= $model->product->name ?></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= $model->vendorProduct->productVariant->product->name ?></li>
             </ol>
         </nav>
     </div>
@@ -28,7 +28,13 @@ use yii\widgets\DetailView;
             [
                 'attribute' => ' نام محصول',
                 'value' => function($model){
-                    return $model->product->name;
+                    return $model->vendorProduct->productVariant->product->name;
+                },
+            ],
+            [
+                'attribute' => ' نام فروشگاه',
+                'value' => function($model){
+                    return $model->vendorProduct->vendor->name;
                 },
             ],
             [
@@ -53,13 +59,13 @@ use yii\widgets\DetailView;
                 'attribute' => 'رنگ',
                 'format' => 'raw',
                 'value' => function($model){
-                    return '<i class="fas fa-circle color-withe" style="color: '. ($model->color->color_code ?? ''). ';"></i>';
+                    return $model->vendorProduct->productVariant->color . ' <i class="fas fa-circle color-withe" style="color: '. ($model->vendorProduct->productVariant->color_code ?? ''). ';"></i>';
                 },
             ],
             [
                 'attribute' => 'گارانتی',
                 'value' => function($model){
-                    return $model->guarantee->name;
+                    return $model->vendorProduct->productVariant->guarantee;
                 },
             ],
             [

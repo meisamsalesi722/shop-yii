@@ -123,6 +123,22 @@ use yii\widgets\ActiveForm;
                         <i class="far fa-user" style="font-size: 25px;"></i>
                         <p>پروفایل</p>
                     </a>
+                    <?php if(Yii::$app->user->can('vendor_product')){ ?>
+                        <a href="<?= Url::to('/vendor/product') ?>">
+                            <i class="fa fa-store" style="font-size: 25px;"></i>
+                            <p>ورود به پنل فروشنده</p>
+                        </a>
+                        <?php }else{?>
+                            <a href="<?= Url::to('/userpanel/login-vendor') ?>">
+                                <i class="far fa-user" style="font-size: 25px;"></i>
+                                <p>همکاری با ما</p>
+                            </a>
+                    <?php } ?>
+                    <?php }else{?>
+                    <a href="<?= Url::to('/register-vendor') ?>">
+                        <i class="far fa-user" style="font-size: 25px;"></i>
+                        <p>همکاری با ما</p>
+                    </a>
                     <?php }?>
                 </div>
 

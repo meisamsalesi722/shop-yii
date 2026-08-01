@@ -2,14 +2,16 @@
 
 namespace app\controllers\admin;
 
-use app\models\Vendor;
 use Yii;
+use Exception;
+use app\models\Vendor;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\VendorProduct;
+use app\models\DiscountAmount;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\VendorProductSearch;
-use yii\data\ActiveDataProvider;
 
 /**
  * VendorProductController implements the CRUD actions for VendorProduct model.
@@ -41,12 +43,13 @@ class VendorProductController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($product_variant_id = null)
     {
         $searchModel = new VendorProductSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search($this->request->queryParams , true);
 
         return $this->render('index', [
+            'product_variant_id' => $product_variant_id,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -58,10 +61,11 @@ class VendorProductController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id , $product_variant_id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'product_variant_id' => $product_variant_id,
         ]);
     }
 
@@ -73,18 +77,37 @@ class VendorProductController extends Controller
     public function actionCreate($product_variant_id , $product_id)
     {
         $model = new VendorProduct();
+        $discountModel = new DiscountAmount();
 
+        $request = Yii::$app->request;
         if ($this->request->isPost) {
+
+
             if ($model->load($this->request->post())) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try{
                 $vendor = Vendor::findOne(['user_id' => Yii::$app->user->id]);
                 $model->vendor_id = $vendor->id;
                 $model->product_variant_id = (int)$product_variant_id;
                 
                 if($model->save()){
                     Yii::$app->session->setFlash('success' , 'محصول شما با موفقیت ثبت شد');
-                    return $this->redirect(['view', 'id' => $model->id]);
                 }else{
-                    dd($model->errors , $model->vendor_id);
+                   throw new Exception('هنگام انجام عملیات مشکلی پیش امده است' . ' ' . $model->errors);
+                }
+                if($request->post('is_discount_active') == 1){
+                    if($discountModel->load($request->post())){
+                        $discountModel->vendor_product_id = $model->id;
+                        if(!$discountModel->save()){
+                             throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                        }
+                    }
+                }
+                $transaction->commit();
+                    return $this->redirect(['view', 'product_variant_id' => $product_variant_id , 'id' => $model->id]);
+                }catch(\Throwable $e){
+                    $transaction->rollBack();
+                    throw $e;
                 }
             }
         } else {
@@ -94,6 +117,7 @@ class VendorProductController extends Controller
         return $this->render('create', [
             'model' => $model,
             'product_id' => $product_id,
+            'discountModel' => $discountModel,
             'product_variant_id' => $product_variant_id
         ]);
     }
@@ -121,13 +145,47 @@ class VendorProductController extends Controller
     public function actionUpdate($id , $product_variant_id)
     {
         $model = $this->findModel($id );
+        $request = Yii::$app->request;
+        
+        $discountModel = DiscountAmount::find()->where([ 'vendor_product_id' => $id ])->one();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if(!$discountModel){
+            $discountModel = new DiscountAmount();
+        };
+
+        if ($this->request->isPost){
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+            $isDiscountActive = $request->post('is_discount_active', 0);
+            $discountModel->is_discount_active = $isDiscountActive;
+                if($model->load($this->request->post())){
+                    if(!$model->save()) {
+                        throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                    } 
+                    if($request->post('is_discount_active') == 1){
+                        if($discountModel->load($request->post())){
+                            $discountModel->vendor_product_id = $model->id;
+                            if(!$discountModel->save(false)){
+                                throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                            }
+                        }            
+                    }else{
+                        if($discountModel){
+                            $discountModel->delete();
+                        }
+                    }
+                    $transaction->commit();
+                    return $this->redirect(['view', 'product_variant_id' => $product_variant_id , 'id' => $model->id]);
+                }
+            }catch(\Throwable $e){
+                $transaction->rollBack();
+                throw $e;
+            }
+
         }
-
         return $this->render('update', [
             'model' => $model,
+            'discountModel' => $discountModel,
             'product_variant_id' => $product_variant_id
         ]);
     }
@@ -167,6 +225,15 @@ class VendorProductController extends Controller
     protected function findModel($id)
     {
         if (($model = VendorProduct::findOne(['id' => $id ])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findDiscountModel($id)
+    {
+        if (($model = DiscountAmount::findOne(['vendor_product_id' => $id ])) !== null) {
             return $model;
         }
 

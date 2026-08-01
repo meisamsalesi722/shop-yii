@@ -2,22 +2,24 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\Product;
+use yii\data\ActiveDataProvider;
 
 /**
  * ProductSearch represents the model behind the search form of `app\models\Product`.
  */
 class ProductSearch extends Product
 {
+    public $awaitProduct;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'view', 'category_id', 'status'], 'integer'],
+            [['id', 'view', 'category_id', 'status' , 'awaitProduct'], 'integer'],
             [['name', 'persian_name', 'image', 'introduction', 'slug', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -43,6 +45,7 @@ class ProductSearch extends Product
     {
         $query = Product::find();
 
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -56,7 +59,7 @@ class ProductSearch extends Product
             // $query->where('0=1');
             return $dataProvider;
         }
-
+        
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
@@ -71,7 +74,8 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'persian_name', $this->persian_name])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'introduction', $this->introduction])
-            ->andFilterWhere(['like', 'slug', $this->slug]);
+            ->andFilterWhere(['like', 'slug', $this->slug])
+            ->andFilterWhere(['!=', 'status', $this->awaitProduct]);
 
         return $dataProvider;
     }

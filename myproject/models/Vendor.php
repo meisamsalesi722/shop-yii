@@ -18,6 +18,7 @@ use Yii;
 class Vendor extends \yii\db\ActiveRecord
 {
 
+
     public $imageFile;
     /**
      * {@inheritdoc}
@@ -66,6 +67,12 @@ class Vendor extends \yii\db\ActiveRecord
             return unlink('uploads/images/vendor/' . $this->image);
         }
         return false;
+    }
+
+       
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
 }

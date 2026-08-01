@@ -2,26 +2,25 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\OrderItem;
+use GuzzleHttp\Psr7\Query;
+use yii\data\ActiveDataProvider;
 
 /**
  * OrderItemSearch represents the model behind the search form of `app\models\OrderItem`.
  */
 class OrderItemSearch extends OrderItem
 {
-    public $color;
-    public $product;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'order_id', 'product_id', 'number', 'color_id', 'guarantee_id'], 'integer'],
-            [['color' , 'product'], 'string'],
-            [['final_product_price' , 'final_discount' , 'final_total_price', 'created_at', 'updated_at' , 'color'], 'safe'],
+            [['id', 'order_id', 'vendor_product_id', 'number'], 'integer'],
+            [['final_product_price', 'final_discount', 'final_total_price', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,14 +41,15 @@ class OrderItemSearch extends OrderItem
      *
      * @return ActiveDataProvider
      */
-    public function search($params , $order_id , $formName = null)
+    public function search($params, $order_id , $admin = null , $formName = null)
     {
         $query = OrderItem::find()->where(['order_id' => $order_id]);
 
-        // add conditions that should always apply here
+        // if(Yii::$app->user->can('vendor') && $admin == null){
+            
+        // }
 
-        $query->joinWith(['color c']);
-        $query->joinWith(['product p']);
+        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -67,20 +67,15 @@ class OrderItemSearch extends OrderItem
         $query->andFilterWhere([
             'id' => $this->id,
             'order_id' => $this->order_id,
-            'product_id' => $this->product_id,
+            'vendor_product_id' => $this->vendor_product_id,
             'number' => $this->number,
-            'color_id' => $this->color_id,
-            'guarantee_id' => $this->guarantee_id,
-            'final_discount' => $this->final_discount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'final_product_price', $this->final_product_price])
-            ->andFilterWhere(['like', 'final_total_price', $this->final_total_price])
-            ->andFilterWhere(['like', 'c.name', $this->color])
-            ->andFilterWhere(['like', 'p.persian_name', $this->product])
-            ->orFilterWhere(['like', 'p.name', $this->product]);
+            ->andFilterWhere(['like', 'final_discount', $this->final_discount])
+            ->andFilterWhere(['like', 'final_total_price', $this->final_total_price]);
 
         return $dataProvider;
     }

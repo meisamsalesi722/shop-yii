@@ -17,9 +17,12 @@ use Yii;
  * @property int|null $guarantee_id
  * @property string $created_at
  * @property string $updated_at
- */
+*/
 class OrderItem extends \yii\db\ActiveRecord
 {
+    
+    public $product_id;
+    public $product_variant_id;
 
 
     /**
@@ -36,11 +39,13 @@ class OrderItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['final_product_price', 'final_total_price', 'color_id', 'guarantee_id'], 'default', 'value' => null],
+            [['final_product_price', 'final_discount', 'final_total_price'], 'default', 'value' => null],
             [['number'], 'default', 'value' => 1],
-            [['order_id', 'product_id'], 'required'],
-            [['order_id', 'product_id', 'number', 'color_id', 'guarantee_id'], 'integer'],
+            [['order_id', 'vendor_product_id'], 'required'],
+            [['order_id', 'vendor_product_id', 'number'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
+            [['vendor_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => VendorProduct::class, 'targetAttribute' => ['vendor_product_id' => 'id']],
         ];
     }
 
@@ -50,14 +55,13 @@ class OrderItem extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+         'id' => 'ID',
             'order_id' => 'Order ID',
-            'product_id' => 'Product ID',
+            'vendor_product_id' => 'Vendor Product ID',
             'number' => 'Number',
             'final_product_price' => 'Final Product Price',
+            'final_discount' => 'Final Discount',
             'final_total_price' => 'Final Total Price',
-            'color_id' => 'Color ID',
-            'guarantee_id' => 'Guarantee ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -67,14 +71,15 @@ class OrderItem extends \yii\db\ActiveRecord
         return $this->hasOne(Order::class , ['id' => 'order_id']);
     }
 
-    public function getProduct(){
-        return $this->hasOne(Product::class , ['id' => 'product_id']);
+    /**
+     * Gets query for [[VendorProduct]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVendorProduct()
+    {
+        return $this->hasOne(VendorProduct::class, ['id' => 'vendor_product_id']);
     }
-    public function getColor(){
-        return $this->hasOne(Color::class , ['id' => 'color_id']);
-    }
-    public function getGuarantee(){
-        return $this->hasOne(Guarantee::class , ['id' => 'guarantee_id']);
-    }
+
 
 }

@@ -63,12 +63,13 @@ class Product extends \yii\db\ActiveRecord
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif, webp'],
             [['image', 'introduction'], 'string'],
             [['view'], 'default', 'value' => 0],
-            [['category3_id','persian_name', 'brand_id'], 'required'],
-            [['view', 'category_id', 'status', 'brand_id'], 'integer'],
+            [['category3_id','persian_name', 'brand_id' ,'user_id'], 'required'],
+            [['view', 'category_id', 'status', 'brand_id' , 'user_id'], 'integer'],
             [['created_at', 'updated_at' , 'category2_id', 'category3_id' , 'category1_id'], 'safe'],
             [['name', 'persian_name', 'slug'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -184,6 +185,11 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductVariant::class, ['product_id' => 'id']);
     }
+   
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
 
     public function getProductVariantsHasDiscount()
     {
@@ -199,6 +205,8 @@ class Product extends \yii\db\ActiveRecord
         ->innerJoinWith('vendorProducts')
         ->groupBy('product_variant.id');
     }
+
+    
 
 
 

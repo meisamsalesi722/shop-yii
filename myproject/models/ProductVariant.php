@@ -36,11 +36,12 @@ class ProductVariant extends \yii\db\ActiveRecord
     {
         return [
             [['color', 'color_code', 'guarantee'], 'default', 'value' => null],
-            [['product_id'], 'required'],
-            [['product_id'], 'integer'],
+            [['product_id' , 'user_id'], 'required'],
+            [['product_id' , 'user_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['color', 'color_code', 'guarantee'], 'string', 'max' => 255],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 

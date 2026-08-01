@@ -48,10 +48,19 @@ use yii\widgets\ActiveForm;
                                                 <span class="title"> تاریخچه سفارشات</span>
                                             </a>
                                         </li>
+                                        <?php if(Yii::$app->user->can('vendor')){?>
                                         <li class="<?= str_contains($currentRoute , 'userpanel/ticket')   ? 'active' : '' ?>">
                                             <a href="<?= Url::to('/userpanel/ticket') ?>">
                                                 <span class="icon"><i class="fal fa-check"></i></span>
                                                 <span class="title"> تیکت</span>
+                                            </a>
+                                        </li>
+                                        <?php } ?>
+                                        
+                                        <li class="<?= str_contains($currentRoute , 'userpanel/login-vendor')   ? 'active' : '' ?>">
+                                            <a href="<?= Url::to('/userpanel/login-vendor') ?>">
+                                                <span class="icon"><i class="fal fa-check"></i></span>
+                                                <span class="title"> ورود به عنوان فروشنده</span>
                                             </a>
                                         </li>
                                         
@@ -110,6 +119,14 @@ use yii\widgets\ActiveForm;
                                             <a href="<?= Url::to('/userpanel/ticket') ?>">
                                                 <span class="icon"><i class="fal fa-check"></i></span>
                                                 <span class="title"> تیکت</span>
+                                                <i class="far fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+
+                                        <li class="<?= str_contains($currentRoute , 'userpanel/login-vendor')   ? 'active' : '' ?>">
+                                            <a href="<?= Url::to('/userpanel/login-vendor') ?>">
+                                                <span class="icon"><i class="fal fa-check"></i></span>
+                                                <span class="title"> ورود به عنوان فروشنده</span>
                                                 <i class="far fa-chevron-left"></i>
                                             </a>
                                         </li>

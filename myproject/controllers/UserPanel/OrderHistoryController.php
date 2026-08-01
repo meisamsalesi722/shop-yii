@@ -91,6 +91,7 @@ class OrderHistoryController extends Controller
     {
         $searchModel = new OrderItemSearch();
         $dataProvider = $searchModel->search($this->request->queryParams , $order_id);
+
         $model = Order::findOne($order_id);
         
         return $this->render('/user-panel/orderHistory/order-item/index', [

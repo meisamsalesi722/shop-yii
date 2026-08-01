@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use Yii;
+use Exception;
 use app\models\Brand;
 use app\models\Color;
 use yii\web\Response;
@@ -64,7 +65,9 @@ class ProductController extends Controller
     public function actionIndex()
     {
         $searchModel = new ProductSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $params['ProductSearch']['status'] = 1;
+        $queryParams = array_merge($this->request->queryParams , $params);
+        $dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -130,6 +133,7 @@ class ProductController extends Controller
 
             if ($model->load($this->request->post())) {
                 $model->category_id = $model->category3_id;
+                $model->user_id = Yii::$app->user->id;
                 $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
                     if($model->imageFile){
@@ -265,6 +269,7 @@ public function actionUpdate($id)
 
             }else{                
                 $model->category_id = $model->category3_id;
+                $model->user_id = Yii::$app->user->id;
         $model->imageFile = UploadedFile::getInstance($model, 'imageFile');        
         if ($model->validate()) {
         if ($model->imageFile) {
@@ -498,25 +503,37 @@ public function actionUpdate($id)
         $model = new Gallery();
         
         if ($this->request->isPost) {
+            $transaction = Yii::$app->db->beginTransaction();
             if ($model->load($this->request->post())) {
-                $model->imageFile = UploadedFile::getInstance($model , 'imageFile');
-                
+                 try{
+                $model->imageFile = UploadedFile::getInstances($model , 'imageFile');
+
                 if($model->validate()){
+
                     if($model->imageFile){
-                        $imageName = time() . '.' . $model->imageFile->extension;
                         if(!file_exists('uploads/images/gallery')){
                             mkdir('uploads/images/gallery' , 0777 , true);
                         }
-                        $model->imageFile->saveAs('uploads/images/gallery/' . $imageName);
-                        $model->image = $imageName;
+                        foreach($model->imageFile as $key => $image){
+                            $model = new Gallery();
+                            $model->product_id = $product_id;
+                            $imageName = time() . '_' . $key . '.' . $image->extension;
+                            if (!$image->saveAs('uploads/images/gallery/' . $imageName)) {
+                                throw new Exception('آپلود فایل انجام نشد.');
+                            }
+                            $model->image = $imageName;
+                            if(!$model->save(false)){
+                                throw new Exception('هنگام انجام عملیات مشکلی پیش امده است');
+                            }
+                        }
                     }
-
-                if($model->save(false)){
-                    Yii::$app->session->setFlash('success' , 'تصویر با موفقیت اضافه شد');
-                    return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
                 }
-                    Yii::$app->session->setFlash('error' , 'اضافه کردن تصویر با خطا مواجه شد');
-                    return $this->redirect(['gallery-view', 'product_id' => $product_id , 'id' => $model->id]);
+                Yii::$app->session->setFlash('success' , 'تصویر با موفقیت اضافه شد');                    
+                $transaction->commit();
+                return $this->redirect(['gallery-index', 'product_id' => $product_id ]);
+                }catch(\Throwable $e){
+                    $transaction->rollBack();
+                    throw $e;
                 }
 
             }

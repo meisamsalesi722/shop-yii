@@ -84,11 +84,17 @@ class LoginRegisterController extends Controller
                 Yii::$app->user->login($user);
                 $otp->used = 1;
                 $otp->save(false);
-                if($otp->user->username){
-                    return $this->goHome();
-                }else{
-                    return $this->redirect('/userpanel/user-info/update');
+                if(Yii::$app->user->can('admin')){
+                    return $this->redirect('/admin/dashboard');
                 }
+                if(Yii::$app->user->can('vendor')){
+                    return $this->redirect('/vendor/vendor-product');
+                }
+                // if($otp->user->username){
+                    return $this->goHome();
+                // }else{
+                //     return $this->redirect('/userpanel/user-info/update');
+                // }
             }else{
                 Yii::$app->session->setFlash('erorr' , 'کد وارد شده صحیح نمیباشد');
                 $this->refresh();

@@ -40,11 +40,14 @@ class VendorProductSearch extends VendorProduct
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params, $admin = null , $formName = null)
     {
         $vendor = Vendor::findOne(['user_id' => Yii::$app->user->id]);
-        $query = VendorProduct::find()->where(['vendor_id' => $vendor->id]);
+        $query = VendorProduct::find();
 
+        if(Yii::$app->user->can('vendor') && $admin == null){
+            $query->where(['vendor_id' => $vendor->id]);
+        }   
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

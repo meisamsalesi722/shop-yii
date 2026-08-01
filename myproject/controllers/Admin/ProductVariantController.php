@@ -2,11 +2,12 @@
 
 namespace app\controllers\admin;
 
-use app\models\ProductVariant;
-use app\models\ProductVariantSearch;
+use Yii;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\ProductVariant;
+use yii\web\NotFoundHttpException;
+use app\models\ProductVariantSearch;
 
 /**
  * ProductVariantController implements the CRUD actions for ProductVariant model.
@@ -75,8 +76,11 @@ class ProductVariantController extends Controller
         $model = new ProductVariant();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id , 'product_id' => $product_id]);
+            $model->user_id = Yii::$app->user->id;
+            if ($model->load($this->request->post())) {
+                if($model->save()){
+                    return $this->redirect(['view', 'id' => $model->id , 'product_id' => $product_id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -99,8 +103,10 @@ class ProductVariantController extends Controller
     {
         $model = $this->findModel($id , $product_id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id , 'product_id' =>  $product_id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if( $model->save()){
+                return $this->redirect(['view', 'id' => $model->id , 'product_id' =>  $product_id]);
+            }
         }
 
         return $this->render('update', [

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Vendor;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -118,6 +119,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function getOtps()
     {
         return $this->hasMany(Otp::class, ['user_id' => 'id']);
+    }
+
+    public function getVendor()
+    {
+        return $this->hasOne(Vendor::class, ['user_id' => 'id']);
     }
 
 

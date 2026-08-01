@@ -2,9 +2,10 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\ProductVariant;
+use yii\data\ActiveDataProvider;
 
 /**
  * ProductVariantSearch represents the model behind the search form of `app\models\ProductVariant`.
@@ -42,6 +43,7 @@ class ProductVariantSearch extends ProductVariant
     public function search($params, $product_id , $formName = null)
     {
         $query = ProductVariant::find()->where(['product_id' => $product_id]);
+
 
         // add conditions that should always apply here
 

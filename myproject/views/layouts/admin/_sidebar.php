@@ -49,14 +49,6 @@ $currentRoute = Yii::$app->controller->getRoute();
             ) ?>
         </li>
 
-
-        <li>
-            <?= Html::a(
-                '<i class="fas fa-shield-alt"></i> گارانتی ها',
-                Url::to(['/admin/guarantee/index']),
-                ['class' => str_contains($currentRoute , 'admin/guarantee') ? 'active' : '']
-            ) ?>
-        </li>
             <li>
             <?= Html::a(
                 '<i class="fas fa-images"></i> بنر ها',
@@ -92,15 +84,22 @@ $currentRoute = Yii::$app->controller->getRoute();
         <li>
             <?= Html::a(
                 '<i class="fas fa-shopping-cart"></i> فروشندگان',
-                Url::to(['/admin/vendor/index']),
-                ['class' => str_contains($currentRoute , 'admin/vendor/') ? 'active' : '']
+                Url::to(['/admin/confirm-vendor/index']),
+                ['class' => str_contains($currentRoute , 'admin/confirm-vendor/') ? 'active' : '']
                 ) ?>
         </li>
         <li>
             <?= Html::a(
                 '<i class="fas fa-shopping-cart"></i> محصولات شما',
                 Url::to(['/admin/vendor-product/index']),
-                ['class' => str_contains($currentRoute , 'admin/order') ? 'active' : '']
+                ['class' => str_contains($currentRoute , 'admin/vendor-product') ? 'active' : '']
+                ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-shopping-cart"></i> تایید محصولات',
+                Url::to(['/admin/confirm-product/index']),
+                ['class' => str_contains($currentRoute , 'admin/confirm-product') ? 'active' : '']
                 ) ?>
         </li>
         <li>
@@ -176,7 +175,7 @@ $currentRoute = Yii::$app->controller->getRoute();
             <?= Html::a(
                 '<i class="fas fa-user-shield"></i> نقش‌ها',
                 Url::to( ['/blog/admin/rbac/index']),
-                ['class' => str_contains($currentRoute , 'blog/admin/rbac') ? 'active' : '']
+                ['class' => str_contains($currentRoute , 'blog/admin/rbac/index') ? 'active' : '']
                 ) ?>
         </li>
         <li>
@@ -184,6 +183,13 @@ $currentRoute = Yii::$app->controller->getRoute();
                 '<i class="fas fa-user-plus"></i> تخصیص نقش',
                 Url::to( ['/blog/admin/rbac/assign']),
                 ['class' => str_contains($currentRoute , 'blog/admin/rbac/assign') ? 'active' : '']
+            ) ?>
+        </li>
+        <li>
+            <?= Html::a(
+                '<i class="fas fa-user-plus"></i> سطوح دسترسی',
+                Url::to( ['/blog/admin/rbac/permissions']),
+                ['class' => str_contains($currentRoute , 'blog/admin/rbac/permissions') ? 'active' : '']
             ) ?>
         </li>
 

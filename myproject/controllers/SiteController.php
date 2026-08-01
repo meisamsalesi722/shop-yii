@@ -91,11 +91,7 @@ class SiteController extends Controller
     public function actionIndex(): string
     {
 
-        $identity = \app\models\User::findOne(['id' => 1]);
-        Yii::$app->user->login($identity);
-
-        
-        
+            
         //baners
         $banners = Banner::find()->all();
         

@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\TicketSearch;
+use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
@@ -25,6 +26,17 @@ class TicketController extends Controller
     {
         return array_merge(
             parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['vendor'],
+                        ],
+                    ],
+                ],
+            ],
             [
                 'verbs' => [
                     'class' => VerbFilter::className(),
