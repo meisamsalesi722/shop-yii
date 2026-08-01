@@ -42,19 +42,19 @@ AppAsset::register($this);
         <!-- فلش‌ها -->
         <?php if (Yii::$app->session->hasFlash('success')): ?>
 
-            <?= $this->render('/layouts/errors/toast/success') ?>
+            <?= $this->render('//layouts/errors/toast/success') ?>
 
         <?php endif; ?>
 
         <?php if (Yii::$app->session->hasFlash('error')): ?>
 
-            <?= $this->render('/layouts/errors/toast/error') ?>
+            <?= $this->render('//layouts/errors/toast/error') ?>
 
         <?php endif; ?>
 
         <?php if (Yii::$app->session->hasFlash('warning')): ?>
 
-            <?= $this->render('/layouts/errors/toast/warning') ?>
+            <?= $this->render('//layouts/errors/toast/warning') ?>
 
         <?php endif; ?>
 

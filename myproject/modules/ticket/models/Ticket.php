@@ -1,8 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\ticket\models;
 
-use Yii;
+use app\models\User;
+use app\modules\ticket\models\Department;
+
 
 /**
  * This is the model class for table "ticket".

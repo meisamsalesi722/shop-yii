@@ -1,14 +1,13 @@
 <?php
 
-namespace app\controllers\admin;
+namespace app\modules\ticket\controllers\admin;
 
 use Yii;
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
-use app\models\TicketSearch;
-use PHPUnit\Event\TestSuite\Loaded;
+use app\modules\ticket\models\TicketSearch;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -16,7 +15,7 @@ use yii\web\NotFoundHttpException;
  */
 class TicketController extends Controller
 {
-            public $layout = 'admin/admin';
+            public $layout = '/admin/admin';
 
     /**
      * @inheritDoc
@@ -43,7 +42,6 @@ class TicketController extends Controller
      */
     public function actionIndex()
     {
-        
         $stats = [
             'total' => Ticket::find()->where(['ticket_id' => null])->count(),
             'pending' => Ticket::find()->where(['status' => Ticket::STATUS_UNSEEN , 'ticket_id' => null])->count(),
@@ -98,7 +96,7 @@ class TicketController extends Controller
 
             if($model->load(Yii::$app->request->post())){
                 if($model->save('true' , ['department_id'])){
-                    return $this->redirect('/admin/ticket/index');
+                    return $this->redirect('/ticket/admin/ticket/index');
                 }
             }
         }

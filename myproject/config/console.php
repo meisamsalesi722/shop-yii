@@ -31,13 +31,16 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
-    /*
     'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
+    'migrate' => [
+        'class' => 'yii\console\controllers\MigrateController',
+        'migrationPath' => [
+            '@app/migrations',
+            '@app/modules/blog/migrations',
+            '@app/modules/ticket/migrations',
         ],
     ],
-    */
+],
 ];
 
 if (YII_ENV_DEV) {

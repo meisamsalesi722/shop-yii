@@ -3,12 +3,11 @@
 use app\models\User;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use app\models\Ticket;
 use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
+use app\modules\ticket\models\Ticket;
 
 /** @var yii\web\View $this */
-/** @var app\models\Ticket $model */
+/** @var app\modules\ticket\models\Ticket $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -167,7 +166,7 @@ use yii\helpers\ArrayHelper;
             <div class="chat-input-section mt-3 p-3 bg-white rounded border">
                 <?php if ($model->status != Ticket::STATUS_CLOSE): ?>
                     <?php $form = ActiveForm::begin([
-                        'action' =>  Url::to(['admin/ticket/create', 'id' => $model->id]),
+                        'action' =>  Url::to(['/ticket/admin/ticket/create', 'id' => $model->id]),
                         'options' => 
                             [
                             'enctype' => 'multipart/form-data'
@@ -208,16 +207,16 @@ use yii\helpers\ArrayHelper;
             <div class="ticket-actions mt-3 d-flex gap-2">
                 
                 <?= Html::a('<i class="fa fa-arrow-right"></i> بازگشت به لیست', 
-                    ['/admin/ticket'], 
+                    ['/ticket/admin/ticket'], 
                     ['class' => 'btn btn-outline-primary']
                 ) ?>
                 <?= Html::a('<i class="fa fa-close"></i> بستن تیکت', 
-                    ['/admin/ticket/reject' , 'id' => $model->id], 
+                    ['/ticket/admin/ticket/reject' , 'id' => $model->id], 
                     ['class' => 'btn btn-danger']
                 ) ?>
 
                 <?= Html::a(' ارجاع به <i class="fa fa-arrow-alt-circle-left"></i>  ', 
-                    ['/admin/ticket/referral' , 'id' => $model->id], 
+                    ['/ticket/admin/ticket/referral' , 'id' => $model->id], 
                     ['class' => 'btn btn-info']
                 ) ?>
             </div>

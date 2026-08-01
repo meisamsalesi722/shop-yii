@@ -3,13 +3,13 @@
 use Dom\Comment;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Ticket */ // تیکت اصلی (پدر)
-/* @var $children app\models\Ticket[] */ // پاسخ‌ها (فرزندان)
+/* @var $model app\modules\ticket\models\Ticket */ // تیکت اصلی (پدر)
+/* @var $children app\modules\ticket\models\Ticket[] */ // پاسخ‌ها (فرزندان)
 ?>
 
 <div class="page-content page-content-mobile">
@@ -17,7 +17,7 @@ use yii\widgets\DetailView;
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-start justify-content-lg-center mb-0">
                 <li class="breadcrumb-item"><a href="<?= Url::to(['site/index']) ?>">صفحه اصلی</a></li>
-                <li class="breadcrumb-item"><a href="<?= Url::to(['userpanel/ticket']) ?>">تیکت‌ها</a></li>
+                <li class="breadcrumb-item"><a href="<?= Url::to(['/ticket/userpanel/ticket']) ?>">تیکت‌ها</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?= Html::encode($model->subject) ?></li>
             </ol>
         </nav>
@@ -188,7 +188,7 @@ use yii\widgets\DetailView;
 
 
                     <?php $form = ActiveForm::begin([
-                        'action' =>  Url::to(['userpanel/ticket/reply', 'id' => $model->id]),
+                        'action' =>  Url::to(['/ticket/userpanel/ticket/reply', 'id' => $model->id]),
                         'options' => 
                             [
                             'enctype' => 'multipart/form-data'
@@ -228,7 +228,7 @@ use yii\widgets\DetailView;
             <div class="ticket-actions mt-3 d-flex gap-2">
                 
                 <?= Html::a('<i class="fa fa-arrow-right"></i> بازگشت به لیست', 
-                    ['userpanel/ticket'], 
+                    ['/ticket/userpanel/ticket'], 
                     ['class' => 'btn btn-outline-primary']
                 ) ?>
             </div>

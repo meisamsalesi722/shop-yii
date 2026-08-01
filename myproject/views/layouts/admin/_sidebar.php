@@ -74,7 +74,7 @@ $currentRoute = Yii::$app->controller->getRoute();
         <li>
             <?= Html::a(
                 '<i class="fas fa-ticket-alt"></i> تیکت ها',
-                Url::to(['/admin/ticket/index']),
+                Url::to(['/ticket/admin/ticket/index']),
                 ['class' => str_contains($currentRoute , 'admin/ticket') ? 'active' : '']
             ) ?>
         </li>

@@ -1,6 +1,6 @@
 <?php
 
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -24,7 +24,7 @@ use yii\grid\GridView;
 
 
 
-    <?= Html::a('تیکت جدید' , '/userpanel/ticket/create' , [
+    <?= Html::a('تیکت جدید' , '/ticket/userpanel/ticket/create' , [
         'class' => 'btn btn-success m-3 mb-4'
     ]) ?>
     <?= GridView::widget([

@@ -8,6 +8,9 @@ $config = [
             'blog' => [
                 'class' => 'app\modules\blog\Module',
             ],
+            'ticket' => [
+                'class' => 'app\modules\ticket\Module',
+            ],
         ],
     'id' => 'basic',
     'basePath' => dirname(__DIR__),

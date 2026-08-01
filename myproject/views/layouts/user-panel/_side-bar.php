@@ -49,8 +49,8 @@ use yii\widgets\ActiveForm;
                                             </a>
                                         </li>
                                         <?php if(Yii::$app->user->can('vendor')){?>
-                                        <li class="<?= str_contains($currentRoute , 'userpanel/ticket')   ? 'active' : '' ?>">
-                                            <a href="<?= Url::to('/userpanel/ticket') ?>">
+                                        <li class="<?= str_contains($currentRoute , '/ticket/userpanel/ticket')   ? 'active' : '' ?>">
+                                            <a href="<?= Url::to('/ticket/userpanel/ticket') ?>">
                                                 <span class="icon"><i class="fal fa-check"></i></span>
                                                 <span class="title"> تیکت</span>
                                             </a>
@@ -115,8 +115,8 @@ use yii\widgets\ActiveForm;
                                                 <i class="far fa-chevron-left"></i>
                                             </a>
                                         </li>
-                                        <li class="<?= str_contains($currentRoute , 'userpanel/ticket')   ? 'active' : '' ?>">
-                                            <a href="<?= Url::to('/userpanel/ticket') ?>">
+                                        <li class="<?= str_contains($currentRoute , '/ticket/userpanel/ticket')   ? 'active' : '' ?>">
+                                            <a href="<?= Url::to('/ticket/userpanel/ticket') ?>">
                                                 <span class="icon"><i class="fal fa-check"></i></span>
                                                 <span class="title"> تیکت</span>
                                                 <i class="far fa-chevron-left"></i>

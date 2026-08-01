@@ -3,10 +3,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 
 /* @var $this yii\web\View */
-/* @var $tickets app\models\Ticket[] */
+/* @var $tickets app\modules\ticket\models\Ticket[] */
 /* @var $stats array */
 
 $this->title = 'مدیریت تیکت ها';
@@ -173,7 +173,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     
 
                                                     <?php if ($ticket->status == Ticket::STATUS_OPEN): ?>
-                                                        <a class="btn btn-info btn-sm" href="<?= Url::to( ['/admin/ticket/create' , 'id' => $ticket->id]) ?>">
+                                                        <a class="btn btn-info btn-sm" href="<?= Url::to( ['/ticket/admin/ticket/create' , 'id' => $ticket->id]) ?>">
                                                             <i class="fas fa-trash"></i> پاسخ به تیکت
                                                         </a>
                                                     <?php endif; ?>
@@ -310,7 +310,7 @@ function approveTicket(id) {
     if (!confirm('آیا از باز بستن این تیکت  مطمئن هستید؟')) {
         return;
     }
-    let url = '/admin/ticket/approve?id=' + id;
+    let url = '/ticket/admin/ticket/approve?id=' + id;
     
     $.ajax({
         url: url,
@@ -333,7 +333,7 @@ function rejectTicket(id) {
     if (!confirm('آیا از رد این تیکت  مطمئن هستید؟')) {
         return;
     }
-    let url = '/admin/ticket/reject?id=' + id;
+    let url = '/ticket/admin/ticket/reject?id=' + id;
     $.ajax({
         url: url,
         type: 'POST',
@@ -355,7 +355,7 @@ function deleteTicket(id) {
     if (!confirm('آیا از حذف این تیکت  مطمئن هستید؟ این عملیات قابل بازگشت نیست!')) {
         return;
     }
-    let url = '/admin/ticket/delete?id=' + id;
+    let url = '/ticket/admin/ticket/delete?id=' + id;
     $.ajax({
         url: url,
         type: 'POST',

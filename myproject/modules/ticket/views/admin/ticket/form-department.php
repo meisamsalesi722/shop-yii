@@ -3,8 +3,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
-use app\models\Department; 
+use app\modules\ticket\models\Department; 
 
 
 $this->title = 'Create Ticket';

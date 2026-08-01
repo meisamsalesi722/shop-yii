@@ -1,13 +1,12 @@
 <?php
 
-namespace app\controllers\userpanel;
+namespace app\modules\ticket\controllers\userpanel;
 
 use Yii;
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
-use app\models\TicketSearch;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
@@ -17,7 +16,7 @@ use yii\web\NotFoundHttpException;
  */
 class TicketController extends Controller
 {
-    public $layout = 'user-panel/main';
+    public $layout = '/user-panel/main';
 
     /**
      * @inheritDoc
@@ -68,11 +67,7 @@ class TicketController extends Controller
         ]);
     }
 
-        /**
-     * Creates a new Copan model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
+
     public function actionCreate()
     {
         $model = new Ticket();

@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\ticket\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Ticket;
+use app\modules\ticket\models\Ticket;
 
 /**
  * TicketSearch represents the model behind the search form of `app\models\Ticket`.
